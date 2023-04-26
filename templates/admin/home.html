@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Admin Home</title>
+{% endblock %}
+
+{% block body %}
+<div class="container" id="header">
+    <h1>Admin Home</h1>
+    {% for message in get_flashed_messages() %}
+        <br><p style="font-weight:bolder;">{{message}}</p>
+    {% endfor %}
+</div>
+
+<div class="container">
+    <section id="users" class="config">
+        <table>
+            <tr>
+                <th colspan="5">Users</th>
+            </tr>
+            {% for user in operators %}
+            <tr>
+                <td>{{user.name.replace('*', ' ')}}</td>
+                <td><a href="/admin/user/{{user.id}}/update">UPDATE</a></td>
+                <td><a href="/admin/user/{{user.id}}/delete">DELETE</a></td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="5" style="padding:0;">
+                    <a href="/admin/add_user">
+                        <button style="padding:0; margin: 0; width:100%;">Add New User</button>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </section>
+    <section id="sites" class="config">
+        <table>
+            <tr>
+                <th colspan="5">Site Config</th>
+            </tr>
+
+            {% for site in sites %}
+            <tr>
+                <td>{{site.site_name.replace("_", " ")}}</td>
+                <td><a href="/admin/site/{{site.id}}/update_site">Edit Site</a></td>
+                <td><a href="/admin/site/{{site.id}}/update_channels">Update Channels</a></td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="5" style="padding:0;">
+                    <a href="/admin/add_site">
+                        <button style="padding:0; margin: 0; width: 100%;">Add New Site</button>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </section>
+</div>
+{% endblock %}

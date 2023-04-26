@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Delete User Page</title>
+{% endblock %}
+
+{% block body %}
+<div class="container" id="submit">
+  <form action="#" id="box" method="POST">
+      <div class="container" id="header" style="margin-top: 12em;">
+        <h1>Delete User:</h1>
+        <p>{{ user.first_name }} {{user.last_name }}</p>
+      </div>
+    <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">SUBMIT</button>
+  </form>
+</div>
+{% endblock %}

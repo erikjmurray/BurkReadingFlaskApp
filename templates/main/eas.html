@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>EAS Test Submission</title>
+{% endblock%}
+
+{% block body %}
+<div class="container" id="header">
+    <h1>EAS Test Submission</h1>
+    {% for message in get_flashed_messages() %}
+        <br><p style="font-weight:bolder;">{{message}}</p>
+    {% endfor %}
+    <div id="insert_date_form_here" class="container" style="margin-top: 8px;">
+      <button onclick="create_date_form('/eas/log/', 'Submit'); return false;" class="header_button">
+        View EAS Logs
+      </button>
+    </div>
+</div>
+
+
+<div class="container">
+<form action="/eas" method="post" class="eas_form">
+    <table>
+        <caption>EAS FORM</caption>
+        <tr>
+            <td class="form_label">Originating:</td>
+            <td>
+                <input type="checkbox" id="originating" name="originating"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="form_label">Type:</td>
+            <td>
+                <select id="test_type" name="test_type" required>
+                    <option value="" selected></option>
+                    <option value="RWT">Required Weekly Test</option>
+                    <option value="RMT">Required Monthly Test</option>
+                </select>
+            </td>
+            </dl>
+        </tr>
+        <tr>
+            <td class="form_label">Received From:</td>
+            <td>
+                <input id="eas_from" name="eas_from" placeholder="WXYZ"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="form_label">Received At:</td>
+            <td>
+                <input type="datetime-local" id="eas_time_rx" name="eas_time_rx"
+                    value="{{ current_time }}"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="form_label">Transmitted At:</td>
+            <td>
+                <input type="datetime-local" id="eas_time_tx" name="eas_time_tx"
+                       value="{{ current_time }}" required/>
+            </td>
+        </tr>
+        <tr>
+            <td class="form_label">Transmitted On:</td>
+            <td>
+                <div class="radio_group">
+                {% for site in sites %}
+                <label>
+                <input type='checkbox' id='{{site.site_name}}_eas' name='{{site.site_name}}' value='{{site.id}}'/>
+                    {{site.site_name}}
+                </label>
+                {% endfor %}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="padding:0;">
+                <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="submit">SUBMIT</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</div>
+<script src="{{ url_for('static', filename='javascript/date_query_form.js') }}"></script>
+
+{% endblock%}

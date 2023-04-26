@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Edit Site - {{ site.site_name.replace('_', ' ') }}</title>
+{% endblock %}
+
+{% block body %}
+<div class="container" id="header">
+    <h1>Edit Site</h1>
+    <h2 style="">{{ site.site_name.replace('_', ' ') }}</h2>
+    {% for message in get_flashed_messages() %}
+        <br><p style="font-weight:bolder;">{{ message }}</p>
+    {% endfor %}
+    <span style="display:flex; justify-content: center; padding-top: 22px;">
+        <a href="/admin/site/{{site.id}}/delete"><button>Delete Site</button></a>
+    </span>
+</div>
+
+<div class="container submit">
+    <form action="#" id="box" method="POST">
+        <fieldset>
+          <dl>
+            <dt class="">
+                <label class="config_header" for="site_name">Site Name: </label>
+            </dt>
+            <dt class="site_form">
+                <input type="text" id="site_name" name="site_name" value="{{ site.site_name.replace('_', ' ') }}" required>
+            </dt>
+          </dl>
+        </fieldset>
+
+        <fieldset>
+          <dl>
+            <dt class="">
+                <label class="config_header" for="ip">IP: </label>
+            </dt>
+            <dt class="site_form">
+                <input type="text" id="ip" name="ip" value="{{ site.ip_addr }}" required>
+            </dt>
+          </dl>
+        </fieldset>
+
+        <fieldset>
+          <dl>
+            <dt class="">
+                <label class="config_header" for="api_key">API KEY: </label>
+            </dt>
+            <dt class="site_form">
+                <input type="password" id="api_key" name="api_key" placeholder="LEAVE BLANK IF NO CHANGES">
+            </dt>
+          </dl>
+        </fieldset>
+
+        <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">SUBMIT</button>
+    </form>
+</div>
+<script src="{{ url_for('static', filename='javascript/duplicate_verification.js') }}"></script>
+{% endblock %}

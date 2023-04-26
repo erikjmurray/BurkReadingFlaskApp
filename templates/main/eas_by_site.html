@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>{{ site.site_name.replace("_", " ") }} EAS Log</title>
+{% endblock %}
+
+{% block body %}
+<div class="container" id="header">
+  <h1>{{ site.site_name.replace("_", " ") }} Readings</h1>
+    {% for message in get_flashed_messages() %}
+        <br><p style="font-weight:bolder;">{{message}}</p>
+    {% endfor %}
+</div>
+
+<div class="readings">
+    <table>
+        <tr>
+            <th>Test Type</th>
+            <th>Origination</th>
+            <th>Transmission</th>
+        </tr>
+    {% for test in eas_tests %}
+        <tr>
+            <td>{{test.test_type}}</td>
+            {% if test.originating %}
+                <td>Originated Test</td>
+            {% else %}
+                <td>Test received from {{test.rx_from}} at {{test.rx_timestamp.strftime("%H:%M")}} on {{test.rx_timestamp.strftime("%m/%d/%Y")}}</td>
+            {% endif %}
+            <td>
+                Test transmitted at {{test.tx_timestamp.strftime("%H:%M")}} on {{test.tx_timestamp.strftime("%m/%d/%Y")}}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

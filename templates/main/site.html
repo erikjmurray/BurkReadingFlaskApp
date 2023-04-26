@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>{{ site.site_name.replace("_", " ") }} Meter Readings</title>
+{% endblock %}
+
+{% block body %}
+<div class="container" id="header">
+  <h1>{{ site.site_name.replace("_", " ") }} Readings</h1>
+    {% for message in get_flashed_messages() %}
+        <br><p style="font-weight:bolder;">{{message}}</p>
+    {% endfor %}
+    <div id="insert_date_form_here" class="container">
+      <button onclick="create_date_form('/tasks/{{site.id}}/', 'Generate PDF'); return false;" class="header_button">
+        Create Report
+      </button>
+    </div>
+    <div class="container">
+      <a href="/site/{{site.id}}/eas_tests">
+       <button class="header_button">
+          View EAS Logs
+       </button>
+      </a>
+    </div>
+</div>
+
+<div class="readings">
+  <table>
+    <tr>
+      {# timestamp is in Database data, but not channels #}
+      <th>Timestamp</th>
+      {# Get table headers from channel data #}
+      {% for channel in channels %}
+      <th>{{ channel.title }}</th>
+      {% endfor %}
+      <th>Messages</th>
+    </tr>
+<!--TODO: Add a load more readings Javascript function-->
+<!--Currently limited to most recent 12 readings    -->
+    {# Given list of readings data from database by backend route, each in own row #}
+    {% for reading in readings %}
+    <tr>
+      {# Display data under correct headings with units #}
+      <td>{{ reading.timestamp.strftime("%m/%d/%Y, %H:%M:%S") }}</td>
+      {% for channel in channels %}
+      {% if channel.chan_type == 'meter' %}
+        <td id="C{{channel.id}}">{{ reading.reading_values[loop.index0] ~ " " ~ channel.meter_config[0].units }}</td>
+      {% else %}
+        <td id="C{{channel.id}}">{{ reading.reading_values[loop.index0] }}</td>
+      {% endif %}
+      {% endfor %}
+      <td style="padding: 0;">
+        <ul style="text-align: left; padding-left: 25px;">
+        {% for message in reading.messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      </td>
+
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<script src="{{ url_for('static', filename='javascript/date_query_form.js') }}"></script>
+
+{% endblock %}

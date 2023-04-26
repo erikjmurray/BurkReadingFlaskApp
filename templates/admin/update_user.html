@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Update User - {{user.username.replace('*', ' ')}}</title>
+{% endblock %}
+
+{% block body %}
+<div class="container" id="header">
+    <h1>Update User</h1>
+<!--Adds post to database success/fail message on form submit-->
+    {% for message in get_flashed_messages() %}
+        <br><p style="font-weight:bolder;">{{message}}</p>
+    {% endfor %}
+</div>
+
+<div class="container" id="submit">
+  <form action="#" id="box" method="POST">
+      {% set first_name, last_name = user.name.split('*') %}
+    <fieldset>
+      <dl>
+        <dt class="config_label">
+            <label for="first_name">First Name: </label>
+        </dt>
+        <dt class="config_input">
+            <input style="text-align:center;" type="text" id="first_name" name="first_name" value="{{first_name}}" required>
+        </dt>
+      </dl>
+    </fieldset>
+
+    <fieldset>
+      <dl>
+        <dt class="config_label">
+            <label for="last_name">Last Name: </label>
+        </dt>
+        <dt class="config_input">
+            <input style="text-align:center;" type="text" id="last_name" name="last_name" value="{{last_name}}" required>
+        </dt>
+      </dl>
+    </fieldset>
+
+    <fieldset>
+      <dl>
+        <dt class="config_label">
+            <label for="username">Username: </label>
+        </dt>
+        <dt class="config_input">
+            <input style="text-align:center;" type="text"
+                   id="username" name="username" value="{{user.username}}" required>
+        </dt>
+      </dl>
+    </fieldset>
+
+    <fieldset>
+      <dl>
+        <dt class="config_label">
+            <label for="password">Password: </label>
+        </dt>
+        <dt class="config_input">
+            <input style="text-align:center;" type="password" id="password" name="password" required>
+        </dt>
+      </dl>
+    </fieldset>
+
+    <fieldset>
+      <dl>
+        <dt class="config_label">
+            <label for="privilege">Privilege: </label>
+        </dt>
+        <dt class="config_input">
+            {# TODO: Setup privilege loop #}
+
+            <select id="privilege" name="privilege" required>
+                <option value="" selected></option>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+        </dt>
+      </dl>
+    </fieldset>
+
+    <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">SUBMIT</button>
+  </form>
+</div>
+<script src="{{ url_for('static', filename='javascript/duplicate_verification.js') }}"></script>
+
+{% endblock %}

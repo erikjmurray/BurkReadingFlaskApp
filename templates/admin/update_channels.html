@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Update Site - {{ site.site_name.replace('_', ' ') }}</title>
+{% endblock %}
+
+{% block body %}
+<div class="container" id="header">
+    <h1>Update Site</h1>
+    <h2 style="">{{ site.site_name.replace('_', ' ') }}</h2>
+    {% for message in get_flashed_messages() %}
+        <br><p style="font-weight:bolder;">{{ message }}</p>
+    {% endfor %}
+</div>
+
+<div class="container submit">
+    <form action="#" id="box" method="POST">
+        {% for channel in site.channels %}
+        {% set id = channel.html_tag %}
+        {% if channel.chan_type == 'meter' %}
+        {# TODO: Add ability to have multiple meter_configs #}
+        {% set meter_config = channel.meter_config[0] %}
+        <fieldset>
+          <dl>
+            <dt class="config_header">
+                <label>{{channel.title}}</label>
+                <div style="display: none;">
+                    <input type="text" id="{{id}}_id" name="{{id}}_id" value="{{id}}">
+                    <input type="text" id="{{id}}_type" name="{{id}}_type" value="{{channel.chan_type}}">
+                    <input type="text" id="{{id}}_title" name="{{id}}_title" value="{{channel.title}}">
+                </div>
+            </dt>
+            <dt class="config_content">
+                <label for="{{id}}_num">Channel Number</label><br>
+                <input type="number" id="{{id}}_num" name="{{id}}_num" value="{{meter_config.burk_channel}}">
+
+                <label for="{{id}}_nominal">Nominal Value</label><br>
+                <input type="number" id="{{id}}_nominal" name="{{id}}_nominal" step="any"
+                       onchange="auto_adjust_limits('{{id}}')" value="{{meter_config.nominal_output}}" required>
+
+            <h4 style="margin:0;">Limits</h4>
+            <div class="option_box">
+                <label for="{{id}}_upper">Upper Limit</label><br>
+                <input type="number" step="any" id="{{id}}_upper" name="{{id}}_upper"
+                       value="{{meter_config.upper_limit}}">
+
+                <label>
+                Color above upper limit
+                <select style="" id="{{id}}_upper_color" name="{{id}}_upper_color"
+                        onchange="change_bg_color('{{id}}_upper_color')" required>
+                    <option></option>
+                    {% for color in colors %}
+                    {% if meter_config.upper_lim_color == color.hex %}
+                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}" selected>{{ color.name }}</option>
+                    {% else %}
+                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}">{{ color.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                </label>
+
+                <label for="{{id}}_lower">Lower Limit</label><br>
+                <input type="number" step="any" id="{{id}}_lower" name="{{id}}_lower"
+                       value="{{meter_config.lower_limit}}">
+
+                <label>
+                Color below lower limit
+                <select style="" id="{{id}}_lower_color" name="{{id}}_lower_color"
+                        onchange="change_bg_color('{{id}}_lower_color')" required>
+                    <option></option>
+                    {% for color in colors %}
+                    {% if meter_config.lower_lim_color == color.hex %}
+                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}" selected>{{color.name}}</option>
+                    {% else %}
+                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}">{{color.name}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                </label>
+            </div>
+              <div class="config_content">
+                <label style="" for="{{id}}_units">Units: </label>
+                <select style="" id="{{id}}_units" name="{{id}}_units">
+                    <option></option>
+                    {% for unit_type in units %}
+                    {% if meter_config.units == unit_type %}
+                        <option value="{{unit_type}}" selected>{{unit_type}}</option>
+                    {% else %}
+                        <option value="{{unit_type}}">{{unit_type}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+              </div>
+            </dt>
+          </dl>
+        </fieldset>
+        {% elif channel.chan_type == 'status' %}
+        <fieldset>
+          <dl>
+            <dt class="config_header">
+                <label>{{channel.title}}</label>
+                <div style="display: none;">
+                    <input type="text" id="{{id}}_id" name="{{id}}_id" value="{{id}}">
+                    <input type="text" id="{{id}}_type" name="{{id}}_type" value="{{channel.chan_type}}">
+                    <input type="text" id="{{id}}_title" name="{{id}}_title" value="{{channel.title}}">
+                </div>
+            </dt>
+            <dt class="config_content">
+                <label>Options</label>
+                {% set options = channel.status_options %}
+                {% set opt_count = options|length %}
+                <div style="display: none;">
+                    <input type="number" id="{{id}}_opt_count" name="{{id}}_opt_count" value="{{opt_count}}">
+                </div>
+                {% for option in options %}
+                {% set i = loop.index %}
+                <div class="option_box" id="{{id}}_option_{{i}}">
+                <h4 style="text-decoration: underline; margin:0;">Option {{i}}</h4>
+
+                <label>Channel</label>
+                <input type="number" id="{{id}}_num_{{i}}" name="{{id}}_num_{{i}}" value="{{option.burk_channel}}">
+
+                <label>Name</label>
+                <input type="text" id="{{id}}_name_{{i}}" name="{{id}}_name_{{i}}" value="{{option.selected_value}}">
+
+                <label style="text-decoration: underline; padding-bottom:5px;">
+                Selected State
+                </label>
+                <div class="radio_group" style="flex-direction: row; padding-bottom:2px;">
+                    {% if option.selected_state %}
+                    <label style="margin-right:25px;">
+                        <input type="radio" name="{{id}}_state_{{i}}" value=true checked="checked" required>
+                        On
+                    </label>
+
+                    <label>
+                        <input type="radio" name="{{id}}_state_{{i}}" value=false>
+                        Off
+                    </label>
+                    {% else %}
+                    <label style="margin-right:25px;">
+                        <input type="radio" name="{{id}}_state_{{i}}" value=true required>
+                        On
+                    </label>
+
+                    <label>
+                        <input type="radio" name="{{id}}_state_{{i}}" value=false checked="checked">
+                        Off
+                    </label>
+                    {% endif %}
+                </div>
+
+                <label>
+                Status Color
+                <select id="{{id}}_color_{{i}}" name="{{id}}_color_{{i}}"
+                        onchange="change_bg_color('{{id}}_color_{{i}}')" required>
+                    <option></option>
+                    {% for color in colors %}
+                    {% if option.selected_color == color.hex %}
+                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}" selected>{{ color.name }}</option>
+                    {% else %}
+                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}">{{ color.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                </label>
+                </div>
+                {% endfor %}
+            </dt>
+          </dl>
+        </fieldset>
+        {% endif %}
+        {% endfor %}
+        <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">SUBMIT</button>
+    </form>
+</div>
+<script src="{{ url_for('static', filename='javascript/add_channel_html.js') }}"></script>
+{% endblock %}
