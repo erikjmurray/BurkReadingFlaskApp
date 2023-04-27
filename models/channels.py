@@ -2,56 +2,6 @@
 SQL Table definitions for configuration.
 """
 from extensions import db
-from sqlalchemy import BLOB
-from sqlalchemy.orm import validates
-from flask_login import UserMixin
-
-
-# ----- CONFIG -----
-class User(UserMixin, db.Model):
-    """
-    Users of the web app
-    Includes all MCEODs
-    Define Admin privileges here
-    """
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(1000), nullable=False)       # firstname*lastname
-    username = db.Column(db.String(200), nullable=False)
-    password = db.Column(db.String(100), nullable=False)    # hash comparator
-    privilege = db.Column(db.String(15), nullable=False)
-
-
-class Site(db.Model):
-    """
-    Top level site config
-    # NOTE: Site.eas_tests will return any EAS Tests associated with the Site
-    """
-    __tablename__ = "sites"
-    id = db.Column(db.Integer, primary_key=True)
-    ip_addr = db.Column(db.String(42), nullable=False)
-    site_name = db.Column(db.String(20), nullable=False)
-    api_key = db.Column(BLOB, nullable=False)
-    site_order = db.Column(db.Integer, unique=True, nullable=False)
-    channels = db.relationship('Channel', backref='site', lazy=True)
-
-    # TODO: ***** Review *****
-    @validates('site_order')
-    def validate_site_order(self, key, value):
-        if value is None:
-            # Use the next available site_order value
-            max_order = db.session.query(
-                db.func.coalesce(db.func.max(Site.site_order), 0)
-            ).scalar()
-            return max_order + 1
-        else:
-            # Ensure site_order is unique
-            if Site.query.filter_by(site_order=value).first() is not None:
-                raise ValueError('site_order must be unique')
-            return value
-
-    def __repr__(self):
-        return f"Site {self.site_name}"
 
 
 class Channel(db.Model):

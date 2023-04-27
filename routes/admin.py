@@ -8,7 +8,7 @@ from flask import abort, Blueprint, current_app, flash, render_template, request
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from extensions import db
-from models.config import User, Site, Channel, MeterConfig, StatusOption
+from models import User, Site, Channel, MeterConfig, StatusOption
 
 
 # create Blueprint object
