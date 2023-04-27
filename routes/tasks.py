@@ -6,13 +6,12 @@ from flask import Blueprint, make_response
 from datetime import datetime, timedelta
 
 from models import Site, Reading, EAS
-from routes.views import get_valid_readings
+from extensions import get_valid_readings
 
 from reportlab.platypus import (BaseDocTemplate, Frame, Image, NextPageTemplate,
                                 PageBreak, PageTemplate, Paragraph, Table)
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import legal, landscape
-from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.units import inch
 from reportlab.lib import colors
 

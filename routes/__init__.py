@@ -7,6 +7,7 @@ from routes.views import views
 from routes.admin import admin
 from routes.api import api
 from routes.auth import auth
+from routes.eas import eas
 from routes.errors import errors
 from routes.tasks import tasks
 from routes.validate import validate

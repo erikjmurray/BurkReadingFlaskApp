@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv, set_key
 from flask import Flask, redirect, render_template
 
-from extensions import db, login_manager
+from extensions import db, login_manager, ma
 from models import *
 
 env_file_path = os.path.join(os.getcwd(), 'instance\\.env')
@@ -20,9 +20,7 @@ def create_app(app_name) -> Flask:
     # setup_loggers(app)
     load_settings(app)
     register_blueprints(app)
-
-    # Link the connection to the database with the app
-    db.init_app(app)
+    initialize_addons(app)
 
     # Creates SQL tables in db for any imported models
     with app.app_context():
@@ -107,14 +105,30 @@ def update_env_file(key_name, value) -> None:
 
 def register_blueprints(app) -> None:
     """ Loads blueprints to app, details what happens when visiting routes """
-    from routes import views, admin, api, auth, errors, tasks, validate
+    from routes import views, admin, api, auth, eas, errors, tasks, validate
     app.register_blueprint(views, url_prefix='/')           # register routes laid out in routes.views
     app.register_blueprint(admin, url_prefix='/admin')      # register routes laid out in routes.admin with /admin
     app.register_blueprint(api, url_prefix='/api')          # register routes laid out in routes.api with /api
     app.register_blueprint(auth, url_prefix='/')            # register routes laid out in routes.auth
+    app.register_blueprint(eas, url_prefix='/')            # register routes laid out in routes.auth
     app.register_blueprint(tasks, url_prefix='/tasks')      # register routes laid out in routes.tasks with /tasks
     app.register_blueprint(validate, url_prefix='/validate')#
     app.register_blueprint(errors, url_prefix='/')          # details error handling
+    return
+
+
+def initialize_addons(app) -> None:
+    """ Register Flask add-ons with the app """
+    db.init_app(app)
+    login_manager.init_app(app)
+    ma.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        # In this example, the user ID is the user's email address
+        user = User.query.get(user_id)
+        return user
+
     return
 
 
