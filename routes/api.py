@@ -13,16 +13,7 @@ from models import Site, Channel
 api = Blueprint('api', __name__)
 
 
-@api.route('/sites')
-def all_sites() -> dict:
-    """ Called by JS to get list of site names only """
-    sites = Site.query.all()
-    site_ids = [site.id for site in sites]
-    site_names = [site.site_name for site in sites]
-    result = dict(zip(site_ids, site_names))
-    return result
-
-
+# ----- BURK API CALL -----
 @api.route('/burk/<int:site_id>/')
 async def api_call(site_id: int):
     """
@@ -44,7 +35,7 @@ async def api_call(site_id: int):
         return burk_data
 
 
-# ----- BURK API VALUE SORTING -----
+# ----- BURK VALUE SORTING -----
 def get_burk_data(site, meters, statuses):
     data = []
     channels = site.channels
@@ -71,7 +62,7 @@ def get_meter_value(channel: Channel, meters: list[dict]):
         num = config.burk_channel
         meter_value = meters[num - 1]['value']
     except IndexError:
-        current_app.logger.WARN(f'Meter Channel {channel.id} at Site {channel.site_id} Burk Data index error')
+        current_app.logger.info(f'Meter Channel {channel.id} at Site {channel.site_id} Burk Data index error')
         meter_value = None
     return meter_value
 
@@ -88,7 +79,7 @@ def get_status_value(channel: Channel, statuses: list[dict]):
             status_value = statuses[num - 1]['value']
             status_values.append(status_value)
         except IndexError:
-            current_app.logger.WARN(f'Status Channel {channel.id} at Site {channel.site_id} Burk Data index error')
+            current_app.logger.info(f'Status Channel {channel.id} at Site {channel.site_id} Burk Data index error')
     return status_values
 
 
@@ -123,6 +114,16 @@ def get_units():
 
 
 # ----- Pass data from database to Javascript -----
+@api.route('/sites')
+def all_sites() -> dict:
+    """ Called by JS to get list of site names only """
+    sites = Site.query.all()
+    site_ids = [site.id for site in sites]
+    site_names = [site.site_name for site in sites]
+    result = dict(zip(site_ids, site_names))
+    return result
+
+
 @api.route('/<int:site_id>/channel/<int:channel_id>')
 def get_channel_data(site_id, channel_id):
     try:

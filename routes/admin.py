@@ -9,16 +9,18 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from extensions import db
 from models import User, Site, Channel, MeterConfig, StatusOption
+from marshmallow import ValidationError
 
 
 # create Blueprint object
 admin = Blueprint('admin', __name__)
 
+
 # -----ROUTES-----
 @admin.route('/home')
 def home():
     """ Admin homepage """
-    sites = Site.query.all()
+    sites = Site.query.order_by(Site.site_order.asc()).all()
     operators = User.query.all()
 
     return render_template('admin/home.html', sites=sites, operators=operators)
@@ -58,8 +60,10 @@ def add_new_user_post():
         db.session.add(new_user)
         db.session.commit()
         flash_message = f'User: {name.replace("*", " ")} added successfully'
+    except ValidationError as err:
+        flash_message = err
     except Exception as e:
-        current_app.logger.warn(e)
+        current_app.logger.warning(e)
         flash_message = e
     flash(flash_message)
     return redirect(url_for('admin.home'))
