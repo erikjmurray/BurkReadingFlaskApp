@@ -37,3 +37,21 @@ function check_name_in_db() {
 
 }
 
+function ip_address_verification(input_id) {
+    // Uses regex to verify that IP Address is in proper format
+  const ipAddressInput = document.getElementById(input_id);
+
+  ipAddressInput.addEventListener("blur", function() {
+    const ipAddress = ipAddressInput.value;
+    if (!isValidIpAddress(ipAddress)) {
+      alert("Please enter a valid IP address.");
+      ipAddressInput.value = "";
+    }
+  });
+}
+
+function isValidIpAddress(ipAddress) {
+    const ipAddressRegex = /^([0-9]{1,3}\.){3}[0-9]{1,3}$/;
+    return ipAddressRegex.test(ipAddress);
+  }
+

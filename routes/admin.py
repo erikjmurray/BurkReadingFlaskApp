@@ -137,8 +137,6 @@ def add_new_site_post():
     """ On POST, attempt to add site to config """
     # Get form data from post
     results = request.form
-    # TODO: Validate the user input before submission to config
-    # validate_results(results)
 
     try:
         site_name = results.get('site_name').replace(' ', '_')

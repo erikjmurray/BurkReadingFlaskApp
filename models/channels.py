@@ -1,7 +1,8 @@
 """
 SQL Table definitions for configuration.
 """
-from extensions import db
+from extensions import db, ma
+from models.readings import ReadingValue
 
 
 class Channel(db.Model):
@@ -28,9 +29,6 @@ class Channel(db.Model):
             status_options=[opt.id for opt in self.status_options],
             site_id=self.site_id,
         )
-
-    def __repr__(self):
-        return f"CH{self.id} | {self.title} at {Site.query.get(self.site_id).site_name}"
 
 
 class MeterConfig(db.Model):
@@ -82,3 +80,4 @@ class StatusOption(db.Model):
             'selected_state': self.selected_state,
             'selected_color': self.selected_color,
         }
+

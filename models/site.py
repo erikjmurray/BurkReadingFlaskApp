@@ -1,6 +1,6 @@
 """ Details Site model and schema """
 
-from extensions import db, ma
+from extensions import db
 from sqlalchemy import BLOB
 
 
@@ -35,8 +35,3 @@ class Site(db.Model):
 
     def __repr__(self):
         return f"Site {self.site_name}"
-
-
-class SiteSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Site

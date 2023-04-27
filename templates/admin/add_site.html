@@ -49,37 +49,32 @@
       </dl>
     </fieldset>
 
+    <div id="channels_form">
+<!--    Channel HTML added here each time Add Channel button finishes submission -->
+    </div>
+
+
     <fieldset>
         <dl>
-            <dt class="">
-                <label class="config_header">Site Type: </label>
-            </dt>
-            <dt class="" style="margin-top: 2px;">
-                <div class="radio_group">
-                    <label>
-                        <input type="radio" name="site_type" value="fm" required>
-                        FM
-                    </label>
-                    <label>
-                        <input type="radio" name="site_type" value="am">
-                        AM
-                    </label>
+            <dt>
+                <div id="channel_addition">
+                    <button id="add_channel" onclick="add_channel_selector_html(); return false;">Add Channel</button>
+<!--                Button replaced with channel type selector and submit    -->
                 </div>
             </dt>
         </dl>
     </fieldset>
 
-    <div id="channels_form">
-<!--    HTML added by JS depending on value of Site Type -->
-    </div>
+
 
     <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">SUBMIT</button>
   </form>
 
 </div>
 <script src="{{ url_for('static', filename='javascript/add_channel_html.js') }}"></script>
-<script src="{{ url_for('static', filename='javascript/duplicate_verification.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/form_verification.js') }}"></script>
 <script>
-    insert_html_on_type_change()
+    ip_address_verification('ip')
 </script>
+
 {% endblock %}
