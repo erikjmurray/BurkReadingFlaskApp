@@ -22,8 +22,6 @@ async function get_units() {
 // Define global variables
 let colors;
 let units;
-let plus_img = "{{url_for('static;, filename='img/plus_sign')}}"
-console.log(plus_img)
 
 get_colors();
 get_units();
@@ -63,7 +61,7 @@ function add_channel_selector_html() {
     add_channel_div.innerHTML = channel_selector_html
 }
 
-
+// TODO: INDEX CHANNELS AS THEY ARE CREATED
 function add_channel_html() {
     // On submit, creates either a meter or status channel form
     const channel_type = document.querySelectorAll('input[name="channel_type"]');
@@ -89,16 +87,13 @@ function create_meter_channel(id) {
     meter_channel = `
     <fieldset>
       <dl>
-        <dt class="config_header"">
-            <label for="${id}">Meter ${id}</label>
-            <div style="display: none;">
-                <input type="text" id="${id}_type" name="${id}_type" value='meter'>
-            </div>
-            <img class="hide-content" id="${id}_hide_content"
-            onclick="minimize_channel_data('${id}'); return false;" src='./img/minus_sign.png' alt='minus'>
-        </dt>
-        <div id='${id}_content' style="">
-        <dt class="config_content">
+        <div class="channel_header">
+            <label id='${id}_header'>Meter ${id}</label>
+            <img class="hide_content_button" id="${id}_hide_content"
+            onclick="minimize_channel_data('${id}'); return false;" src='/static/img/minus_sign.png' alt='-'>
+            <input style="display: none;" type="text" id="${id}_type" name="${id}_type" value='meter'>
+        </div>
+        <dt class="config_content" id='${id}_content'>
             <label for='${id}_title'>Title</label>
             <input type="text" id='${id}_title' name='${id}_title' required>
             <label for="${id}_num">Channel Number</label><br>
@@ -123,7 +118,6 @@ function create_meter_channel(id) {
         meter_channel += add_unit_options()
         meter_channel += `
             </select>
-          </div>
         </dt>
       </dl>
     </fieldset>
@@ -133,13 +127,18 @@ function create_meter_channel(id) {
 }
 
 
+// TODO: Refactor these functions
 function minimize_channel_data(channel_id) {
     content = document.getElementById(`${channel_id}_content`)
+    header = document.getElementById(`${channel_id}_header`)
+    title = document.getElementById(`${channel_id}_title`)
     content.style = 'display: none;'
 
+    if (title.value) {  header.innerHTML = title.value  }
+
     hide_content_button = document.getElementById(`${channel_id}_hide_content`)
-    hide_content_button.src = './img/plus_sign.png'
-    hide_content_button.alt = 'plus'
+    hide_content_button.src = '/static/img/plus_sign.png'
+    hide_content_button.alt = '+'
     hide_content_button.setAttribute('onclick', `maximize_channel_data('${channel_id}'); return false;`)
 }
 
@@ -149,8 +148,8 @@ function maximize_channel_data(channel_id) {
     content.style = ''
 
     hide_content_button = document.getElementById(`${channel_id}_hide_content`)
-    hide_content_button.src = './img/minus_sign.png'
-    hide_content_button.alt = 'minus'
+    hide_content_button.src = '/static/img/minus_sign.png'
+    hide_content_button.alt = '-'
     hide_content_button.setAttribute('onclick', `minimize_channel_data('${channel_id}'); return false;`)
 }
 
@@ -215,23 +214,26 @@ function create_status_channel(id, channel) {
         </div>
         <fieldset>
           <dl>
-            <dt class="">
-                <label class="config_header" for="${id}">${channel.title} </label>
-                <div style="display: none;">
-                    <input type="text" id="${id}_id" name="${id}_id" value="${id}">
-                    <input type="text" id="${id}_type" name="${id}_type" value="${channel.type}">
-                    <input type="text" id="${id}_title" name="${id}_title" value="${channel.title}">
-                </div>
-            </dt>
-            <div id="${id}_options">${options}</div>
-            <dt>
-            <button onclick="add_next_option('${id}'); return false;">Add Option</button>
-            </dt>
+            <div class="channel_header">
+                <label id='${id}_header'>Status ${id}</label>
+                <img class="hide_content_button" id="${id}_hide_content"
+                onclick="minimize_channel_data('${id}'); return false;" src='/static/img/minus_sign.png' alt='-'>
+                <input style="display: none;" type="text" id="${id}_type" name="${id}_type" value='status'>
+            </div>
+            <div id='${id}_content' class="config_content" style="">
+                <label for='${id}_title'>Title</label>
+                <input type="text" id='${id}_title' name='${id}_title' required>
+                <div id="${id}_options">${options}</div>
+                <dt>
+                <button onclick="add_next_option('${id}'); return false;">Add Option</button>
+                </dt>
+            </div>
           </dl>
         </fieldset>
         `
     return status_channel
 }
+
 
 // Creates an option for status channel
 function create_option_content(id, opt_num) {
@@ -297,23 +299,24 @@ function change_bg_color(id) {
     color_select.style.backgroundColor = color
 }
 
-
-// Adds button that adds Pilot status to site
-function add_pilot_option() {
-    channels_form.innerHTML += `
-    <fieldset>
-        <dt class="config_content">
-          <button onclick="add_pilot_channel(); return false;">Add Pilot?</button>
-        </dt>
-    </fieldset>`
-}
-
-
-// Inserts an extra status channel for Pilot data
-function add_pilot_channel() {
-    let id = pilot_data.id
-    channels_form.innerHTML += create_status_channel(id, pilot_data)
-}
+//
+//
+//// Adds button that adds Pilot status to site
+//function add_pilot_option() {
+//    channels_form.innerHTML += `
+//    <fieldset>
+//        <dt class="config_content">
+//          <button onclick="add_pilot_channel(); return false;">Add Pilot?</button>
+//        </dt>
+//    </fieldset>`
+//}
+//
+//
+//// Inserts an extra status channel for Pilot data
+//function add_pilot_channel() {
+//    let id = pilot_data.id
+//    channels_form.innerHTML += create_status_channel(id, pilot_data)
+//}
 
 
 //// On Nominal Input value change, make limits +5/-10 %

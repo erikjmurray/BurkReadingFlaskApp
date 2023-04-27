@@ -117,8 +117,39 @@ input[type=number] {
     border-radius:5px;
 }
 
+
+/* ----- RADIO BUTTON GROUP ----- */
+.radio_group {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: fit-content;
+    width: fit-content;
+}
+
+
+.radio_group > input[type="radio"] {
+    margin-right: 8px;
+    margin-left: -3px;
+}
+
+
+.radio_group > p {
+    margin-bottom: 5px;
+    text-decoration: underline;
+}
+
+
+.radio_group > label {
+    text-align:left;
+    width: fit-content;
+}
+
 /*******************************************/
-/* ----- HOME ----- */
+/* ----- HOME PAGE FORM ----- */
+
+/* Headings for sites */
 .site_heading p {
     padding-top: 8px;
     padding-left: 40px;
@@ -126,12 +157,14 @@ input[type=number] {
     display: inline;
 }
 
+/* Refresh symbol */
 .site_heading img {
     width: 25px;
     height: 25px;
     padding-right: 22px;
 }
 
+/* Table definition */
 .readings table {
     width: 95%;
     margin: auto;
@@ -150,42 +183,19 @@ input[type=number] {
     background-color: #f2f2f2;
 }
 
+/* Different needs for status and meter */
 .status {
     min-width:130px;
 }
 
-.radio_group {
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    height: fit-content;
-    width: fit-content;
-}
-
-.radio_group > input[type="radio"] {
-    margin-right: 8px;
-    margin-left: -3px;
-}
-
-.radio_group > p {
-    margin-bottom: 5px;
-    text-decoration: underline;
-}
-
-.radio_group > label {
-    text-align:left;
-    width: fit-content;
-}
-
-
-.meter input {
+.meter > input {
     width: 90%;
     min-width: 45px;
     text-align: center;
     /*box-shadow: 1px 1px 3px #222 inset;*/
 }
 
+/* Messaging and user notes */
 #notes_table textarea {
     width: 90%;
     height: 90px;
@@ -193,12 +203,12 @@ input[type=number] {
     resize: none;
 }
 
-
 #messages {
     background-color: #ddd;
     }
 
 
+/* MCEOD Selector */
 #operator p {
     width: fit-content;
     margin: 20px auto;
@@ -215,7 +225,8 @@ input[type=number] {
 }
 
 
-#operator button {
+/* Submit button */
+.readings button {
     margin:0px;
     width: 100%;
     text-align: center;
@@ -242,13 +253,18 @@ input[type=number] {
 }
 
 
+.eas_form tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+
+
 .form_label {
     padding: 0 20px;
 }
 
 
 /*******************************************/
-/** CONFIG **/
+/* ----- Admin Home ----- */
 .config > table {
     margin: 0 20px;
 }
@@ -262,12 +278,12 @@ input[type=number] {
     background-color: #333;
 }
 
-.site_form > input {
+/*******************************************/
+/* ----- ADD NEW SITE PAGE ----- */
+.site_field > input {
     width: 300px;
 }
 
-/*******************************************/
-/* ----- ADD PAGE ----- */
 .submit label, input {
     font-size: medium;
     border-radius: unset;
@@ -288,8 +304,6 @@ input[type=number] {
 }
 
 .submit dl, dt {
-    display: inline-block;
-    vertical-align: middle;
     text-align: left;
     margin: 0;
 }
@@ -305,12 +319,31 @@ input[type=number] {
 
 .config_header {
     font-weight: bold;
-    text-decoration: underline;
     margin-bottom: 4px;
 }
 
+.channel_header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3px;
+}
+
+.channel_header > label {
+    font-weight: bold;
+    float: left;
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: -20px;
+}
+
+.channel_header > img {
+    float: right;
+    width: fit-content;
+    margin-left: auto;
+    margin-top: 3px;
+}
+
 .config_content {
-    /*width: fit-content;*/
     text-align: center;
     padding: 2px 0;
 }
@@ -330,57 +363,7 @@ input[type=number] {
     align: center;
 }
 
-/*
-.config_label {
-    width: 8em;
-    justify-content: left;
-    margin: auto;
-}
-
-.config_input {
-    display: grid;
-    text-align:center;
-}
-*/
-/*******************************************/
-/** MOBILE **/
-.mobile {
-    display: none;
-}
-
-@media (max-width: 320px) {
-  .mobile {display: block;}
-}
-
-/*******************************************/
-/** OLD **/
-
-/*
-#operator form {
-    min-width: 310px;
-    margin-bottom: 10px;
-    background-color: #ddd;
-}
-
-#operator input {
-    margin-top: 2px;
-    background-color: #ddd;
-    color: black;
-    font-weight: 600;
-}
-
-#view_readings {
-    text-decoration: none;
-    color: black;
-}
-
-#view_readings:hover {
-    text-decoration: underline;
-    color: blue;
-}
-*/
-/*******************************************/
-/**SITE PAGE**/
+/* ----- DATE QUERY FORM ----- */
 #date_form {
     display: flex;
     flex-direction: column;
@@ -407,12 +390,13 @@ input[type=number] {
     width: fit-content;
     margin: 5px auto;
 }
-/*
-#submit_link {
-    margin: 0 0 20px;
+
+/*******************************************/
+/* ----- MOBILE ----- */
+.mobile {
+    display: none;
 }
 
-.readings tr:hover {
-    background-color: #ddd;
+@media (max-width: 320px) {
+  .mobile {display: block;}
 }
-*/

@@ -13,14 +13,15 @@
     {% endfor %}
 </div>
 
+
 <div class="container submit">
-  <form action="#" id="box" method="POST">
+  <form action="#" class="" method="POST">
     <fieldset>
       <dl>
         <dt class="">
             <label class="config_header" for="site_name">Site Name: </label>
         </dt>
-        <dt class="site_form">
+        <dt class="site_field">
             <input type="text" id="site_name" name="site_name" placeholder="WXYZ"
                    onchange="check_site_name_in_db()" value="" required>
         </dt>
@@ -30,10 +31,10 @@
     <fieldset>
       <dl>
         <dt class="">
-            <label class="config_header" for="ip">IP: </label>
+            <label class="config_header" for="ip_addr">IP: </label>
         </dt>
-        <dt class="site_form">
-            <input style="" type="text" id="ip" name="ip" placeholder="192.168.1.1" required>
+        <dt class="site_field">
+            <input style="" type="text" id="ip_addr" name="ip_addr" placeholder="192.168.1.1" required>
         </dt>
       </dl>
     </fieldset>
@@ -43,7 +44,7 @@
         <dt class="">
             <label class="config_header" for="api_key">API KEY: </label>
         </dt>
-        <dt class="site_form">
+        <dt class="site_field">
             <input style="" type="password" id="api_key" name="api_key" required>
         </dt>
       </dl>
@@ -65,8 +66,6 @@
         </dl>
     </fieldset>
 
-
-
     <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">SUBMIT</button>
   </form>
 
@@ -74,7 +73,7 @@
 <script src="{{ url_for('static', filename='javascript/add_channel_html.js') }}"></script>
 <script src="{{ url_for('static', filename='javascript/form_verification.js') }}"></script>
 <script>
-    ip_address_verification('ip')
+    ip_address_verification('ip_addr')
 </script>
 
 {% endblock %}
