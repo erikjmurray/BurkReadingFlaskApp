@@ -18,9 +18,9 @@ class Site(db.Model):
     channels = db.relationship('Channel', backref='site', lazy=True)
 
 
-    def __init__(self, ip_addr, site_name, api_key):
-        self.ip_addr = ip_addr
+    def __init__(self, site_name, ip_addr, api_key):
         self.site_name = site_name
+        self.ip_addr = ip_addr
         self.api_key = api_key
         self.site_order = self.get_next_site_order()
 

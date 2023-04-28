@@ -13,12 +13,30 @@ class Channel(db.Model):
     """
     __tablename__ = 'channels'
     id = db.Column(db.Integer, primary_key=True)
-    chan_type = db.Column(db.String(8), nullable=False)  # 'meter' or 'status'
     title = db.Column(db.String(50), nullable=False)
+    chan_type = db.Column(db.String(8), nullable=False)  # 'meter' or 'status'
+    channel_order = db.Column(db.Integer, nullable=False)
+    site_id = db.Column(db.Integer, db.ForeignKey('sites.id'), nullable=False)
+
     meter_config = db.relationship('MeterConfig', backref='channel', lazy=True)
     status_options = db.relationship('StatusOption', backref='channel', lazy=True)
     reading_values = db.relationship('ReadingValue', backref='channel', lazy=True)
-    site_id = db.Column(db.Integer, db.ForeignKey('sites.id'), nullable=False)
+
+
+    def __init__(self, chan_type, title, site_id):
+        self.title = title
+        self.chan_type = chan_type
+        self.site_id = site_id
+        self.channel_order = self.get_next_channel_order(site_id)
+
+
+    def get_next_channel_order(self, site_id):
+        max_channel_order = Channel.query.filter_by(site_id=site_id).with_entities(db.func.max(Channel.channel_order)).scalar()
+        if max_channel_order is None:
+            return 0
+        else:
+            return max_channel_order + 1
+
 
     def to_dict(self):
         return dict(

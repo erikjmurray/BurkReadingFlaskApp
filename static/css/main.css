@@ -247,7 +247,13 @@ input[type=number] {
 }
 
 
-.eas_form > table > tbody > tr > td > input, select {
+.eas_form > table > tbody > tr > td > input {
+    width:230px;
+    text-align:center;
+}
+
+
+.eas_form > table > tbody > tr > td > select {
     width:230px;
     text-align:center;
 }
@@ -280,53 +286,64 @@ input[type=number] {
 
 /*******************************************/
 /* ----- ADD NEW SITE PAGE ----- */
-.site_field > input {
-    width: 300px;
-}
 
-.submit label, input {
-    font-size: medium;
-    border-radius: unset;
-}
-
-.submit input {
-    text-align: center;
-}
-
-.submit form {
+/* Form definition */
+.config_form form {
     width: 380px;
 }
 
-.submit fieldset {
+
+.config_form fieldset {
     margin: 0px;
     border: 1px solid #333;
     background-color: #f2f2f2;
 }
 
-.submit dl, dt {
-    text-align: left;
+
+.config_form dl, dt {
     margin: 0;
 }
 
-.submit dl {
+
+.config_form dl {
     width: 100%;
 }
 
-.submit dt {
+
+.config_form dt {
     display: grid;
     justify-content: center;
 }
 
+
+.config_form label, input {
+    font-size: medium;
+    border-radius: unset;
+}
+
+
+.config_form input {
+    text-align: center;
+}
+
+
+.site_field > input {
+    width: 285px;
+}
+
+/* Defines header of config form */
 .config_header {
     font-weight: bold;
     margin-bottom: 4px;
 }
+
 
 .channel_header {
     display: flex;
     justify-content: center;
     margin-bottom: 3px;
 }
+
 
 .channel_header > label {
     font-weight: bold;
@@ -336,6 +353,7 @@ input[type=number] {
     margin-right: -20px;
 }
 
+
 .channel_header > img {
     float: right;
     width: fit-content;
@@ -343,24 +361,47 @@ input[type=number] {
     margin-top: 3px;
 }
 
+
+/* Defines content of config_form */
 .config_content {
     text-align: center;
     padding: 2px 0;
 }
 
+.func_button {
+    color: #000000;
+    background-color: #c5c5c5;
+    border-radius: 5px;
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+
+/* Option content for status channel */
 .option_box {
     border: 1px solid black;
     border-radius: 5px;
     display: grid;
-    padding: 5px 25px;
+    padding: 5px 20px;
+    margin-bottom: 10px;
 }
 
-.option_box > label {
+
+.option_box > .config_content > label {
     padding-top: 5px;
+    margin-bottom: 3px;
 }
 
-.option_btn {
-    align: center;
+
+.option_box > .config_content > input {
+    width: 285px;
+}
+
+.option_radio_group {
+    flex-direction: row;
+    padding-bottom: 2px;
+    border: 2px black inset;
+    border-radius: 6px;
+    width: 285px;
 }
 
 /* ----- DATE QUERY FORM ----- */
