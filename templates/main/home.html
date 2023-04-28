@@ -70,7 +70,7 @@
                     <input type="number" step="any" id="{{id}}" name="{{id}}" value=""
                            onchange="manually_changed('{{id}}')" required>
                     <br>
-                    <label id="{{name}}_label">{{channel.units}}</label>
+                    <label id="{{channel.title}}_label">{{channel.meter_config[0].units}}</label>
                 </td>
                 {% endif %}
                 {% endfor %}
