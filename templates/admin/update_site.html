@@ -16,14 +16,14 @@
     </span>
 </div>
 
-<div class="container submit">
+<div class="container config_form">
     <form action="#" id="box" method="POST">
         <fieldset>
           <dl>
             <dt class="">
                 <label class="config_header" for="site_name">Site Name: </label>
             </dt>
-            <dt class="site_form">
+            <dt class="config_field">
                 <input type="text" id="site_name" name="site_name" value="{{ site.site_name.replace('_', ' ') }}" required>
             </dt>
           </dl>
@@ -32,10 +32,10 @@
         <fieldset>
           <dl>
             <dt class="">
-                <label class="config_header" for="ip">IP: </label>
+                <label class="config_header" for="ip_addr">IP: </label>
             </dt>
-            <dt class="site_form">
-                <input type="text" id="ip" name="ip" value="{{ site.ip_addr }}" required>
+            <dt class="config_field">
+                <input type="text" id="ip_addr" name="ip_addr" value="{{ site.ip_addr }}" required>
             </dt>
           </dl>
         </fieldset>
@@ -45,7 +45,7 @@
             <dt class="">
                 <label class="config_header" for="api_key">API KEY: </label>
             </dt>
-            <dt class="site_form">
+            <dt class="config_field">
                 <input type="password" id="api_key" name="api_key" placeholder="LEAVE BLANK IF NO CHANGES">
             </dt>
           </dl>
@@ -54,5 +54,8 @@
         <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">SUBMIT</button>
     </form>
 </div>
-<script src="{{ url_for('static', filename='javascript/duplicate_verification.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/form_verification.js') }}"></script>
+<script>
+    ip_address_verification('ip_addr')
+</script>
 {% endblock %}

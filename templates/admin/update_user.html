@@ -13,7 +13,7 @@
     {% endfor %}
 </div>
 
-<div class="container" id="submit">
+<div class="container config_form">
   <form action="#" id="box" method="POST">
       {% set first_name, last_name = user.name.split('*') %}
     <fieldset>
@@ -81,6 +81,6 @@
     <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">SUBMIT</button>
   </form>
 </div>
-<script src="{{ url_for('static', filename='javascript/duplicate_verification.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/form_verification.js') }}"></script>
 
 {% endblock %}

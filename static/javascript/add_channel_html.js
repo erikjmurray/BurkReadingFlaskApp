@@ -22,13 +22,14 @@ async function get_units() {
 // Define global variables
 let colors;
 let units;
-let channel_count = 0;
 
 get_colors();
 get_units();
 
 
 // Get document elements
+const channel_count = document.getElementById('channel_count');
+console.log(channel_count.value)
 const channels_form = document.getElementById('channels');
 const add_channel_div = document.getElementById('add_channel')
 
@@ -61,19 +62,36 @@ function add_channel_selector_html() {
     add_channel_div.innerHTML = channel_selector_html
 }
 
-// TODO: INDEX CHANNELS AS THEY ARE CREATED
+
 function add_channel_html() {
     // On submit, creates either a meter or status channel form
     const channel_type = document.querySelectorAll('input[name="channel_type"]');
     channel_type.forEach(option => {
         if (option.checked && option.value == 'meter') {
-            channel_count += 1;
-            channels_form.innerHTML += create_meter_channel(`CH${channel_count}`)
+            // increment channel number
+            channel_number = parseInt(channel_count.value) + 1;
+            channel_count.value = channel_number
+
+            // create meter html
+            let channel_div = document.createElement('div');
+            let meter_channel = create_meter_channel(`CH${channel_number}`)
+            channel_div.innerHTML = meter_channel
+
+            // add to page
+            channels_form.appendChild(channel_div)
             }
         else if (option.checked && option.value == 'status') {
-            // add status html
-            channel_count += 1;
-            channels_form.innerHTML += create_status_channel(`CH${channel_count}`)
+            // increment channel number
+            channel_number = parseInt(channel_count.value) + 1;
+            channel_count.value = channel_number
+
+            // create status html
+            let channel_div = document.createElement('div');
+            let status_channel = create_status_channel(`CH${channel_number}`)
+            channel_div.innerHTML = status_channel
+
+            // add to page
+            channels_form.appendChild(channel_div)
         }
     })
 
@@ -152,6 +170,7 @@ function create_meter_channel(id) {
     </fieldset>
     </div>
     `
+
     return meter_channel
 }
 
@@ -164,13 +183,13 @@ function create_limit_html(id, limit) {
         message = 'Color below lower limit'
     }
     limit_html = `
-        <label for="${id}_${limit}">${limit} Limit</label><br>
-        <input type="number" step="any" id="${id}_${limit}" name="${id}_${limit}" placeholder="0">
+        <label for="${id}_${limit.toLowerCase()}">${limit} Limit</label><br>
+        <input type="number" step="any" id="${id}_${limit.toLowerCase()}" name="${id}_${limit.toLowerCase()}" placeholder="0" required>
 
         <label>
         ${message}
-        <select style="" id="${id}_${limit}_color" name="${id}_${limit}_color"
-                onchange="change_bg_color('${id}_${limit}_color')" required>
+        <select style="" id="${id}_${limit.toLowerCase()}_color" name="${id}_${limit.toLowerCase()}_color"
+                onchange="change_bg_color('${id}_${limit.toLowerCase()}_color')" required>
     `
     limit_html += add_color_picker()
     limit_html += `
@@ -287,11 +306,13 @@ function add_next_option(id) {
     document.getElementById(`${id}_opt_count`).value = next_num
 
     // create option content
+    option_div = document.createElement('div')
     next_option = create_option_content(id, next_num)
+    option_div.innerHTML = next_option
 
     // insert option content to html
-    option_div = document.getElementById(`${id}_options`)
-    option_div.innerHTML += next_option
+    target_div = document.getElementById(`${id}_options`)
+    target_div.appendChild(option_div)
 }
 
 

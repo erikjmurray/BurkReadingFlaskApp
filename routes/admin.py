@@ -139,27 +139,26 @@ def add_new_site_post():
     results = request.form
 
     try:
-        # site_name = results.get('site_name').replace(' ', '_')
-        #
-        # # Encrypt API KEY
-        # from extensions.encryption import encrypt_api_key
-        # encrypted_api_key = encrypt_api_key(results['api_key'])
-        #
-        # # Add site to database
-        # site = Site(
-        #     site_name=site_name,
-        #     ip_addr=results.get('ip_addr'),
-        #     api_key=encrypted_api_key
-        # )
-        #
-        # db.session.add(site)
-        # db.session.commit()
-        #
-        # target_site = Site.query.filter_by(site_name=site_name).first()
+        site_name = results.get('site_name').replace(' ', '_')
+
+        # Encrypt API KEY
+        from extensions.encryption import encrypt_api_key
+        encrypted_api_key = encrypt_api_key(results['api_key'])
+
+        # Add site to database
+        site = Site(
+            site_name=site_name,
+            ip_addr=results.get('ip_addr'),
+            api_key=encrypted_api_key
+        )
+
+        db.session.add(site)
+        db.session.commit()
+
+        target_site = Site.query.filter_by(site_name=site_name).first()
 
         # Construct site data
-        meter_configs, status_options = create_channel_model_data(results, 1) # replace 1 with target_site.id
-        return 'TEST'
+        meter_configs, status_options = create_channel_model_data(results, target_site.id)
 
         db.session.add_all(meter_configs)
         db.session.add_all(status_options)
@@ -181,16 +180,15 @@ def create_channel_model_data(results, site_id):
     meter_configs = []
     status_options = []
 
-    new_channels = get_new_channels(results)
-    for chan in new_channels:
-        html_tag = chan['html_tag']
+    for channel_num in range(1, int(results.get('channel_count'))+1):
+        html_tag = f"CH{channel_num}"
         channel = Channel(
-            chan_type=chan['type'],
-            title=chan['title'],
+            chan_type=results.get(f'{html_tag}_type'),
+            title=results.get(f'{html_tag}_title'),
             site_id=site_id
         )
         db.session.add(channel)
-        target_channel = Channel.query.filter_by(title=chan['title'], site_id=site_id).first()
+        target_channel = Channel.query.filter_by(title=channel.title, site_id=site_id).first()
         if channel.chan_type == 'meter':
             config = MeterConfig(
                 units=results[f'{html_tag}_units'],
@@ -204,7 +202,6 @@ def create_channel_model_data(results, site_id):
             )
             meter_configs.append(config)
         if channel.chan_type == 'status':
-            from routes.api import get_options
             options = get_options(html_tag, results)
             for option in options:
                 status_opt = StatusOption(
@@ -218,9 +215,19 @@ def create_channel_model_data(results, site_id):
     return meter_configs, status_options
 
 
-def get_new_channels(results):
-    """ Sorts form results for newly input channel """
-    return
+def get_options(html_tag, results):
+    """ Get status options from form data """
+    option_counter = int(results[f"{html_tag}_opt_count"])
+    options = []
+    for count in range(1, option_counter + 1):
+        option = {
+            'burk_channel': int(results[f"{html_tag}_num_{count}"]),
+            'selected_value': results[f"{html_tag}_name_{count}"],
+            'selected_state': True if results[f"{html_tag}_state_{count}"] == 'true' else False,
+            'selected_color': results[f"{html_tag}_color_{count}"],
+        }
+        options.append(option)
+    return options
 
 
 @admin.route('site/<int:site_id>/update_site')
@@ -239,7 +246,7 @@ def update_site_post(site_id):
 
     try:
         site.site_name = results.get('site_name')
-        site.ip_addr = results.get('ip')
+        site.ip_addr = results.get('ip_addr')
         if results.get('api_key'):
             from extensions.encryption import encrypt_api_key
             site.api_key = encrypt_api_key(results.get('api_key'))

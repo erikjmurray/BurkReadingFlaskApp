@@ -327,8 +327,13 @@ input[type=number] {
 }
 
 
-.site_field > input {
+.config_field > input {
     width: 285px;
+}
+
+.config_field > select {
+    width: 285px;
+    text-align: center;
 }
 
 /* Defines header of config form */
@@ -366,6 +371,10 @@ input[type=number] {
 .config_content {
     text-align: center;
     padding: 2px 0;
+}
+
+.config_content > select {
+    text-align: center;
 }
 
 .func_button {

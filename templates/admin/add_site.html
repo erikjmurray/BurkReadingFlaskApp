@@ -16,12 +16,13 @@
 
 <div class="container config_form">
   <form action="#" class="" method="POST">
+      <input style="display: none;" type="int" name="channel_count" id="channel_count" value="0">
     <fieldset>
       <dl>
         <dt class="">
             <label class="config_header" for="site_name">Site Name: </label>
         </dt>
-        <dt class="site_field">
+        <dt class="config_field">
             <input type="text" id="site_name" name="site_name" placeholder="WXYZ"
                    onchange="check_site_name_in_db()" value="" required>
         </dt>
@@ -33,7 +34,7 @@
         <dt class="">
             <label class="config_header" for="ip_addr">IP: </label>
         </dt>
-        <dt class="site_field">
+        <dt class="config_field">
             <input style="" type="text" id="ip_addr" name="ip_addr" placeholder="192.168.1.1" required>
         </dt>
       </dl>
@@ -44,7 +45,7 @@
         <dt class="">
             <label class="config_header" for="api_key">API KEY: </label>
         </dt>
-        <dt class="site_field">
+        <dt class="config_field">
             <input style="" type="password" id="api_key" name="api_key" required>
         </dt>
       </dl>
@@ -74,6 +75,9 @@
 <script src="{{ url_for('static', filename='javascript/form_verification.js') }}"></script>
 <script>
     ip_address_verification('ip_addr')
+    window.onload = function() {
+        channel_count.value = 0;
+    }
 </script>
 
 {% endblock %}

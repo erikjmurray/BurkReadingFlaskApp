@@ -10,12 +10,6 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         exclude = ('password', )
 
 
-class SiteSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Site
-        exclude = ('api_key', )
-
-
 class MeterConfigSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = MeterConfig
@@ -38,4 +32,12 @@ class ChannelSchema(ma.SQLAlchemyAutoSchema):
         model = Channel
         include_fk = True
         load_instance = True
+
+
+class SiteSchema(ma.SQLAlchemyAutoSchema):
+    channels = ma.Nested(ChannelSchema, many=True)
+
+    class Meta:
+        model = Site
+        exclude = ('api_key',)
 

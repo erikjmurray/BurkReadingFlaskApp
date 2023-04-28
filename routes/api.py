@@ -124,6 +124,7 @@ def all_sites() -> Response:
     return jsonify(site_data)
 
 
+# TODO: Adjust ma.Schemas to combine channels
 @api.route('/<int:site_id>/channel/<int:channel_id>')
 def get_channel_data(site_id, channel_id):
     try:
@@ -163,7 +164,7 @@ def get_readings_for_channel(channel_id):
         value['timestamp'] = reading_date
     return jsonify(values)
 
-#
+# ------------------ DELETE ONCE VERIFIED NOT IN USE --------------------------------
 # def get_setup_channels(results):
 #     """ Gather the correct setup dependent on site_type"""
 #     if results['site_type'] == 'fm':
@@ -240,17 +241,3 @@ def get_readings_for_channel(channel_id):
 #         channels.append(channel)
 #     return channels
 #
-#
-# def get_options(html_tag, results):
-#     """ Get status options from form data """
-#     option_counter = int(results[f"{html_tag}_opt_count"])
-#     options = []
-#     for count in range(1, option_counter + 1):
-#         option = {
-#             'burk_channel': int(results[f"{html_tag}_num_{count}"]),
-#             'selected_value': results[f"{html_tag}_name_{count}"],
-#             'selected_state': True if results[f"{html_tag}_state_{count}"] == 'true' else False,
-#             'selected_color': results[f"{html_tag}_color_{count}"],
-#         }
-#         options.append(option)
-#     return options
