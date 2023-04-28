@@ -13,12 +13,11 @@
     {% endfor %}
 </div>
 
-<div class="container submit">
+<div class="container config_form">
     <form action="#" id="box" method="POST">
         {% for channel in site.channels %}
         {% set id = channel.html_tag %}
         {% if channel.chan_type == 'meter' %}
-        {# TODO: Add ability to have multiple meter_configs #}
         {% set meter_config = channel.meter_config[0] %}
         <fieldset>
           <dl>

@@ -26,137 +26,170 @@ let units;
 get_colors();
 get_units();
 
-let pilot_data = {'html_tag': 'pilot', 'type': 'status', 'title': 'Pilot'}
-
 
 // Get document elements
-const site_type = document.querySelectorAll('input[name="site_type"]');
-const channels_form = document.querySelector('#channels_form');
+const channel_count = document.getElementById('channel_count');
+console.log(channel_count.value)
+const channels_form = document.getElementById('channels');
+const add_channel_div = document.getElementById('add_channel')
+
+const channel_selector_html = `
+    <fieldset style="margin-top:5px; border-radius: 5px;">
+        <dl>
+            <dt class="">
+                <label class="config_header">Channel Type: </label>
+            </dt>
+            <dt class="" style="margin-top: 2px;">
+                <div class="radio_group">
+                    <label>
+                        <input type="radio" name="channel_type" value="meter" required>
+                        Meter
+                    </label>
+                    <label>
+                        <input type="radio" name="channel_type" value="status">
+                        Status
+                    </label>
+                </div>
+                <button class="func_button" onclick="add_channel_html(); return false;">Submit</button>
+            </dt>
+        </dl>
+    </fieldset>
+    `
 
 
-function insert_html_on_type_change() {
-    // Listens for change of site_type radio button
-    // Adds HTML based on dictionaries defined in JS
-    site_type.forEach(option => {
-        option.addEventListener('change', function () {
-            if (option.checked && option.value == 'fm') {
-                get_fm_channels().then((fm_channels) => {
-                    add_channels(fm_channels);
-                    add_pilot_option()
-                })
+function add_channel_selector_html() {
+    // Changes ADD CHANNEL button to a channel type selector
+    add_channel_div.innerHTML = channel_selector_html
+}
+
+
+function add_channel_html() {
+    // On submit, creates either a meter or status channel form
+    const channel_type = document.querySelectorAll('input[name="channel_type"]');
+    channel_type.forEach(option => {
+        if (option.checked && option.value == 'meter') {
+            // increment channel number
+            channel_number = parseInt(channel_count.value) + 1;
+            channel_count.value = channel_number
+
+            // create meter html
+            let channel_div = document.createElement('div');
+            let meter_channel = create_meter_channel(`CH${channel_number}`)
+            channel_div.innerHTML = meter_channel
+
+            // add to page
+            channels_form.appendChild(channel_div)
             }
-            else if (option.checked && option.value == 'am') {
-                get_am_channels().then((am_channels) => {
-                    add_channels(am_channels);
-                })
-            }
-        })
-    })
-}
+        else if (option.checked && option.value == 'status') {
+            // increment channel number
+            channel_number = parseInt(channel_count.value) + 1;
+            channel_count.value = channel_number
 
+            // create status html
+            let channel_div = document.createElement('div');
+            let status_channel = create_status_channel(`CH${channel_number}`)
+            channel_div.innerHTML = status_channel
 
-async function get_fm_channels() {
-    // Calls API route for FM channel data
-    const response = await fetch('/api/fm_setup_channels');
-    const channels = await response.json();
-    return Array.from(channels);
-}
-
-
-async function get_am_channels() {
-    // Calls API route for AM channel data
-    const response = await fetch('/api/am_setup_channels');
-    const channels = await response.json();
-    return Array.from(channels);
-}
-
-
-function add_channels(channels) {
-    // clear HTML before adding anything new
-    clear_channels_form()
-
-    channels.forEach(channel => {
-        let id = channel.html_tag;
-        if (channel.type === 'meter') {
-            // Add meter HTML to inner HTML of id="channel_form" as defined in document
-            meter_channel = create_meter_channel(id, channel)
-            channels_form.innerHTML += meter_channel
-        }
-        else if (channel.type === 'status') {
-            // Add status HTML to inner HTML of id="channel_form" as defined in document
-            status_channel = create_status_channel(id, channel)
-            channels_form.innerHTML += status_channel
+            // add to page
+            channels_form.appendChild(channel_div)
         }
     })
+
+    // Clears Meter/Status selector and default to ADD CHANNEL
+    add_channel_div.innerHTML = `
+        <button class="func_button" onclick="add_channel_selector_html(); return false;">Add Channel</button>
+        `
 }
 
 
-// clears added HTML of div w/ id="channel_form" as defined in document
-function clear_channels_form() {
-    channels_form.innerHTML = ''
+// On each channel add minimize/maximize content buttons
+function minimize_channel_data(channel_id) {
+    content = document.getElementById(`${channel_id}_content`)
+    header = document.getElementById(`${channel_id}_header`)
+    title = document.getElementById(`${channel_id}_title`)
+    content.style = 'display: none;'
+
+    if (title.value) {  header.innerHTML = `${channel_id}. ${title.value}`  }
+
+    hide_content_button = document.getElementById(`${channel_id}_hide_content`)
+    hide_content_button.src = '/static/img/plus_sign.png'
+    hide_content_button.alt = '+'
+    hide_content_button.setAttribute('onclick', `maximize_channel_data('${channel_id}'); return false;`)
+}
+
+
+function maximize_channel_data(channel_id) {
+    content = document.getElementById(`${channel_id}_content`)
+    content.style = ''
+
+    hide_content_button = document.getElementById(`${channel_id}_hide_content`)
+    hide_content_button.src = '/static/img/minus_sign.png'
+    hide_content_button.alt = '-'
+    hide_content_button.setAttribute('onclick', `minimize_channel_data('${channel_id}'); return false;`)
 }
 
 
 // Create html for a meter channel input
-function create_meter_channel(id, channel) {
+function create_meter_channel(id) {
     meter_channel = `
     <fieldset>
       <dl>
-        <dt class="config_header"">
-            <label>${channel.title}</label>
-            <div style="display: none;">
-                <input type="text" id="${id}_id" name="${id}_id" value="${id}">
-                <input type="text" id="${id}_type" name="${id}_type" value="${channel.type}">
-                <input type="text" id="${id}_title" name="${id}_title" value="${channel.title}">
-            </div>
-        </dt>
-        <dt class="config_content">
+        <div class="channel_header">
+            <label id='${id}_header'>${id}. Meter</label>
+            <img class="hide_content_button" id="${id}_hide_content"
+            onclick="minimize_channel_data('${id}'); return false;" src='/static/img/minus_sign.png' alt='-'>
+            <input style="display: none;" type="text" id="${id}_type" name="${id}_type" value='meter'>
+        </div>
+        <dt class="config_content" id='${id}_content'>
+            <label for='${id}_title'>Title</label>
+            <input type="text" id='${id}_title' name='${id}_title' required>
             <label for="${id}_num">Channel Number</label><br>
             <input type="number" id="${id}_num" name="${id}_num" required>
 
             <label for="${id}_nominal">Nominal Output</label><br>
-            <input type="number" step="any" id="${id}_nominal" name="${id}_nominal" value="0">
+            <input type="number" step="any" id="${id}_nominal" name="${id}_nominal" placeholder="0">
         <h4 style="margin:0;">Limits</h4>
         <div class="option_box">
         `
 
         // Add limit html
-        meter_channel += create_limit_html(id, 'upper')
-        meter_channel += create_limit_html(id, 'lower')
+        meter_channel += create_limit_html(id, 'Upper')
+        meter_channel += create_limit_html(id, 'Lower')
 
         meter_channel += `
         </div>
           <div class="config_content">
-            <label style="" for="${id}_units">Units: </label>
+            <label style="" for="${id}_units">Units: </label></br>
             <select style="" id="${id}_units" name="${id}_units" required>
         `
         meter_channel += add_unit_options()
         meter_channel += `
             </select>
-          </div>
         </dt>
       </dl>
     </fieldset>
+    </div>
     `
+
     return meter_channel
 }
 
 
 // create limit html
 function create_limit_html(id, limit) {
-    if (limit == 'upper') {
+    if (limit == 'Upper') {
         message = 'Color above upper limit'
     } else {
         message = 'Color below lower limit'
     }
     limit_html = `
-        <label for="${id}_${limit}">${limit.toUpperCase()} LIMIT</label><br>
-        <input type="number" step="any" id="${id}_${limit}" name="${id}_${limit}" value="0">
+        <label for="${id}_${limit.toLowerCase()}">${limit} Limit</label><br>
+        <input type="number" step="any" id="${id}_${limit.toLowerCase()}" name="${id}_${limit.toLowerCase()}" placeholder="0" required>
 
         <label>
         ${message}
-        <select style="" id="${id}_${limit}_color" name="${id}_${limit}_color"
-                onchange="change_bg_color('${id}_${limit}_color')" required>
+        <select style="" id="${id}_${limit.toLowerCase()}_color" name="${id}_${limit.toLowerCase()}_color"
+                onchange="change_bg_color('${id}_${limit.toLowerCase()}_color')" required>
     `
     limit_html += add_color_picker()
     limit_html += `
@@ -192,7 +225,7 @@ function add_unit_options() {
 
 
 // Create html from a status channel input
-function create_status_channel(id, channel) {
+function create_status_channel(id) {
     // Create status option html. Default to 2
     options = create_option_content(id, 1) + create_option_content(id, 2)
 
@@ -202,23 +235,26 @@ function create_status_channel(id, channel) {
         </div>
         <fieldset>
           <dl>
-            <dt class="">
-                <label class="config_header" for="${id}">${channel.title} </label>
-                <div style="display: none;">
-                    <input type="text" id="${id}_id" name="${id}_id" value="${id}">
-                    <input type="text" id="${id}_type" name="${id}_type" value="${channel.type}">
-                    <input type="text" id="${id}_title" name="${id}_title" value="${channel.title}">
-                </div>
-            </dt>
-            <div id="${id}_options">${options}</div>
-            <dt>
-            <button onclick="add_next_option('${id}'); return false;">Add Option</button>
-            </dt>
+            <div class="channel_header">
+                <label id='${id}_header'>${id}. Status</label>
+                <img class="hide_content_button" id="${id}_hide_content"
+                onclick="minimize_channel_data('${id}'); return false;" src='/static/img/minus_sign.png' alt='-'>
+                <input style="display: none;" type="text" id="${id}_type" name="${id}_type" value='status'>
+            </div>
+            <div id='${id}_content' class="config_content" style="">
+                <label for='${id}_title'>Title</label></br>
+                <input style="margin-bottom:10px; width:285px;" type="text" id='${id}_title' name='${id}_title' required>
+                <div id="${id}_options">${options}</div>
+                <dt>
+                <button class="func_button" onclick="add_next_option('${id}'); return false;">Add Option</button>
+                </dt>
+            </div>
           </dl>
         </fieldset>
         `
     return status_channel
 }
+
 
 // Creates an option for status channel
 function create_option_content(id, opt_num) {
@@ -233,10 +269,10 @@ function create_option_content(id, opt_num) {
             <label>Name</label>
             <input type="text" id="${id}_name_${opt_num}" name="${id}_name_${opt_num}" placeholder="Channel Name">
 
-            <label style="text-decoration: underline; padding-bottom:5px;">
+            <label>
             Selected State
             </label>
-            <div class="radio_group" style="flex-direction: row; padding-bottom:2px;">
+            <div class="radio_group option_radio_group">
                 <label style="margin-right:25px;">
                     <input type="radio" name="${id}_state_${opt_num}" value=true required>
                     On
@@ -247,15 +283,16 @@ function create_option_content(id, opt_num) {
                 </label>
             </div>
 
-            <label>
-            Status Color
+            <label for="${id}_color_${opt_num}">
+                Status Color
+            </label>
+
             <select style="" id="${id}_color_${opt_num}" name="${id}_color_${opt_num}"
                     onchange="change_bg_color('${id}_color_${opt_num}')" required>
         `
         option_content += add_color_picker()
         option_content += `
             </select>
-            </label>
         </dt>
     </div>
     `
@@ -269,11 +306,13 @@ function add_next_option(id) {
     document.getElementById(`${id}_opt_count`).value = next_num
 
     // create option content
+    option_div = document.createElement('div')
     next_option = create_option_content(id, next_num)
+    option_div.innerHTML = next_option
 
     // insert option content to html
-    option_div = document.getElementById(`${id}_options`)
-    option_div.innerHTML += next_option
+    target_div = document.getElementById(`${id}_options`)
+    target_div.appendChild(option_div)
 }
 
 
@@ -283,41 +322,3 @@ function change_bg_color(id) {
     color = color_select.value
     color_select.style.backgroundColor = color
 }
-
-
-// Adds button that adds Pilot status to site
-function add_pilot_option() {
-    channels_form.innerHTML += `
-    <fieldset>
-        <dt class="config_content">
-          <button onclick="add_pilot_channel(); return false;">Add Pilot?</button>
-        </dt>
-    </fieldset>`
-}
-
-
-// Inserts an extra status channel for Pilot data
-function add_pilot_channel() {
-    let id = pilot_data.id
-    channels_form.innerHTML += create_status_channel(id, pilot_data)
-}
-
-
-//// On Nominal Input value change, make limits +5/-10 %
-//// Currently disabled. Previously added to onchange of Nominal Value in meter
-//function auto_adjust_limits(id) {
-//    nominal_output = parseFloat(document.getElementById(`${id}_nominal`).value)
-//
-//    // calc values
-//    upper_limit = (nominal_output + (nominal_output * 0.05)).toFixed(2)
-//    lower_limit = (nominal_output - (nominal_output * 0.1)).toFixed(2)
-//
-//    // remove string if x.00
-//    upper_limit = upper_limit.replace(/(\.[0-9]*[1-9])0+$|\.0*$/, '$1')
-//    lower_limit = lower_limit.replace(/(\.[0-9]*[1-9])0+$|\.0*$/, '$1')
-//
-//    // insert into proper values
-//    document.getElementById(`${id}_upper`).value = upper_limit
-//    document.getElementById(`${id}_lower`).value = lower_limit
-//}
-

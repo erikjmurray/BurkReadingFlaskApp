@@ -8,7 +8,7 @@ import re
 from flask import Blueprint, current_app, flash, redirect, render_template, request, jsonify  # abort, session, url_for
 from extensions import db
 from models import Site, User, Channel, Reading, ReadingValue, Message, EAS
-
+from models.schemas import SiteSchema, UserSchema
 
 # create Blueprint object
 views = Blueprint('views', __name__)
@@ -19,9 +19,14 @@ views = Blueprint('views', __name__)
 @views.route('/home')
 async def home():
     """Homepage with links to sites from extensions"""
+    site_schema = SiteSchema(many=True)
     sites = Site.query.order_by(Site.site_order.asc()).all()
+    site_data = site_schema.dump(sites)
+
+    user_schema = UserSchema(many=True)
     operators = User.query.all()
-    return render_template('main/home.html', sites=sites, operators=operators)
+    operator_data = user_schema.dump(operators)
+    return render_template('main/home.html', sites=site_data, operators=operator_data)
 
 
 @views.route('/', methods=['POST'])
@@ -83,7 +88,7 @@ def post_channel_values(form_data, reading):
         # gets channel id from input html tag
         channel_id = int(match.group(2))
         channel_values.append(ReadingValue(
-            value=value,
+            reading_value=value,
             channel_id=channel_id,
             reading_id=reading.id
         ))
@@ -128,13 +133,16 @@ def post_messages(results, reading):
 @views.route('/site/<int:site_id>/readings')
 async def site(site_id):
     site = Site.query.get_or_404(site_id)
+    site_schema = SiteSchema()
+    site_data = site_schema.dump(site)
+
     # get the 12 most recent readings from the database
     readings = Reading.query.order_by(Reading.timestamp.desc()).limit(12).all()
 
     from extensions import get_valid_readings
     reading_data = get_valid_readings(readings, site)
 
-    return render_template('main/site.html', site=site, channels=site.channels, readings=reading_data)
+    return render_template('main/site.html', site=site_data, channels=site_data['channels'], readings=reading_data)
 
 
 @views.route('/site/<int:site_id>/eas_tests/')

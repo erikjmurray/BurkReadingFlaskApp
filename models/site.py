@@ -1,6 +1,6 @@
 """ Details Site model and schema """
 
-from extensions import db, ma
+from extensions import db
 from sqlalchemy import BLOB
 
 
@@ -18,9 +18,9 @@ class Site(db.Model):
     channels = db.relationship('Channel', backref='site', lazy=True)
 
 
-    def __init__(self, ip_addr, site_name, api_key):
-        self.ip_addr = ip_addr
+    def __init__(self, site_name, ip_addr, api_key):
         self.site_name = site_name
+        self.ip_addr = ip_addr
         self.api_key = api_key
         self.site_order = self.get_next_site_order()
 
@@ -35,8 +35,3 @@ class Site(db.Model):
 
     def __repr__(self):
         return f"Site {self.site_name}"
-
-
-class SiteSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Site

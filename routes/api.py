@@ -3,7 +3,7 @@ Defines routes to gather data from config/database
 """
 
 # -----IMPORTS-----
-from flask import abort, Blueprint, current_app, jsonify
+from flask import abort, Blueprint, current_app, jsonify, Response
 from extensions.encryption import decrypt_api_key
 from extensions import ArcPlus
 from models import Site, Channel
@@ -115,15 +115,16 @@ def get_units():
 
 # ----- Pass data from database to Javascript -----
 @api.route('/sites')
-def all_sites() -> dict:
+def all_sites() -> Response:
     """ Called by JS to get list of site names only """
     sites = Site.query.all()
-    site_ids = [site.id for site in sites]
-    site_names = [site.site_name for site in sites]
-    result = dict(zip(site_ids, site_names))
-    return result
+    from models.schemas import SiteSchema
+    schema = SiteSchema(many=True)
+    site_data = schema.dump(sites)
+    return jsonify(site_data)
 
 
+# TODO: Adjust ma.Schemas to combine channels
 @api.route('/<int:site_id>/channel/<int:channel_id>')
 def get_channel_data(site_id, channel_id):
     try:
@@ -163,95 +164,80 @@ def get_readings_for_channel(channel_id):
         value['timestamp'] = reading_date
     return jsonify(values)
 
-
-# TODO: Refactor adding new site to ignore setup and add channels adhoc
-def get_setup_channels(results):
-    """ Gather the correct setup dependent on site_type"""
-    if results['site_type'] == 'fm':
-        setup_channels = get_fm_setup_channels()
-        if results.get('pilot_id'):
-            setup_channels.append({'html_tag': 'pilot', 'type': 'status', 'title': 'Pilot'})
-    elif results['site_type'] == 'am':
-        setup_channels = get_am_setup_channels()
-    else:
-        raise Exception('Insufficient Data')
-    return setup_channels
-
-
-@api.route('/fm_setup_channels')
-def get_fm_setup_channels():
-    """ Used by JS to determine standard channels for FM site """
-    fm_channels = [
-        {'html_tag': 'oa_tx', 'type': 'status', 'title': 'On Air TX'},
-        {'html_tag': 'ant_fwd', 'type': 'meter', 'title': 'Antenna Forward Power'},
-        {'html_tag': 'ant_ref', 'type': 'meter', 'title': 'Antenna Reflected Power'},
-        {'html_tag': 'temp', 'type': 'meter', 'title': 'Rack Temp'},
-        {'html_tag': 'pa_volts', 'type': 'meter', 'title': 'PA Voltage'},
-        {'html_tag': 'pa_amps', 'type': 'meter', 'title': 'PA Current'},
-    ]
-    return fm_channels
-
-
-@api.route('/am_setup_channels')
-def get_am_setup_channels():
-    """ Used by JS to determine standard channels for AM site """
-    am_channels = [
-        {'html_tag': 'oa_tx', 'type': 'status', 'title': 'On Air TX'},
-        {'html_tag': 'ant_fwd', 'type': 'meter', 'title': 'Antenna Forward Power'},
-        {'html_tag': 'ant_ref', 'type': 'meter', 'title': 'Antenna Reflected Power'},
-        {'html_tag': 'temp', 'type': 'meter', 'title': 'Rack Temp'},
-        {'html_tag': 'common_pt', 'type': 'meter', 'title': 'Common Point'},
-        {'html_tag': 't1_current', 'type': 'meter', 'title': 'Tower 1 Current'},
-        {'html_tag': 't1_phase', 'type': 'meter', 'title': 'Tower 1 Phase'},
-        {'html_tag': 't2_current', 'type': 'meter', 'title': 'Tower 2 Base Current'},
-        {'html_tag': 't3_current', 'type': 'meter', 'title': 'Tower 3 Current'},
-        {'html_tag': 't3_phase', 'type': 'meter', 'title': 'Tower 3 Phase'},
-        {'html_tag': 'pattern', 'type': 'status', 'title': 'Pattern'}
-    ]
-    return am_channels
-
-
-def sort_channel_data(results, setup_channels) -> list[dict]:
-    """
-    Gathers channel data from form submit results
-    Adds sorts data based on dictionary of channels
-    """
-    channels = []
-    for chan in setup_channels:
-        html_tag = chan['html_tag']
-        channel = {
-            'title': results[f'{html_tag}_title'],
-            'id_name': results[f'{html_tag}_id'],
-            'type': results[f'{html_tag}_type']
-        }
-        if chan['type'] == 'meter':
-            meter_config = dict(
-                units=results[f'{html_tag}_units'],
-                burk_channel=int(results[f'{html_tag}_num']),
-                nominal=float(results[f'{html_tag}_nominal']),
-                upper_limit=float(results[f'{html_tag}_upper']),
-                upper_color=results.get(f'{html_tag}_upper_color'),
-                lower_limit=float(results[f'{html_tag}_lower']),
-                lower_color=results[f'{html_tag}_lower_color'],
-            )
-            channel['meter_config'] = meter_config
-        elif chan['type'] == 'status':
-            options = get_options(html_tag, results)
-            channel['options'] = options
-        channels.append(channel)
-    return channels
-
-
-def get_options(html_tag, results):
-    """ Get status options from form data """
-    option_counter = int(results[f"{html_tag}_opt_count"])
-    options = []
-    for count in range(1, option_counter + 1):
-        option = {
-            'burk_channel': int(results[f"{html_tag}_num_{count}"]),
-            'selected_value': results[f"{html_tag}_name_{count}"],
-            'selected_state': True if results[f"{html_tag}_state_{count}"] == 'true' else False,
-            'selected_color': results[f"{html_tag}_color_{count}"],
-        }
-        options.append(option)
-    return options
+# ------------------ DELETE ONCE VERIFIED NOT IN USE --------------------------------
+# def get_setup_channels(results):
+#     """ Gather the correct setup dependent on site_type"""
+#     if results['site_type'] == 'fm':
+#         setup_channels = get_fm_setup_channels()
+#         if results.get('pilot_id'):
+#             setup_channels.append({'html_tag': 'pilot', 'type': 'status', 'title': 'Pilot'})
+#     elif results['site_type'] == 'am':
+#         setup_channels = get_am_setup_channels()
+#     else:
+#         raise Exception('Insufficient Data')
+#     return setup_channels
+#
+#
+# @api.route('/fm_setup_channels')
+# def get_fm_setup_channels():
+#     """ Used by JS to determine standard channels for FM site """
+#     fm_channels = [
+#         {'html_tag': 'oa_tx', 'type': 'status', 'title': 'On Air TX'},
+#         {'html_tag': 'ant_fwd', 'type': 'meter', 'title': 'Antenna Forward Power'},
+#         {'html_tag': 'ant_ref', 'type': 'meter', 'title': 'Antenna Reflected Power'},
+#         {'html_tag': 'temp', 'type': 'meter', 'title': 'Rack Temp'},
+#         {'html_tag': 'pa_volts', 'type': 'meter', 'title': 'PA Voltage'},
+#         {'html_tag': 'pa_amps', 'type': 'meter', 'title': 'PA Current'},
+#     ]
+#     return fm_channels
+#
+#
+# @api.route('/am_setup_channels')
+# def get_am_setup_channels():
+#     """ Used by JS to determine standard channels for AM site """
+#     am_channels = [
+#         {'html_tag': 'oa_tx', 'type': 'status', 'title': 'On Air TX'},
+#         {'html_tag': 'ant_fwd', 'type': 'meter', 'title': 'Antenna Forward Power'},
+#         {'html_tag': 'ant_ref', 'type': 'meter', 'title': 'Antenna Reflected Power'},
+#         {'html_tag': 'temp', 'type': 'meter', 'title': 'Rack Temp'},
+#         {'html_tag': 'common_pt', 'type': 'meter', 'title': 'Common Point'},
+#         {'html_tag': 't1_current', 'type': 'meter', 'title': 'Tower 1 Current'},
+#         {'html_tag': 't1_phase', 'type': 'meter', 'title': 'Tower 1 Phase'},
+#         {'html_tag': 't2_current', 'type': 'meter', 'title': 'Tower 2 Base Current'},
+#         {'html_tag': 't3_current', 'type': 'meter', 'title': 'Tower 3 Current'},
+#         {'html_tag': 't3_phase', 'type': 'meter', 'title': 'Tower 3 Phase'},
+#         {'html_tag': 'pattern', 'type': 'status', 'title': 'Pattern'}
+#     ]
+#     return am_channels
+#
+#
+# def sort_channel_data(results, setup_channels) -> list[dict]:
+#     """
+#     Gathers channel data from form submit results
+#     Adds sorts data based on dictionary of channels
+#     """
+#     channels = []
+#     for chan in setup_channels:
+#         html_tag = chan['html_tag']
+#         channel = {
+#             'title': results[f'{html_tag}_title'],
+#             'id_name': results[f'{html_tag}_id'],
+#             'type': results[f'{html_tag}_type']
+#         }
+#         if chan['type'] == 'meter':
+#             meter_config = dict(
+#                 units=results[f'{html_tag}_units'],
+#                 burk_channel=int(results[f'{html_tag}_num']),
+#                 nominal=float(results[f'{html_tag}_nominal']),
+#                 upper_limit=float(results[f'{html_tag}_upper']),
+#                 upper_color=results.get(f'{html_tag}_upper_color'),
+#                 lower_limit=float(results[f'{html_tag}_lower']),
+#                 lower_color=results[f'{html_tag}_lower_color'],
+#             )
+#             channel['meter_config'] = meter_config
+#         elif chan['type'] == 'status':
+#             options = get_options(html_tag, results)
+#             channel['options'] = options
+#         channels.append(channel)
+#     return channels
+#

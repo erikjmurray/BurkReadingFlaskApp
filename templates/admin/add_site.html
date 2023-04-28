@@ -13,14 +13,16 @@
     {% endfor %}
 </div>
 
-<div class="container submit">
-  <form action="#" id="box" method="POST">
+
+<div class="container config_form">
+  <form action="#" class="" method="POST">
+      <input style="display: none;" type="int" name="channel_count" id="channel_count" value="0">
     <fieldset>
       <dl>
         <dt class="">
             <label class="config_header" for="site_name">Site Name: </label>
         </dt>
-        <dt class="site_form">
+        <dt class="config_field">
             <input type="text" id="site_name" name="site_name" placeholder="WXYZ"
                    onchange="check_site_name_in_db()" value="" required>
         </dt>
@@ -30,10 +32,10 @@
     <fieldset>
       <dl>
         <dt class="">
-            <label class="config_header" for="ip">IP: </label>
+            <label class="config_header" for="ip_addr">IP: </label>
         </dt>
-        <dt class="site_form">
-            <input style="" type="text" id="ip" name="ip" placeholder="192.168.1.1" required>
+        <dt class="config_field">
+            <input style="" type="text" id="ip_addr" name="ip_addr" placeholder="192.168.1.1" required>
         </dt>
       </dl>
     </fieldset>
@@ -43,7 +45,7 @@
         <dt class="">
             <label class="config_header" for="api_key">API KEY: </label>
         </dt>
-        <dt class="site_form">
+        <dt class="config_field">
             <input style="" type="password" id="api_key" name="api_key" required>
         </dt>
       </dl>
@@ -51,35 +53,31 @@
 
     <fieldset>
         <dl>
-            <dt class="">
-                <label class="config_header">Site Type: </label>
-            </dt>
-            <dt class="" style="margin-top: 2px;">
-                <div class="radio_group">
-                    <label>
-                        <input type="radio" name="site_type" value="fm" required>
-                        FM
-                    </label>
-                    <label>
-                        <input type="radio" name="site_type" value="am">
-                        AM
-                    </label>
+            <dt>
+                <div id="add_channel">
+                    <button class="func_button" onclick="add_channel_selector_html(); return false;">Add Channel</button>
+<!--                Button replaced with channel type selector and submit    -->
                 </div>
             </dt>
         </dl>
     </fieldset>
 
-    <div id="channels_form">
-<!--    HTML added by JS depending on value of Site Type -->
+    <div id="channels">
+<!--    Channel HTML added here each time Add Channel button finishes submission -->
     </div>
 
-    <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">SUBMIT</button>
+
+    <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">ADD SITE</button>
   </form>
 
 </div>
 <script src="{{ url_for('static', filename='javascript/add_channel_html.js') }}"></script>
-<script src="{{ url_for('static', filename='javascript/duplicate_verification.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/form_verification.js') }}"></script>
 <script>
-    insert_html_on_type_change()
+    ip_address_verification('ip_addr')
+    window.onload = function() {
+        channel_count.value = 0;
+    }
 </script>
+
 {% endblock %}

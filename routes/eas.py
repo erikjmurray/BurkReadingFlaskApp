@@ -49,7 +49,7 @@ def eas_post():
     else:
         flash('Success!')
 
-    return redirect(url_for('eas.eas'))
+    return redirect(url_for('eas.eas_render'))
 
 
 def input_to_datetime(timestamp):

@@ -70,13 +70,13 @@
                     <input type="number" step="any" id="{{id}}" name="{{id}}" value=""
                            onchange="manually_changed('{{id}}')" required>
                     <br>
-                    <label id="{{name}}_label">{{channel.units}}</label>
+                    <label id="{{channel.title}}_label">{{channel.meter_config[0].units}}</label>
                 </td>
                 {% endif %}
                 {% endfor %}
                 {# Added regardless of config, val not actually passed to results, but required for submission #}
-                <td id="{{site}}_approved_cell">
-                    <input type="checkbox" id="{{site}}_approved" onchange="approval_background('{{site}}_approved')"
+                <td id="{{site.site_name}}_approved_cell">
+                    <input type="checkbox" id="{{site.site_name}}_approved" onchange="approval_background('{{site.site_name}}_approved')"
                            required style="width:35px;height:35px;">
                 </td>
             </tr>

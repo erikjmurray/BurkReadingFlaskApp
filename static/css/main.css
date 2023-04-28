@@ -117,8 +117,39 @@ input[type=number] {
     border-radius:5px;
 }
 
+
+/* ----- RADIO BUTTON GROUP ----- */
+.radio_group {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: fit-content;
+    width: fit-content;
+}
+
+
+.radio_group > input[type="radio"] {
+    margin-right: 8px;
+    margin-left: -3px;
+}
+
+
+.radio_group > p {
+    margin-bottom: 5px;
+    text-decoration: underline;
+}
+
+
+.radio_group > label {
+    text-align:left;
+    width: fit-content;
+}
+
 /*******************************************/
-/* ----- HOME ----- */
+/* ----- HOME PAGE FORM ----- */
+
+/* Headings for sites */
 .site_heading p {
     padding-top: 8px;
     padding-left: 40px;
@@ -126,12 +157,14 @@ input[type=number] {
     display: inline;
 }
 
+/* Refresh symbol */
 .site_heading img {
     width: 25px;
     height: 25px;
     padding-right: 22px;
 }
 
+/* Table definition */
 .readings table {
     width: 95%;
     margin: auto;
@@ -150,42 +183,19 @@ input[type=number] {
     background-color: #f2f2f2;
 }
 
+/* Different needs for status and meter */
 .status {
     min-width:130px;
 }
 
-.radio_group {
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    height: fit-content;
-    width: fit-content;
-}
-
-.radio_group > input[type="radio"] {
-    margin-right: 8px;
-    margin-left: -3px;
-}
-
-.radio_group > p {
-    margin-bottom: 5px;
-    text-decoration: underline;
-}
-
-.radio_group > label {
-    text-align:left;
-    width: fit-content;
-}
-
-
-.meter input {
+.meter > input {
     width: 90%;
     min-width: 45px;
     text-align: center;
     /*box-shadow: 1px 1px 3px #222 inset;*/
 }
 
+/* Messaging and user notes */
 #notes_table textarea {
     width: 90%;
     height: 90px;
@@ -193,12 +203,12 @@ input[type=number] {
     resize: none;
 }
 
-
 #messages {
     background-color: #ddd;
     }
 
 
+/* MCEOD Selector */
 #operator p {
     width: fit-content;
     margin: 20px auto;
@@ -215,7 +225,8 @@ input[type=number] {
 }
 
 
-#operator button {
+/* Submit button */
+.readings button {
     margin:0px;
     width: 100%;
     text-align: center;
@@ -236,9 +247,20 @@ input[type=number] {
 }
 
 
-.eas_form > table > tbody > tr > td > input, select {
+.eas_form > table > tbody > tr > td > input {
     width:230px;
     text-align:center;
+}
+
+
+.eas_form > table > tbody > tr > td > select {
+    width:230px;
+    text-align:center;
+}
+
+
+.eas_form tr:nth-child(even){
+    background-color: #f2f2f2;
 }
 
 
@@ -248,7 +270,7 @@ input[type=number] {
 
 
 /*******************************************/
-/** CONFIG **/
+/* ----- Admin Home ----- */
 .config > table {
     margin: 0 20px;
 }
@@ -262,125 +284,136 @@ input[type=number] {
     background-color: #333;
 }
 
-.site_form > input {
-    width: 300px;
-}
-
 /*******************************************/
-/* ----- ADD PAGE ----- */
-.submit label, input {
-    font-size: medium;
-    border-radius: unset;
-}
+/* ----- ADD NEW SITE PAGE ----- */
 
-.submit input {
-    text-align: center;
-}
-
-.submit form {
+/* Form definition */
+.config_form form {
     width: 380px;
 }
 
-.submit fieldset {
+
+.config_form fieldset {
     margin: 0px;
     border: 1px solid #333;
     background-color: #f2f2f2;
 }
 
-.submit dl, dt {
-    display: inline-block;
-    vertical-align: middle;
-    text-align: left;
+
+.config_form dl, dt {
     margin: 0;
 }
 
-.submit dl {
+
+.config_form dl {
     width: 100%;
 }
 
-.submit dt {
+
+.config_form dt {
     display: grid;
     justify-content: center;
 }
 
+
+.config_form label, input {
+    font-size: medium;
+    border-radius: unset;
+}
+
+
+.config_form input {
+    text-align: center;
+}
+
+
+.config_field > input {
+    width: 285px;
+}
+
+.config_field > select {
+    width: 285px;
+    text-align: center;
+}
+
+/* Defines header of config form */
 .config_header {
     font-weight: bold;
-    text-decoration: underline;
     margin-bottom: 4px;
 }
 
+
+.channel_header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3px;
+}
+
+
+.channel_header > label {
+    font-weight: bold;
+    float: left;
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: -20px;
+}
+
+
+.channel_header > img {
+    float: right;
+    width: fit-content;
+    margin-left: auto;
+    margin-top: 3px;
+}
+
+
+/* Defines content of config_form */
 .config_content {
-    /*width: fit-content;*/
     text-align: center;
     padding: 2px 0;
 }
 
+.config_content > select {
+    text-align: center;
+}
+
+.func_button {
+    color: #000000;
+    background-color: #c5c5c5;
+    border-radius: 5px;
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+
+/* Option content for status channel */
 .option_box {
     border: 1px solid black;
     border-radius: 5px;
     display: grid;
-    padding: 5px 25px;
-}
-
-.option_box > label {
-    padding-top: 5px;
-}
-
-.option_btn {
-    align: center;
-}
-
-/*
-.config_label {
-    width: 8em;
-    justify-content: left;
-    margin: auto;
-}
-
-.config_input {
-    display: grid;
-    text-align:center;
-}
-*/
-/*******************************************/
-/** MOBILE **/
-.mobile {
-    display: none;
-}
-
-@media (max-width: 320px) {
-  .mobile {display: block;}
-}
-
-/*******************************************/
-/** OLD **/
-
-/*
-#operator form {
-    min-width: 310px;
+    padding: 5px 20px;
     margin-bottom: 10px;
-    background-color: #ddd;
 }
 
-#operator input {
-    margin-top: 2px;
-    background-color: #ddd;
-    color: black;
-    font-weight: 600;
+
+.option_box > .config_content > label {
+    padding-top: 5px;
+    margin-bottom: 3px;
 }
 
-#view_readings {
-    text-decoration: none;
-    color: black;
+
+.option_box > .config_content > input {
+    width: 285px;
 }
 
-#view_readings:hover {
-    text-decoration: underline;
-    color: blue;
+.option_radio_group {
+    flex-direction: row;
+    padding-bottom: 2px;
+    border: 2px black inset;
+    border-radius: 6px;
+    width: 285px;
 }
-*/
-/*******************************************/
-/**SITE PAGE**/
+
+/* ----- DATE QUERY FORM ----- */
 #date_form {
     display: flex;
     flex-direction: column;
@@ -407,12 +440,13 @@ input[type=number] {
     width: fit-content;
     margin: 5px auto;
 }
-/*
-#submit_link {
-    margin: 0 0 20px;
+
+/*******************************************/
+/* ----- MOBILE ----- */
+.mobile {
+    display: none;
 }
 
-.readings tr:hover {
-    background-color: #ddd;
+@media (max-width: 320px) {
+  .mobile {display: block;}
 }
-*/

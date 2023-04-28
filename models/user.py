@@ -1,8 +1,7 @@
 
 # ----- IMPORTS -----
-from extensions import db, ma
+from extensions import db
 from flask_login import UserMixin
-
 
 
 # ----- MODELS -----
@@ -18,8 +17,3 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(200), nullable=False)
     password = db.Column(db.String(100), nullable=False)    # hash comparator
     privilege = db.Column(db.String(15), nullable=False)
-
-
-class UserSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = User
