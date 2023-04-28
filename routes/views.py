@@ -88,7 +88,7 @@ def post_channel_values(form_data, reading):
         # gets channel id from input html tag
         channel_id = int(match.group(2))
         channel_values.append(ReadingValue(
-            value=value,
+            reading_value=value,
             channel_id=channel_id,
             reading_id=reading.id
         ))

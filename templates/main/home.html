@@ -75,8 +75,8 @@
                 {% endif %}
                 {% endfor %}
                 {# Added regardless of config, val not actually passed to results, but required for submission #}
-                <td id="{{site}}_approved_cell">
-                    <input type="checkbox" id="{{site}}_approved" onchange="approval_background('{{site}}_approved')"
+                <td id="{{site.site_name}}_approved_cell">
+                    <input type="checkbox" id="{{site.site_name}}_approved" onchange="approval_background('{{site.site_name}}_approved')"
                            required style="width:35px;height:35px;">
                 </td>
             </tr>

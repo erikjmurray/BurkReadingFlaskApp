@@ -26,9 +26,9 @@ async function reset_page() {
 async function load_data_to_form() {
     // gets names of all sites
     await get_sites().then(sites => {
-        for (site of sites) {
-        get_burk_data(site.id, site.site_name).then(channels => {
-            update_site_section(site.site_name, channels)
+        for (let site of sites) {
+            get_burk_data(site.id, site.site_name).then(channels => {
+                update_site_section(site.site_name, channels)
         })
     }
   })
