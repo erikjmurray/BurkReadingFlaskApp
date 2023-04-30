@@ -19,7 +19,7 @@ views = Blueprint('views', __name__)
 @views.route('/')
 def index():
     if not current_user.is_authenticated:
-        flash('You must be logged in to view this page')
+        # flash('You must be logged in to view this page')
         return redirect(url_for('auth.login'))
     else:
         return redirect(url_for('views.readings'))

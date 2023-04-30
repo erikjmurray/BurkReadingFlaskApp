@@ -1,14 +1,18 @@
 """ Details routes regarding EAS pages """
 
 from datetime import datetime
-from extensions import db
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from flask_login import login_required
+
+from extensions import db
 from models import Site, EAS
+
 
 eas = Blueprint('eas', __name__)
 
 
 @eas.route('/eas')
+@login_required
 def eas_render():
     sites = Site.query.order_by(Site.site_order.asc()).all()
     current_time = datetime.now().strftime('%Y-%m-%dT%H:%M')
