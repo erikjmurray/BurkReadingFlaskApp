@@ -15,14 +15,13 @@
 
 <div class="container config_form">
   <form action="#" id="box" method="POST">
-      {% set first_name, last_name = user.name.split('*') %}
     <fieldset>
       <dl>
         <dt class="config_label">
             <label for="first_name">First Name: </label>
         </dt>
         <dt class="config_input">
-            <input style="text-align:center;" type="text" id="first_name" name="first_name" value="{{first_name}}" required>
+            <input style="text-align:center;" type="text" id="first_name" name="first_name" value="{{user.first_name}}" required>
         </dt>
       </dl>
     </fieldset>
@@ -33,7 +32,7 @@
             <label for="last_name">Last Name: </label>
         </dt>
         <dt class="config_input">
-            <input style="text-align:center;" type="text" id="last_name" name="last_name" value="{{last_name}}" required>
+            <input style="text-align:center;" type="text" id="last_name" name="last_name" value="{{user.last_name}}" required>
         </dt>
       </dl>
     </fieldset>
@@ -67,8 +66,6 @@
             <label for="privilege">Privilege: </label>
         </dt>
         <dt class="config_input">
-            {# TODO: Setup privilege loop #}
-
             <select id="privilege" name="privilege" required>
                 <option value="" selected></option>
                 <option value="user">User</option>

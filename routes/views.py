@@ -5,7 +5,8 @@ import datetime
 import re
 
 # -----IMPORTS-----
-from flask import Blueprint, current_app, flash, redirect, render_template, request, jsonify  # abort, session, url_for
+from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from flask_login import login_required, current_user
 from extensions import db
 from models import Site, User, Channel, Reading, ReadingValue, Message, EAS
 from models.schemas import SiteSchema, UserSchema
@@ -16,12 +17,16 @@ views = Blueprint('views', __name__)
 
 # -----ROUTES-----
 @views.route('/')
-@views.route('/home')
 def index():
-    return render_template('main/index.html')
+    if not current_user.is_authenticated:
+        flash('You must be logged in to view this page')
+        return redirect(url_for('auth.login'))
+    else:
+        return redirect(url_for('views.readings'))
 
 
-@views.route('/readings')
+@views.route('/home')
+@login_required
 async def readings():
     """Homepage with links to sites from extensions"""
     site_schema = SiteSchema(many=True)
@@ -34,7 +39,8 @@ async def readings():
     return render_template('main/readings.html', sites=site_data, operators=operator_data)
 
 
-@views.route('/readings', methods=['POST'])
+@views.route('/home', methods=['POST'])
+@login_required
 def readings_post():
     """ Details posting data from homepage form """
     # get input data from form
@@ -135,6 +141,7 @@ def post_messages(results, reading):
 
 
 @views.route('/site/<int:site_id>/readings')
+@login_required
 async def site(site_id):
     site = Site.query.get_or_404(site_id)
     site_schema = SiteSchema()
@@ -150,6 +157,7 @@ async def site(site_id):
 
 
 @views.route('/site/<int:site_id>/eas_tests/')
+@login_required
 def site_eas_tests(site_id):
     """ Displays the twelve most recent EAS tests"""
     site = Site.query.get(site_id)

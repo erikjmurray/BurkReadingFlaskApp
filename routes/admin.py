@@ -4,7 +4,8 @@ Create routes for Admin page to edit config
 import os
 
 # -----IMPORTS-----
-from flask import abort, Blueprint, current_app, flash, render_template, request, redirect, url_for, session
+from flask import abort, Blueprint, current_app, flash, render_template, request, redirect, url_for
+from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from extensions import db
@@ -18,22 +19,31 @@ admin = Blueprint('admin', __name__)
 
 # -----ROUTES-----
 @admin.route('/home')
+@login_required
 def home():
     """ Admin homepage """
-    sites = Site.query.order_by(Site.site_order.asc()).all()
-    operators = User.query.all()
+    if not current_user.is_admin:
+        abort(403)
+    else:
+        sites = Site.query.order_by(Site.site_order.asc()).all()
+        operators = User.query.all()
 
-    return render_template('admin/home.html', sites=sites, operators=operators)
+        return render_template('admin/home.html', sites=sites, operators=operators)
 
 
 # ----- USER CONFIG -----
 @admin.route('/add_user')
+@login_required
 def add_new_user():
     """ Route to Add User """
-    return render_template('admin/add_user.html')
+    if not current_user.is_admin:
+        abort(403)
+    else:
+        return render_template('admin/add_user.html')
 
 
 @admin.route('/add_user', methods=['POST'])
+@login_required
 def add_new_user_post():
     """ On Submit, Post data to database """
     results = request.form
@@ -46,7 +56,7 @@ def add_new_user_post():
         password = generate_password_hash(results.get('password'), method='sha256')
         privilege = results.get('privilege')
 
-        query_name = User.query.filter_by(name=name).first()
+        query_name = User.query.filter_by(username=username).first()
         if query_name:
             raise ValidationError('User of that name already exists in database')
 
@@ -55,7 +65,7 @@ def add_new_user_post():
             last_name=last_name,
             username=username,
             password=password,
-            privilege=privilege
+            is_admin=True if privilege == 'admin' else False
         )
         db.session.add(new_user)
         db.session.commit()
@@ -70,13 +80,21 @@ def add_new_user_post():
 
 
 @admin.route('user/<int:user_id>/update')
+@login_required
 def update_user(user_id):
     """ Load user data at index if exists """
-    user = User.query.get_or_404(user_id)
-    return render_template('admin/update_user.html', user=user)
+    if not current_user.is_admin:
+        abort(403)
+    else:
+        from models.schemas import UserSchema
+        user_schema = UserSchema()
+        user_obj = User.query.get_or_404(user_id)
+        user = user_schema.dump(user_obj)
+        return render_template('admin/update_user.html', user=user)
 
 
 @admin.route('user/<int:user_id>/update', methods=['POST'])
+@login_required
 def update_user_post(user_id):
     # gather data
     user = User.query.get(user_id)
@@ -94,10 +112,10 @@ def update_user_post(user_id):
         user.last_name = last_name
         user.password = password
         user.username = username
-        user.privilege = privilege
+        user.is_admin = True if privilege == 'admin' else False
 
         db.session.commit()
-        flash(f'User {user.fullname()} successfully updated', 'success')
+        flash(f'User {user.name} successfully updated', 'success')
     except Exception as e:
         current_app.logger.info(e)
         flash('Error updating user', 'error')
@@ -106,12 +124,17 @@ def update_user_post(user_id):
 
 
 @admin.route('user/<int:user_id>/delete')
+@login_required
 def delete_user(user_id):
-    user = User.query.get_or_404(user_id)
-    return render_template('admin/delete_user.html', user=user)
+    if not current_user.is_admin:
+        abort(403)
+    else:
+        user = User.query.get_or_404(user_id)
+        return render_template('admin/delete_user.html', user=user)
 
 
 @admin.route('user/<int:user_id>/delete', methods=["POST"])
+@login_required
 def delete_user_post(user_id):
     # TODO: Make sure deletion doesn't ruin the reading query
     user = User.query.get_or_404(user_id)
@@ -127,12 +150,17 @@ def delete_user_post(user_id):
 
 # ----- SITE CONFIG -----
 @admin.route('/add_site')
+@login_required
 def add_new_site():
     """ Render page for adding a new site """
-    return render_template('admin/add_site.html')
+    if not current_user.is_admin:
+        abort(403)
+    else:
+        return render_template('admin/add_site.html')
 
 
 @admin.route('/add_site', methods=['POST'])
+@login_required
 def add_new_site_post():
     """ On POST, attempt to add site to config """
     # Get form data from post
@@ -231,13 +259,18 @@ def get_options(html_tag, results):
 
 
 @admin.route('site/<int:site_id>/update_site')
+@login_required
 def update_site(site_id):
     """ Load site data if site in config """
-    site = Site.query.get_or_404(site_id)
-    return render_template('admin/update_site.html', site=site)
+    if not current_user.is_admin:
+        abort(403)
+    else:
+        site = Site.query.get_or_404(site_id)
+        return render_template('admin/update_site.html', site=site)
 
 
 @admin.route('site/<int:site_id>/update_site', methods=['POST'])
+@login_required
 def update_site_post(site_id):
     """ Updates config of site if  """
     # Gather form results and current config data
@@ -262,17 +295,23 @@ def update_site_post(site_id):
 
 
 @admin.route('site/<int:site_id>/update_channels')
+@login_required
 def update_channels(site_id):
-    site = Site.query.get_or_404(site_id)
+    """ Update channel for a specific site"""
+    if not current_user.is_admin:
+        abort(403)
+    else:
+        site = Site.query.get_or_404(site_id)
 
-    from routes.api import get_colors, get_units
-    colors = get_colors()
-    units = get_units()
+        from routes.api import get_colors, get_units
+        colors = get_colors()
+        units = get_units()
 
-    return render_template('admin/update_channels.html', site=site, colors=colors, units=units)
+        return render_template('admin/update_channels.html', site=site, colors=colors, units=units)
 
 
 @admin.route('site/<int:site_id>/update_channels', methods=['POST'])
+@login_required
 def update_channels_post(site_id):
     channels = Channel.query.filter_by(site_id=site_id).all()
     results = request.form
@@ -287,12 +326,18 @@ def update_channels_post(site_id):
 
 
 @admin.route('site/<int:site_id>/delete')
+@login_required
 def delete_site(site_id):
-    site = Site.query.get_or_404(site_id)
-    return render_template('admin/delete_site.html', site=site)
+    """ Delete site and associated channels from database """
+    if not current_user.is_admin:
+        abort(403)
+    else:
+        site = Site.query.get_or_404(site_id)
+        return render_template('admin/delete_site.html', site=site)
 
 
 @admin.route('site/<int:site_id>/delete', methods=["POST"])
+@login_required
 def delete_site_post(site_id):
     """ Delete all items associated with the site """
     site_to_delete = Site.query.get_or_404(site_id)

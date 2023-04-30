@@ -15,9 +15,9 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(255), nullable=False)
     last_name = db.Column(db.String(255), nullable=False)
-    username = db.Column(db.String(200), nullable=False)
+    username = db.Column(db.String(200), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
-    privilege = db.Column(db.String(15), nullable=False)
+    is_admin = db.Column(db.Boolean, nullable=False)
 
     @property
     def name(self):

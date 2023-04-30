@@ -1,7 +1,7 @@
 """ Blueprint for Flask routes regarding login and authorization """
 
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, session, url_for
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, login_required
 from marshmallow import ValidationError
 from werkzeug.security import check_password_hash
 
@@ -39,15 +39,11 @@ def login_post():
 
 
 @auth.route('/logout')
+@login_required
 def logout():
     logout_user()
-    return render_template('auth/logout.html')
-
-
-@auth.route('/logout', methods=['POST'])
-def logout_post():
-    return 'Logged out!'
-
+    flash('Logged out!')
+    return redirect(url_for('auth.login'))
 
 @auth.route('/signup')
 def signup():

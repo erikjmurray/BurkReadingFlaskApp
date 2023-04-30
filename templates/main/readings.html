@@ -8,9 +8,13 @@
 <div id="header">
     <h1>NYPR Meter Readings</h1>
     {# Adds post to database success/fail message on form submit #}
+    {% if get_flashed_messages() %}
+    <div class="flash-message">
     {% for message in get_flashed_messages() %}
-        <br><p style="font-weight:bolder;">{{message}}</p>
+        <p class="font-weight:bolder;">{{message}}</p>
     {% endfor %}
+    </div>
+    {% endif %}
 </div>
 
 <div class="container">
@@ -138,7 +142,7 @@
                             <option value="" selected></option>
                         {# Reads users from config and adds each to the dropdown #}
                         {% for op in operators %}
-                            <option value="{{op.id}}">{{op.first_name}} {{op.last_name}}</option>
+                            <option value="{{op.id}}">{{op.name}}</option>
                         {% endfor %}
                         </select>
                     </td>

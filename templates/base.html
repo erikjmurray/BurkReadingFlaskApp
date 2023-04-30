@@ -11,9 +11,8 @@
 <body>
 <div class="nav">
     <div class="links">
-        <a href="/home">HOME</a>
+        <a href="/">HOME</a>
         {% if current_user.is_authenticated %}
-            <a href="/readings">READINGS</a>
             <a href="/eas">EAS</a>
             <a href="/logout" style="float:right">LOGOUT</a>
             {% if current_user.is_admin %}

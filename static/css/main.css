@@ -338,6 +338,10 @@ input[type=number] {
     border-radius: 5px;
 }
 
+.flash-message > p {
+    text-align: justify;
+}
+
 /*******************************************/
 /* ----- ADD NEW SITE PAGE ----- */
 

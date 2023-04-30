@@ -1,5 +1,5 @@
 """ Details Marshmallow data serialization schemas """
-from marshmallow import fields, post_load, ValidationError, validates
+from marshmallow import fields, post_dump, post_load, ValidationError, validates
 from werkzeug.security import generate_password_hash
 
 from extensions import ma
@@ -11,6 +11,11 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         model = User
         exclude = ('password', )
 
+    @post_dump
+    def add_name(self, data, **kwargs):
+        data['name'] = f"{data['first_name']} {data['last_name']}"
+        return data
+
 
 class UserCreationSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -20,7 +25,7 @@ class UserCreationSchema(ma.SQLAlchemyAutoSchema):
     last_name = fields.Str(required=True)
     username = fields.Str(required=True)
     password = fields.Str(required=True)
-    privilege = fields.Str(required=True)
+    is_admin = fields.Boolean(required=True)
 
     @validates('username')
     def validate_username(self, username, **kwargs):
@@ -51,7 +56,7 @@ class UserCreationSchema(ma.SQLAlchemyAutoSchema):
             last_name=data['last_name'],
             username=data["username"],
             password=generate_password_hash(data['password'], method='scrypt'),
-            privilege='User'
+            is_admin=False
         )
         return user
 
