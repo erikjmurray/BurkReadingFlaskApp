@@ -105,14 +105,13 @@ def update_env_file(key_name, value) -> None:
 
 def register_blueprints(app) -> None:
     """ Loads blueprints to app, details what happens when visiting routes """
-    from routes import views, admin, api, auth, eas, errors, tasks, validate
+    from routes import views, admin, api, auth, eas, errors, tasks
     app.register_blueprint(views, url_prefix='/')           # register routes laid out in routes.views
     app.register_blueprint(admin, url_prefix='/admin')      # register routes laid out in routes.admin with /admin
     app.register_blueprint(api, url_prefix='/api')          # register routes laid out in routes.api with /api
     app.register_blueprint(auth, url_prefix='/')            # register routes laid out in routes.auth
     app.register_blueprint(eas, url_prefix='/')            # register routes laid out in routes.auth
     app.register_blueprint(tasks, url_prefix='/tasks')      # register routes laid out in routes.tasks with /tasks
-    app.register_blueprint(validate, url_prefix='/validate')#
     app.register_blueprint(errors, url_prefix='/')          # details error handling
     return
 
@@ -134,4 +133,4 @@ def initialize_addons(app) -> None:
 
 if __name__ == "__main__":
     app = create_app('BurkFlaskApp')
-    app.run()
+    app.run(debug=True)

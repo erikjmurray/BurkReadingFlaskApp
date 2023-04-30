@@ -13,7 +13,15 @@ class User(UserMixin, db.Model):
     """
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(1000), nullable=False)       # firstname*lastname
+    first_name = db.Column(db.String(255), nullable=False)
+    last_name = db.Column(db.String(255), nullable=False)
     username = db.Column(db.String(200), nullable=False)
-    password = db.Column(db.String(100), nullable=False)    # hash comparator
+    password = db.Column(db.String(100), nullable=False)
     privilege = db.Column(db.String(15), nullable=False)
+
+    @property
+    def name(self):
+        return self.fullname()
+
+    def fullname(self):
+        return f"{self.first_name} {self.last_name}"

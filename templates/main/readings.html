@@ -54,13 +54,13 @@
                 {% if channel.chan_type == 'status' %}
                 <td class="status" id="{{id}}_cell">
                     <div class="radio_group">
-                        {# Each status may have multiple options available, index helps JS find correct input #}
-                        {% for option in channel.status_options %}
+                    {# Each status may have multiple options available, index helps JS find correct input #}
+                    {% for option in channel.status_options %}
                     <label>
                     <input type="radio" id="{{id}}*{{loop.index}}" name="{{id}}"
                            onchange="manually_changed('{{id}}')" value="{{option.selected_value}}" required>
                     {{option.selected_value}}
-                    </label><br>
+                    </label>
                         {% endfor %}
                     </div>
                 </td>
@@ -95,7 +95,7 @@
                             <label>
                             <input type="radio" id="eas_yes" name="eas_verification" value="YES" required>
                                 Yes
-                            </label><br>
+                            </label>
                             <label>
                             <input type="radio" id="eas_no" name="eas_verification" value="NO" required>
                                 No
@@ -138,7 +138,7 @@
                             <option value="" selected></option>
                         {# Reads users from config and adds each to the dropdown #}
                         {% for op in operators %}
-                            <option value="{{op.id}}">{{op.name.replace('*', ' ')}}</option>
+                            <option value="{{op.id}}">{{op.first_name}} {{op.last_name}}</option>
                         {% endfor %}
                         </select>
                     </td>

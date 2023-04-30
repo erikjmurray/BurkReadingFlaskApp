@@ -8,3 +8,5 @@ from models.readings import Reading, ReadingValue, Message, EAS
 from models.site import Site
 from models.user import User
 
+from models.schemas import UserCreationSchema
+

@@ -17,7 +17,12 @@ views = Blueprint('views', __name__)
 # -----ROUTES-----
 @views.route('/')
 @views.route('/home')
-async def home():
+def index():
+    return render_template('main/index.html')
+
+
+@views.route('/readings')
+async def readings():
     """Homepage with links to sites from extensions"""
     site_schema = SiteSchema(many=True)
     sites = Site.query.order_by(Site.site_order.asc()).all()
@@ -26,12 +31,11 @@ async def home():
     user_schema = UserSchema(many=True)
     operators = User.query.all()
     operator_data = user_schema.dump(operators)
-    return render_template('main/home.html', sites=site_data, operators=operator_data)
+    return render_template('main/readings.html', sites=site_data, operators=operator_data)
 
 
-@views.route('/', methods=['POST'])
-@views.route('/home', methods=['POST'])
-def home_post():
+@views.route('/readings', methods=['POST'])
+def readings_post():
     """ Details posting data from homepage form """
     # get input data from form
     form_data = request.form
@@ -51,7 +55,7 @@ def home_post():
             flash(error)
     else:
         flash('Post to database successful!')
-    return redirect('/')
+    return redirect('/readings')
 
 
 def post_reading(form_data, timestamp):

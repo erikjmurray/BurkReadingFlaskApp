@@ -23,9 +23,9 @@
             <label class="config_header" for="site_name">Site Name: </label>
         </dt>
         <dt class="config_field">
-            <input type="text" id="site_name" name="site_name" placeholder="WXYZ"
-                   onchange="check_site_name_in_db()" value="" required>
+            <input type="text" id="site_name" name="site_name" placeholder="WXYZ" value="" required>
         </dt>
+            <div id="site_name_errors"></div>
       </dl>
     </fieldset>
 
@@ -37,6 +37,7 @@
         <dt class="config_field">
             <input style="" type="text" id="ip_addr" name="ip_addr" placeholder="192.168.1.1" required>
         </dt>
+          <div id="ip_addr_errors"></div>
       </dl>
     </fieldset>
 
@@ -72,9 +73,8 @@
 
 </div>
 <script src="{{ url_for('static', filename='javascript/add_channel_html.js') }}"></script>
-<script src="{{ url_for('static', filename='javascript/form_verification.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/site_form_verification.js') }}"></script>
 <script>
-    ip_address_verification('ip_addr')
     window.onload = function() {
         channel_count.value = 0;
     }

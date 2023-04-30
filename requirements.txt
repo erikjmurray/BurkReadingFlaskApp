@@ -39,3 +39,5 @@ packaging~=23.1
 kiwisolver~=1.4.4
 python-dotenv~=1.0.0
 httpx~=0.24.0
+marshmallow~=3.19.0
+asyncio~=3.4.3

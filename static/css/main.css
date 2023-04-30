@@ -284,6 +284,60 @@ input[type=number] {
     background-color: #333;
 }
 
+/********** ADD NEW USER **********/
+/* ----- AUTH FORMS ----- */
+.auth-header {
+
+}
+
+.auth-form {
+    margin: auto;
+    width: 50vh;
+    border: 1px solid #ddd;
+    padding: 20px;
+}
+
+.auth-form form {
+    padding: 20px;
+    padding-bottom: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.form-group {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.form-group > label {
+    display: block;
+    margin: auto;
+    padding-bottom: 8px;
+    width: fit-content;
+    font-weight: bold;
+}
+
+.form-group > input {
+    width: 100%;
+    width: -webkit-fill-available; /* for WebKit-based browsers */
+    width: -moz-available; /* for Firefox */
+    width: fill-available; /* for Edge */
+    text-align: center;
+}
+
+.form-group > button {
+    height: 28px;
+    width: 100%;
+}
+
+.flash-message {
+    background-color: #f44336;
+    color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
 /*******************************************/
 /* ----- ADD NEW SITE PAGE ----- */
 

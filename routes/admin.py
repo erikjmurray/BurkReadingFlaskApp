@@ -42,7 +42,6 @@ def add_new_user_post():
         # get results
         first_name = results['first_name'].replace(' ', '').lower().title()
         last_name = results['last_name'].replace(' ', '').lower().title()
-        name = f'{first_name}*{last_name}'
         username = results['username']
         password = generate_password_hash(results.get('password'), method='sha256')
         privilege = results.get('privilege')
@@ -52,14 +51,15 @@ def add_new_user_post():
             raise ValidationError('User of that name already exists in database')
 
         new_user = User(
-            name=name,
+            first_name=first_name,
+            last_name=last_name,
             username=username,
             password=password,
             privilege=privilege
         )
         db.session.add(new_user)
         db.session.commit()
-        flash_message = f'User: {name.replace("*", " ")} added successfully'
+        flash_message = f'User: {new_user.fullname()} added successfully'
     except ValidationError as err:
         flash_message = err
     except Exception as e:
@@ -86,18 +86,18 @@ def update_user_post(user_id):
         first_name = results.get('first_name').replace(' ', '').lower().title()
         last_name = results.get('last_name').replace(' ', '').lower().title()
 
-        name = f'{first_name}*{last_name}'
         password = generate_password_hash(results.get('password'), method="sha256")
         privilege = results.get('privilege')
         username = results.get('username')
 
-        user.name = name
+        user.first_name = first_name
+        user.last_name = last_name
         user.password = password
         user.username = username
         user.privilege = privilege
 
         db.session.commit()
-        flash('User successfully updated', 'success')
+        flash(f'User {user.fullname()} successfully updated', 'success')
     except Exception as e:
         current_app.logger.info(e)
         flash('Error updating user', 'error')
