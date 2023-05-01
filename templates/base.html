@@ -14,7 +14,7 @@
         <a href="/">HOME</a>
         {% if current_user.is_authenticated %}
             <a href="/eas">EAS</a>
-            <a href="/logout" style="float:right">LOGOUT</a>
+            <a onclick="logout()" style="float:right">LOGOUT</a>
             {% if current_user.is_admin %}
             <a href="/admin/home" style="float:right;">CONFIG</a>
             {% endif %}
@@ -27,5 +27,13 @@
 </div>
     {% block body %}{% endblock %}
 <div class="footer" style="height: 50px;"></div>
+<script>
+    function logout() {
+        let confirmation_message = 'Logout?'
+        if (confirm(confirmation_message)) {
+            window.location.href = '/logout';
+        }
+    }
+</script>
 </body>
 </html>

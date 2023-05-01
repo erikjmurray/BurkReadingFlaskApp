@@ -12,7 +12,7 @@
         <br><p style="font-weight:bolder;">{{ message }}</p>
     {% endfor %}
     <span style="display:flex; justify-content: center; padding-top: 22px;">
-        <a href="/admin/site/{{site.id}}/delete"><button>Delete Site</button></a>
+        <button onclick="delete_site()">DELETE SITE</button>
     </span>
 </div>
 
@@ -57,5 +57,12 @@
 <script src="{{ url_for('static', filename='javascript/form_verification.js') }}"></script>
 <script>
     ip_address_verification('ip_addr')
+
+    function delete_site() {
+        let confirmation_message = 'Are you sure you want to delete this site? '
+        if (confirm(confirmation_message)) {
+            window.location.href = '/admin/site/{{site.id}}/delete';
+        }
+    }
 </script>
 {% endblock %}
