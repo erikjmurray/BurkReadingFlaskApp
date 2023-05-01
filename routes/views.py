@@ -33,7 +33,7 @@ def readings():
     site_data = site_schema.dump(sites)
 
     user_schema = UserSchema(many=True)
-    operators = User.query.order_by(User.last_name).all()   # add filter_by(is_operator=True) if necessary
+    operators = User.query.filter_by(is_operator=True).order_by(User.last_name).all()
     operator_data = user_schema.dump(operators)
     return render_template('main/readings.html', sites=site_data, operators=operator_data)
 

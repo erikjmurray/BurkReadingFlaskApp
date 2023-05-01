@@ -58,7 +58,10 @@ def add_new_user_post():
         add_user_schema = UserCreationSchema()      # password hashed in creation
         new_user = add_user_schema.load_user(form_data)
 
-        new_user.is_admin = True if form_data.get('privilege') == 'admin' else False
+        # privilege can be user, admin, or both.
+        privilege = int(form_data.get('privilege'))
+        new_user.is_admin = True if privilege in [2, 3] else False
+        new_user.is_operator = True if privilege in [1, 3] else False
 
         db.session.add(new_user)
         db.session.commit()
@@ -99,14 +102,15 @@ def update_user_post(user_id):
         last_name = results.get('last_name').replace(' ', '').lower().title()
 
         password = generate_password_hash(results.get('password'), method="scrypt")
-        privilege = results.get('privilege')
+        privilege = int(results.get('privilege'))
         username = results.get('username')
 
         user.first_name = first_name
         user.last_name = last_name
         user.password = password
         user.username = username
-        user.is_admin = True if privilege == 'admin' else False
+        user.is_admin = True if privilege in [2,3] else False
+        user.is_operator = True if privilege in [1,3] else False
 
         db.session.commit()
         flash(f'User {user.name} successfully updated', 'success')

@@ -26,6 +26,7 @@ class UserCreationSchema(ma.SQLAlchemyAutoSchema):
     username = fields.Str(required=True)
     password = fields.Str(required=True)
     is_admin = fields.Boolean(required=True)
+    is_operator = fields.Boolean(required=True)
 
     def validate_username(self, username, **kwargs):
         existing_user = User.query.filter_by(username=username).first()
@@ -40,7 +41,8 @@ class UserCreationSchema(ma.SQLAlchemyAutoSchema):
             last_name=data['last_name'],
             username=data["username"],
             password=generate_password_hash(data['password'], method='scrypt'),
-            is_admin=False
+            is_admin=False,
+            is_operator=True
         )
         return user
 

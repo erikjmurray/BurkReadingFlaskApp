@@ -18,7 +18,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(200), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False)
-    # is_operator = db.Column(db.Boolean, nullable=False)
+    is_operator = db.Column(db.Boolean, nullable=False)
 
     @property
     def name(self):
