@@ -32,6 +32,11 @@ function generateUsername() {
   }
 }
 
+
+usernameInput.addEventListener('input', function() {
+    check_database_for_username(usernameInput.value)
+});
+
 // Alerts User that their password should include Upper, Lower, Number, and Symbol
 //passwordInput.addEventListener("input", function() {
 //  passwordErrorMessage.style=""
@@ -51,7 +56,7 @@ function check_database_for_username(username) {
     .then(data => {
       if (data.exists) {
         usernameErrorMessage.textContent = "That username already exists. Please contact your local admin";
-        usernameErrorMessage.style = 'background-color: yellow;'
+        usernameErrorMessage.style.backgroundColor = 'yellow'
       } else {
         usernameErrorMessage.textContent = "";
       }

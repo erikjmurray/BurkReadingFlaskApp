@@ -11,6 +11,9 @@
     {% for message in get_flashed_messages() %}
         <br><p style="font-weight:bolder;">{{message}}</p>
     {% endfor %}
+    <span style="display:flex; justify-content: center; padding-top: 22px;">
+        <button onclick="delete_user()">Delete User</button>
+    </span>
 </div>
 
 <div class="container config_form">
@@ -20,8 +23,8 @@
         <dt class="config_label">
             <label for="first_name">First Name: </label>
         </dt>
-        <dt class="config_input">
-            <input style="text-align:center;" type="text" id="first_name" name="first_name" value="{{user.first_name}}" required>
+        <dt class="config_field">
+            <input type="text" id="first_name" name="first_name" value="{{user.first_name}}" required>
         </dt>
       </dl>
     </fieldset>
@@ -31,8 +34,8 @@
         <dt class="config_label">
             <label for="last_name">Last Name: </label>
         </dt>
-        <dt class="config_input">
-            <input style="text-align:center;" type="text" id="last_name" name="last_name" value="{{user.last_name}}" required>
+        <dt class="config_field">
+            <input type="text" id="last_name" name="last_name" value="{{user.last_name}}">
         </dt>
       </dl>
     </fieldset>
@@ -42,9 +45,8 @@
         <dt class="config_label">
             <label for="username">Username: </label>
         </dt>
-        <dt class="config_input">
-            <input style="text-align:center;" type="text"
-                   id="username" name="username" value="{{user.username}}" required>
+        <dt class="config_field">
+            <input type="text" id="username" name="username" value="{{user.username}}" required>
         </dt>
       </dl>
     </fieldset>
@@ -54,7 +56,7 @@
         <dt class="config_label">
             <label for="password">Password: </label>
         </dt>
-        <dt class="config_input">
+        <dt class="config_field">
             <input style="text-align:center;" type="password" id="password" name="password" required>
         </dt>
       </dl>
@@ -65,7 +67,7 @@
         <dt class="config_label">
             <label for="privilege">Privilege: </label>
         </dt>
-        <dt class="config_input">
+        <dt class="config_field">
             <select id="privilege" name="privilege" required>
                 <option value="" selected></option>
                 <option value="user">User</option>
@@ -78,6 +80,14 @@
     <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">SUBMIT</button>
   </form>
 </div>
-<script src="{{ url_for('static', filename='javascript/form_verification.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/signup_form_validation.js') }}"></script>
+<script>
+    function delete_user() {
+        let confirmation_message = 'Are you sure you want to delete this user? All reference to readings they provided will be replaced with [DELETED]'
+        if (confirm(confirmation_message)) {
+            window.location.href = '/admin/user/{{user.id}}/delete';
+        }
+    }
+</script>
 
 {% endblock %}

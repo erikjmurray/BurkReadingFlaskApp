@@ -158,11 +158,10 @@
     </form>
 </div>
 {# Imports functions to load Burk data into form inputs #}
-<script src="{{ url_for('static', filename='javascript/homepage_burk_data_form_fill.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/reading_form_autopopulate.js') }}"></script>
 {# When page loads or reloads clear data and attempt to load API data to associated inputs #}
 <script>
-{# TODO: Add loading animation while loading #}
-    // When the page loads, update form in
+    // When the page loads, update form
     window.onload = function() {
         reset_page()
         load_data_to_form()

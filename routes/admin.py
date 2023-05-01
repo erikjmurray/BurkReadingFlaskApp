@@ -130,22 +130,15 @@ def delete_user(user_id):
         abort(403)
     else:
         user = User.query.get_or_404(user_id)
-        return render_template('admin/delete_user.html', user=user)
-
-
-@admin.route('user/<int:user_id>/delete', methods=["POST"])
-@login_required
-def delete_user_post(user_id):
-    # TODO: Make sure deletion doesn't ruin the reading query
-    user = User.query.get_or_404(user_id)
-    try:
-        db.session.delete(user)  # Delete the user
-        db.session.commit()  # Commit the changes to the database session
-        flash('User deleted successfully', 'success')
-    except Exception as e:
-        current_app.logger.info(e)
-        flash('User deletion failed', 'error')
-    return redirect(url_for('admin.home'))
+        try:
+            name = user.name
+            db.session.delete(user)  # Delete the user
+            db.session.commit()  # Commit the changes to the database session
+            flash(f'User ({name}) deleted successfully', 'success')
+        except Exception as e:
+            current_app.logger.info(e)
+            flash(f'User ({name}) deletion failed', 'error')
+        return redirect(url_for('admin.home'))
 
 
 # ----- SITE CONFIG -----
@@ -332,32 +325,23 @@ def delete_site(site_id):
     if not current_user.is_admin:
         abort(403)
     else:
-        site = Site.query.get_or_404(site_id)
-        return render_template('admin/delete_site.html', site=site)
+        site_to_delete = Site.query.get_or_404(site_id)
+        site_name = site_to_delete.site_name
 
+        channels = Channel.query.filter_by(site_id=site_id).all()
+        for channel in channels:
+            # delete meter configs associated with channel
+            meter_config_to_del = MeterConfig.query.filter_by(channel_id=channel.id).all()
+            for config in meter_config_to_del:
+                db.session.delete(config)
 
-@admin.route('site/<int:site_id>/delete', methods=["POST"])
-@login_required
-def delete_site_post(site_id):
-    """ Delete all items associated with the site """
-    site_to_delete = Site.query.get_or_404(site_id)
-    site_name = site_to_delete.site_name
+            # delete status options associated with channel
+            status_opt_to_del = StatusOption.query.filter_by(channel_id=channel.id).all()
+            for option in status_opt_to_del:
+                db.session.delete(option)
+            db.session.delete(channel)
+        db.session.delete(site_to_delete)
+        db.session.commit()
 
-    # Remove API KEY from YAML
-    channels = Channel.query.filter_by(site_id=site_id).all()
-    for channel in channels:
-        # delete meter configs associated with channel
-        meter_config_to_del = MeterConfig.query.filter_by(channel_id=channel.id).all()
-        for config in meter_config_to_del:
-            db.session.delete(config)
-
-        # delete status options associated with channel
-        status_opt_to_del = StatusOption.query.filter_by(channel_id=channel.id).all()
-        for option in status_opt_to_del:
-            db.session.delete(option)
-        db.session.delete(channel)
-    db.session.delete(site_to_delete)
-    db.session.commit()
-
-    flash(f'{site_name} removed and associated channel data')
-    return redirect(url_for('admin.home'))
+        flash(f'{site_name} removed and associated channel data')
+        return redirect(url_for('admin.home'))

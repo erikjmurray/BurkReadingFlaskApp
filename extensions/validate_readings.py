@@ -34,7 +34,7 @@ def gather_reading_data(reading, site):
 
     # Add name of User to reading_data
     user = User.query.get(reading.user_id)
-    reading_data['user'] = user.name.replace('*', ' ')
+    reading_data['user'] = user.name if user else '[DELETED]'
 
     # Add any messsages associated to site from current reading
     messages = Message.query.filter_by(site_id=site.id, reading_id=reading.id).all()

@@ -32,7 +32,7 @@
             <label for="last_name">Last Name: </label>
         </dt>
         <dt class="config_field">
-            <input type="text" id="last_name" name="last_name" placeholder="Baggins" required>
+            <input type="text" id="last_name" name="last_name" placeholder="Baggins">
         </dt>
       </dl>
     </fieldset>
@@ -43,10 +43,16 @@
             <label for="username">Username: </label>
         </dt>
         <dt class="config_field">
-            <input type="text" onchange="check_username_in_db()"
-                   id="username" name="username" placeholder="bbaggins" required>
+            <input type="text" id="username" name="username" placeholder="bbaggins" required>
         </dt>
       </dl>
+      <div class="error-message" id="username-error-message">
+      {% if error_messages %}
+        {% for message in error_messages %}
+            {{ message }}</br>
+        {% endfor %}
+      {% endif %}
+      </div>
     </fieldset>
 
     <fieldset>
@@ -78,6 +84,6 @@
     <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">SUBMIT</button>
   </form>
 </div>
-<script src="{{ url_for('static', filename='javascript/signup_form_verification.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/signup_form_validation.js') }}"></script>
 
 {% endblock %}

@@ -7,11 +7,11 @@ const ipAddressInput = document.getElementById('ip_addr');
 const ipAddressErrorMessage = document.getElementById('ip_addr_errors')
 
 siteNameInput.addEventListener('input', function() {
-    fetch(`/check_site_name?site_name=${encodeURIComponent(siteNameInput)}`)
+    fetch(`/check_site_name?site_name=${encodeURIComponent(siteNameInput.value)}`)
     .then(response => {
         if (!response.ok) {
             siteNameErrorMessage.textContent = "Site name already exists in the database. Please choose another name.";
-            siteNameErrorMessage.style = 'background-color: yellow;'
+            siteNameErrorMessage.style.backgroundColor = 'yellow'
         } else {
             siteNameErrorMessage.textContent = "";
         }

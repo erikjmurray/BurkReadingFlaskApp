@@ -27,30 +27,14 @@ class UserCreationSchema(ma.SQLAlchemyAutoSchema):
     password = fields.Str(required=True)
     is_admin = fields.Boolean(required=True)
 
-    @validates('username')
     def validate_username(self, username, **kwargs):
-        # Check if the username is unique
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
             raise ValidationError('Username already exists')
 
-    # @validates('password')
-    # def validate_password(self, password, **kwargs):
-    #     # Check if password meets the criteria
-    #     errors = []
-    #     if len(password) < 8:
-    #         errors.append('Password must be at least 8 characters long')
-    #     if not any(char.isupper() for char in password):
-    #         errors.append('Password must contain at least one uppercase letter')
-    #     if not any(char.islower() for char in password):
-    #         errors.append('Password must contain at least one lowercase letter')
-    #     if not any(char.isdigit() for char in password):
-    #         errors.append('Password must contain at least one number')
-    #     if errors:
-    #         raise ValidationError(errors)
-
     @post_load
     def load_user(self, data):
+        self.validate_username(data.get('username'))
         user = User(
             first_name=data['first_name'],
             last_name=data['last_name'],
