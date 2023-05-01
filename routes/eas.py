@@ -6,17 +6,20 @@ from flask_login import login_required
 
 from extensions import db
 from models import Site, EAS
-
+from models.schemas import SiteSchema
 
 eas = Blueprint('eas', __name__)
 
 
 @eas.route('/eas')
 @login_required
-def eas_render():
+def eas_form():
+    site_schema = SiteSchema(many=True)
     sites = Site.query.order_by(Site.site_order.asc()).all()
+    site_data = site_schema.dump(sites)
+    # Current time used as a default value for receive or transmitted.
     current_time = datetime.now().strftime('%Y-%m-%dT%H:%M')
-    return render_template('main/eas.html', sites=sites, current_time=current_time)
+    return render_template('main/eas_form.html', sites=site_data, current_time=current_time)
 
 
 @eas.route('/eas', methods=['POST'])
@@ -53,7 +56,7 @@ def eas_post():
     else:
         flash('Success!')
 
-    return redirect(url_for('eas.eas_render'))
+    return redirect(url_for('eas.eas_form'))
 
 
 def input_to_datetime(timestamp):
@@ -68,7 +71,7 @@ def eas_log(start_date, end_date):
     date_range = (input_dates_to_datetime(start_date), input_dates_to_datetime(end_date))
     tests_for_dates = query_eas_by_date_range(date_range)
 
-    return render_template('main/all_eas_tests.html', eas_tests=tests_for_dates)
+    return render_template('main/eas_log.html', eas_tests=tests_for_dates)
 
 
 def query_eas_by_date_range(dates):

@@ -22,7 +22,7 @@ class UserCreationSchema(ma.SQLAlchemyAutoSchema):
         model = User
 
     first_name = fields.Str(required=True)
-    last_name = fields.Str(required=True)
+    last_name = fields.Str(required=False)
     username = fields.Str(required=True)
     password = fields.Str(required=True)
     is_admin = fields.Boolean(required=True)
