@@ -7,7 +7,7 @@ from flask import abort, Blueprint, current_app, jsonify, Response
 from extensions.encryption import decrypt_api_key
 from extensions import ArcPlus
 from models import Site, Channel
-
+from models.schemas import SiteSchema
 
 # create Blueprint object
 api = Blueprint('api', __name__)
@@ -32,6 +32,7 @@ async def api_call(site_id: int):
     else:
         # Add values to the channel dict based on information from Burk
         burk_data = get_burk_data(site, meters, statuses)
+        print(burk_data)
         return burk_data
 
 
@@ -118,7 +119,6 @@ def get_units():
 def all_sites() -> Response:
     """ Called by JS to get list of site names only """
     sites = Site.query.all()
-    from models.schemas import SiteSchema
     schema = SiteSchema(many=True)
     site_data = schema.dump(sites)
     return jsonify(site_data)
@@ -151,15 +151,16 @@ def get_channel_config(channel_id):
     return config
 
 
-@api.route('/channel/<int:channel_id>/readings')
-def get_readings_for_channel(channel_id):
-    """ Get list of all reading values for a specific channel id """
-    # TODO: Only load a specific amount of reading values
-    from models import Reading
-    channel = Channel.query.get(channel_id)
-    values = [chan_value.to_dict() for chan_value in channel.reading_values]
-    for value in values:
-        reading = Reading.query.get(value['reading_id'])
-        reading_date = reading.timestamp
-        value['timestamp'] = reading_date
-    return jsonify(values)
+# ----- THIS WAS A TEST ROUTE TO GET VALUES FOR SPECIFIC CHANNEL
+# @api.route('/channel/<int:channel_id>/readings')
+# def get_readings_for_channel(channel_id):
+#     """ Get list of all reading values for a specific channel id """
+#     # TODO: Only load a specific amount of reading values
+#     from models import Reading
+#     channel = Channel.query.get(channel_id)
+#     values = [chan_value.to_dict() for chan_value in channel.reading_values]
+#     for value in values:
+#         reading = Reading.query.get(value['reading_id'])
+#         reading_date = reading.timestamp
+#         value['timestamp'] = reading_date
+#     return jsonify(values)

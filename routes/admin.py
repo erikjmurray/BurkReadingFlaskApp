@@ -10,6 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from extensions import db
 from models import User, Site, Channel, MeterConfig, StatusOption
+from models.schemas import SiteSchema, UserSchema, UserCreationSchema
 from marshmallow import ValidationError
 
 
@@ -25,10 +26,15 @@ def home():
     if not current_user.is_admin:
         abort(403)
     else:
+        site_schema = SiteSchema(many=True)
         sites = Site.query.order_by(Site.site_order.asc()).all()
-        operators = User.query.all()
+        site_data = site_schema.dump(sites)
 
-        return render_template('admin/home.html', sites=sites, operators=operators)
+        user_schema = UserSchema(many=True)
+        users = User.query.order_by(User.last_name).all()
+        user_data = user_schema.dump(users)
+
+        return render_template('admin/admin_home.html', sites=site_data, operators=user_data)
 
 
 # ----- USER CONFIG -----
@@ -46,30 +52,20 @@ def add_new_user():
 @login_required
 def add_new_user_post():
     """ On Submit, Post data to database """
-    results = request.form
+    form_data = request.form
 
     try:
-        # get results
-        first_name = results['first_name'].replace(' ', '').lower().title()
-        last_name = results['last_name'].replace(' ', '').lower().title()
-        username = results['username']
-        password = generate_password_hash(results.get('password'), method='sha256')
-        privilege = results.get('privilege')
+        add_user_schema = UserCreationSchema()      # password hashed in creation
+        new_user = add_user_schema.load_user(form_data)
 
-        query_name = User.query.filter_by(username=username).first()
-        if query_name:
-            raise ValidationError('User of that name already exists in database')
+        # privilege can be user, admin, or both.
+        privilege = int(form_data.get('privilege'))
+        new_user.is_admin = True if privilege in [2, 3] else False
+        new_user.is_operator = True if privilege in [1, 3] else False
 
-        new_user = User(
-            first_name=first_name,
-            last_name=last_name,
-            username=username,
-            password=password,
-            is_admin=True if privilege == 'admin' else False
-        )
         db.session.add(new_user)
         db.session.commit()
-        flash_message = f'User: {new_user.fullname()} added successfully'
+        flash_message = f'User: {new_user.name} added successfully'
     except ValidationError as err:
         flash_message = err
     except Exception as e:
@@ -86,10 +82,10 @@ def update_user(user_id):
     if not current_user.is_admin:
         abort(403)
     else:
-        from models.schemas import UserSchema
         user_schema = UserSchema()
         user_obj = User.query.get_or_404(user_id)
         user = user_schema.dump(user_obj)
+
         return render_template('admin/update_user.html', user=user)
 
 
@@ -101,18 +97,20 @@ def update_user_post(user_id):
     results = request.form
 
     try:
+        # TODO: Create UPDATE SCHEMA
         first_name = results.get('first_name').replace(' ', '').lower().title()
         last_name = results.get('last_name').replace(' ', '').lower().title()
 
-        password = generate_password_hash(results.get('password'), method="sha256")
-        privilege = results.get('privilege')
+        password = generate_password_hash(results.get('password'), method="scrypt")
+        privilege = int(results.get('privilege'))
         username = results.get('username')
 
         user.first_name = first_name
         user.last_name = last_name
         user.password = password
         user.username = username
-        user.is_admin = True if privilege == 'admin' else False
+        user.is_admin = True if privilege in [2,3] else False
+        user.is_operator = True if privilege in [1,3] else False
 
         db.session.commit()
         flash(f'User {user.name} successfully updated', 'success')
@@ -160,6 +158,7 @@ def add_new_site_post():
     results = request.form
 
     try:
+        # TODO: Create Site Creation Schema
         site_name = results.get('site_name').replace(' ', '_')
 
         # Encrypt API KEY
@@ -258,8 +257,13 @@ def update_site(site_id):
     if not current_user.is_admin:
         abort(403)
     else:
+        from extensions.encryption import decrypt_api_key
         site = Site.query.get_or_404(site_id)
-        return render_template('admin/update_site.html', site=site)
+        site_schema = SiteSchema()
+        site_data = site_schema.dump(site)
+        site_data['api_key'] = decrypt_api_key(site.api_key)
+
+        return render_template('admin/update_site.html', site=site_data)
 
 
 @admin.route('site/<int:site_id>/update_site', methods=['POST'])
@@ -271,11 +275,10 @@ def update_site_post(site_id):
     results = request.form
 
     try:
+        from extensions.encryption import encrypt_api_key
         site.site_name = results.get('site_name')
         site.ip_addr = results.get('ip_addr')
-        if results.get('api_key'):
-            from extensions.encryption import encrypt_api_key
-            site.api_key = encrypt_api_key(results.get('api_key'))
+        site.api_key = encrypt_api_key(results.get('api_key'))
 
         db.session.commit()
         flash_message = 'Site updated'
@@ -295,12 +298,14 @@ def update_channels(site_id):
         abort(403)
     else:
         site = Site.query.get_or_404(site_id)
+        site_schema = SiteSchema()
+        site_data = site_schema.dump(site)
 
         from routes.api import get_colors, get_units
         colors = get_colors()
         units = get_units()
 
-        return render_template('admin/update_channels.html', site=site, colors=colors, units=units)
+        return render_template('admin/update_channels.html', site=site_data, colors=colors, units=units)
 
 
 @admin.route('site/<int:site_id>/update_channels', methods=['POST'])

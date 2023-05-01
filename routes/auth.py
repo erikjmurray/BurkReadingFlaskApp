@@ -83,16 +83,6 @@ def check_username():
         return jsonify({"exists": False})
 
 
-@auth.route("/check_email")
-def check_email():
-    email = request.args.get("email")
-    user = User.query.filter_by(email=email).first()
-    if user:
-        return jsonify({"exists": True})
-    else:
-        return jsonify({"exists": False})
-
-
 @auth.route('/check_site_name')
 def check_site_name():
     """ Given a site in the database return associated channels """

@@ -19,7 +19,6 @@ views = Blueprint('views', __name__)
 @views.route('/')
 def index():
     if not current_user.is_authenticated:
-        # flash('You must be logged in to view this page')
         return redirect(url_for('auth.login'))
     else:
         return redirect(url_for('views.readings'))
@@ -27,14 +26,14 @@ def index():
 
 @views.route('/home')
 @login_required
-async def readings():
+def readings():
     """Homepage with links to sites from extensions"""
     site_schema = SiteSchema(many=True)
     sites = Site.query.order_by(Site.site_order.asc()).all()
     site_data = site_schema.dump(sites)
 
     user_schema = UserSchema(many=True)
-    operators = User.query.order_by(User.last_name).all()   # add filter_by(is_operator=True) if necessary
+    operators = User.query.filter_by(is_operator=True).order_by(User.last_name).all()
     operator_data = user_schema.dump(operators)
     return render_template('main/readings.html', sites=site_data, operators=operator_data)
 
@@ -61,7 +60,7 @@ def readings_post():
             flash(error)
     else:
         flash('Post to database successful!')
-    return redirect('/readings')
+    return redirect(url_for('views.readings'))
 
 
 def post_reading(form_data, timestamp):
@@ -161,6 +160,8 @@ async def site(site_id):
 def site_eas_tests(site_id):
     """ Displays the twelve most recent EAS tests"""
     site = Site.query.get(site_id)
+    site_schema = SiteSchema()
+    site_data = site_schema.dump(site)
 
     eas_tests = EAS.query.join(EAS.sites).filter(
         Site.id == site_id
@@ -168,7 +169,7 @@ def site_eas_tests(site_id):
         EAS.tx_timestamp.desc()
     ).limit(12).all()
 
-    return render_template('main/eas_by_site.html', site=site, eas_tests=eas_tests)
+    return render_template('main/site_eas_log.html', site=site_data, eas_tests=eas_tests)
 
 
 
