@@ -156,7 +156,6 @@ def add_new_site_post():
     """ On POST, attempt to add site to config """
     # Get form data from post
     results = request.form
-
     try:
         # TODO: Create Site Creation Schema
         site_name = results.get('site_name').replace(' ', '_')
@@ -202,28 +201,40 @@ def create_channel_model_data(results, site_id):
 
     for channel_num in range(1, int(results.get('channel_count'))+1):
         html_tag = f"CH{channel_num}"
+
+        #
+        channel_data = []
+        for key, value in results.items():
+            if html_tag in key:
+                channel_data.append({key.replace(f"{html_tag}_", ""): value})
+
+        print(channel_data)
+        continue
+
         channel = Channel(
-            chan_type=results.get(f'{html_tag}_type'),
+            chan_type=results.get(f'{html_tag}_chan_type'),
             title=results.get(f'{html_tag}_title'),
             site_id=site_id
         )
         db.session.add(channel)
         target_channel = Channel.query.filter_by(title=channel.title, site_id=site_id).first()
         if channel.chan_type == 'meter':
+            # TODO: strip html_tag off results, MeterConfigCreationSchema
             config = MeterConfig(
                 units=results[f'{html_tag}_units'],
-                burk_channel=int(results[f'{html_tag}_num']),
-                nominal_output=float(results[f'{html_tag}_nominal']),
-                upper_limit=float(results[f'{html_tag}_upper']),
-                upper_lim_color=results.get(f'{html_tag}_upper_color'),
-                lower_limit=float(results[f'{html_tag}_lower']),
-                lower_lim_color=results.get(f'{html_tag}_lower_color'),
+                burk_channel=int(results[f'{html_tag}_burk_channel']),
+                nominal_output=float(results[f'{html_tag}_nominal_output']),
+                upper_limit=float(results[f'{html_tag}_upper_limit']),
+                upper_lim_color=results.get(f'{html_tag}_upper_lim_color'),
+                lower_limit=float(results[f'{html_tag}_lower_limit']),
+                lower_lim_color=results.get(f'{html_tag}_lower_lim_color'),
                 channel_id=target_channel.id,
             )
             meter_configs.append(config)
         if channel.chan_type == 'status':
             options = get_options(html_tag, results)
             for option in options:
+                # TODO: Add target_channel.id to option dict, StatusOptionCreationSchema validation
                 status_opt = StatusOption(
                     burk_channel=option['burk_channel'],
                     selected_value=option['selected_value'],
@@ -241,10 +252,10 @@ def get_options(html_tag, results):
     options = []
     for count in range(1, option_counter + 1):
         option = {
-            'burk_channel': int(results[f"{html_tag}_num_{count}"]),
-            'selected_value': results[f"{html_tag}_name_{count}"],
-            'selected_state': True if results[f"{html_tag}_state_{count}"] == 'true' else False,
-            'selected_color': results[f"{html_tag}_color_{count}"],
+            'burk_channel': int(results[f"{html_tag}_burk_channel_{count}"]),
+            'selected_value': results[f"{html_tag}_selected_value_{count}"],
+            'selected_state': True if results[f"{html_tag}_selected_state_{count}"] == 'true' else False,
+            'selected_color': results[f"{html_tag}_selected_color_{count}"],
         }
         options.append(option)
     return options
@@ -315,6 +326,8 @@ def update_channels(site_id):
 def update_channels_post(site_id):
     channels = Channel.query.filter_by(site_id=site_id).all()
     results = request.form
+
+    create_channel_model_data(results, site_id)
 
     return results
 

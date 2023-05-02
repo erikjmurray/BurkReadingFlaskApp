@@ -138,16 +138,16 @@ function create_meter_channel(id) {
             <label id='${id}_header'>${id}. Meter</label>
             <img class="hide_content_button" id="${id}_hide_content"
             onclick="minimize_channel_data('${id}'); return false;" src='/static/img/minus_sign.png' alt='-'>
-            <input type="hidden" id="${id}_type" name="${id}_type" value='meter'>
+            <input type="hidden" id="${id}_chan_type" name="${id}_chan_type" value='meter'>
         </div>
         <dt class="config_content" id='${id}_content'>
             <label for='${id}_title'>Title</label>
-            <input type="text" id='${id}_title' name='${id}_title' required>
-            <label for="${id}_num">Channel Number</label>
-            <input type="number" id="${id}_num" name="${id}_num" required>
+            <input type="text" id='${id}_title' name='${id}_title' required placeholder='Channel Name'>
+            <label for="${id}_burk_channel">Burk Channel Number</label>
+            <input type="number" id="${id}_burk_channel" name="${id}_burk_channel" required placeholder="0">
 
             <label for="${id}_nominal">Nominal Output</label>
-            <input type="number" step="any" id="${id}_nominal" name="${id}_nominal" placeholder="0">
+            <input type="number" step="any" id="${id}_nominal_output" name="${id}_nominal_output" required placeholder="0">
         <h4 style="margin:0;">Limits</h4>
         <div class="option_box">
         `
@@ -183,13 +183,14 @@ function create_limit_html(id, limit) {
         message = 'Color below lower limit'
     }
     limit_html = `
-        <label for="${id}_${limit.toLowerCase()}">${limit} Limit</label>
-        <input type="number" step="any" id="${id}_${limit.toLowerCase()}" name="${id}_${limit.toLowerCase()}" placeholder="0" required>
+        <label for="${id}_${limit.toLowerCase()}_limit">${limit} Limit</label>
+        <input id="${id}_${limit.toLowerCase()}_limit" name="${id}_${limit.toLowerCase()}_limit"
+               type="number" step="any" placeholder="0" required>
 
         <label>
         ${message}
-        <select style="" id="${id}_${limit.toLowerCase()}_color" name="${id}_${limit.toLowerCase()}_color"
-                onchange="change_bg_color('${id}_${limit.toLowerCase()}_color')" required>
+        <select style="" id="${id}_${limit.toLowerCase()}_lim_color" name="${id}_${limit.toLowerCase()}_lim_color"
+                onchange="change_bg_color('${id}_${limit.toLowerCase()}_lim_color')" required>
     `
     limit_html += add_color_picker()
     limit_html += `
@@ -230,18 +231,18 @@ function create_status_channel(id) {
     options = create_option_content(id, 1) + create_option_content(id, 2)
 
     status_channel = `
-        <input type="hidden" id="${id}_opt_count" name="${id}_opt_count" value=2>
         <fieldset>
           <dl>
             <div class="channel_header">
                 <label id='${id}_header'>${id}. Status</label>
                 <img class="hide_content_button" id="${id}_hide_content"
                 onclick="minimize_channel_data('${id}'); return false;" src='/static/img/minus_sign.png' alt='-'>
-                <input type="hidden" id="${id}_type" name="${id}_type" value='status'>
+                <input type="hidden" id="${id}_chan_type" name="${id}_chan_type" value='status'>
+                <input type="hidden" id="${id}_opt_count" name="${id}_opt_count" value=2>
             </div>
             <dt id='${id}_content' class="config_content" style="">
                 <label for='${id}_title'>Title</label>
-                <input type="text" id='${id}_title' name='${id}_title' required>
+                <input type="text" id='${id}_title' name='${id}_title' required placeholder="Channel Name">
                 <div id="${id}_options">${options}</div>
                 <button class="func_button" onclick="add_next_option('${id}'); return false;">Add Option</button>
             </dt>
@@ -258,32 +259,34 @@ function create_option_content(id, opt_num) {
     <div class="option_box" id="${id}_option_${opt_num}">
         <h4 style="text-decoration: underline; margin:0;">Option ${opt_num}</h4>
 
-        <label>Channel</label>
-        <input type="number" id="${id}_num_${opt_num}" name="${id}_num_${opt_num}" placeholder="Channel Number">
+        <label for="${id}_burk_channel_${opt_num}">Burk Channel Number</label>
+        <input type="number" placeholder="0"
+               id="${id}_burk_channel_${opt_num}" name="${id}_burk_channel_${opt_num}">
 
-        <label>Name</label>
-        <input type="text" id="${id}_name_${opt_num}" name="${id}_name_${opt_num}" placeholder="Channel Name">
+        <label>Option Name</label>
+        <input type="text" placeholder="Text When Selected"
+               id="${id}_selected_value_${opt_num}" name="${id}_selected_value_${opt_num}">
 
         <label>
         Selected State
         </label>
         <div class="radio_group option_radio_group">
             <label style="margin-right:25px;">
-                <input type="radio" name="${id}_state_${opt_num}" value=true required>
+                <input type="radio" name="${id}_selected_state_${opt_num}" value=true required>
                 On
             </label>
             <label>
-                <input type="radio" name="${id}_state_${opt_num}" value=false>
+                <input type="radio" name="${id}_selected_state_${opt_num}" value=false>
                 Off
             </label>
         </div>
 
-        <label for="${id}_color_${opt_num}">
-            Status Color
+        <label for="${id}_selected_color_${opt_num}">
+            Background Color When Selected
         </label>
 
-        <select style="" id="${id}_color_${opt_num}" name="${id}_color_${opt_num}"
-                onchange="change_bg_color('${id}_color_${opt_num}')" required>
+        <select style="" id="${id}_selected_color_${opt_num}" name="${id}_selected_color_${opt_num}"
+                onchange="change_bg_color('${id}_selected_color_${opt_num}')" required>
         `
         option_content += add_color_picker()
         option_content += `

@@ -33,6 +33,7 @@ function change_bg_color(id, color) {
                 <label id='{{id}}_header'>{{id}}. {{channel.title}}</label>
                 <img class="hide_content_button" id="{{id}}_hide_content"
                 onclick="maximize_channel_data('{{id}}'); return false;" src='/static/img/plus_sign.png' alt='+'>
+                <input type="hidden" id="{{id}}_chan_type" name="{{id}}_chan_type" value="{{channel.chan_type}}">
             </div>
 
 
@@ -41,49 +42,50 @@ function change_bg_color(id, color) {
             <dt class="config_content" id='{{id}}_content' style="display: none;">
                 <label for='{{id}}_title'>Title</label>
                 <input type="text" id='{{id}}_title' name='{{id}}_title' value="{{channel.title}}" required>
-                <label for="{{id}}_num">Channel Number</label><br>
-                <input type="number" id="{{id}}_num" name="{{id}}_num" value="{{meter_config.burk_channel}}" required>
+                <label for="{{id}}_burk_channel">Channel Number</label><br>
+                <input type="number" id="{{id}}_burk_channel" name="{{id}}_burk_channel"
+                       value="{{meter_config.burk_channel}}" required>
 
-                <label for="{{id}}_nominal">Nominal Output</label><br>
-                <input type="number" step="any" id="{{id}}_nominal" name="{{id}}_nominal" value="{{meter_config.nominal_output}}">
+                <label for="{{id}}_nominal_output">Nominal Output</label><br>
+                <input id="{{id}}_nominal_output" name="{{id}}_nominal_output"
+                       type="number" step="any" required
+                       value="{{meter_config.nominal_output}}">
             <h4 style="margin:0;">Limits</h4>
             <div class="option_box">
-                <label for="{{id}}_upper">Upper Limit</label><br>
-                <input type="number" step="any" id="{{id}}_upper" name="{{id}}_upper"
-                       value="{{meter_config.upper_limit}}">
+                <label for="{{id}}_upper_limit">Upper Limit</label><br>
+                <input id="{{id}}_upper_limit" name="{{id}}_upper_limit"
+                       type="number" step="any" value="{{meter_config.upper_limit}}">
 
                 <label>
                 Color above upper limit
-                <select style="" id="{{id}}_upper_color" name="{{id}}_upper_color"
-                        onchange="change_bg_color('{{id}}_upper_color')" required>
+                <select style="background-color: {{meter_config.upper_lim_color}}"
+                        id="{{id}}_upper_lim_color" name="{{id}}_upper_lim_color"
+                        onchange="change_bg_color('{{id}}_upper_lim_color')" required>
                     <option></option>
                     {% for color in colors %}
-                    {% if meter_config.upper_lim_color == color.hex %}
-                    <script>change_bg_color('{{id}}_upper_color', '{{color.hex}}')</script>
-                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}" selected>{{ color.name }}</option>
-                    {% else %}
-                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}">{{ color.name }}</option>
-                    {% endif %}
+                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}"
+                    {% if meter_config.upper_lim_color == color.hex %} selected {% endif %}>
+                        {{ color.name }}
+                    </option>
                     {% endfor %}
                 </select>
                 </label>
 
-                <label for="{{id}}_lower">Lower Limit</label><br>
-                <input type="number" step="any" id="{{id}}_lower" name="{{id}}_lower"
-                       value="{{meter_config.lower_limit}}">
+                <label for="{{id}}_lower_limit">Lower Limit</label><br>
+                <input id="{{id}}_lower_limit" name="{{id}}_lower_limit"
+                       type="number" step="any" value="{{meter_config.lower_limit}}">
 
                 <label>
                 Color below lower limit
-                <select style="" id="{{id}}_lower_color" name="{{id}}_lower_color"
-                        onchange="change_bg_color('{{id}}_lower_color')" required>
+                <select style="background-color: {{meter_config.lower_lim_color}}"
+                        id="{{id}}_lower_lim_color" name="{{id}}_lower_lim_color"
+                        onchange="change_bg_color('{{id}}_lower_lim_color')" required>
                     <option></option>
                     {% for color in colors %}
-                    {% if meter_config.lower_lim_color == color.hex %}
-                    <script>change_bg_color('{{id}}_lower_color', '{{color.hex}}')</script>
-                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}" selected>{{color.name}}</option>
-                    {% else %}
-                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}">{{color.name}}</option>
-                    {% endif %}
+                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}"
+                    {% if meter_config.lower_lim_color == color.hex %} selected {% endif %}>
+                        {{color.name}}
+                    </option>
                     {% endfor %}
                 </select>
                 </label>
@@ -93,11 +95,10 @@ function change_bg_color(id, color) {
                 <select style="" id="{{id}}_units" name="{{id}}_units">
                     <option></option>
                     {% for unit_type in units %}
-                    {% if meter_config.units == unit_type %}
-                        <option value="{{unit_type}}" selected>{{unit_type}}</option>
-                    {% else %}
-                        <option value="{{unit_type}}">{{unit_type}}</option>
-                    {% endif %}
+                    <option value="{{unit_type}}"
+                    {% if meter_config.units == unit_type %} selected {%endif%}>
+                        {{unit_type}}
+                    </option>
                     {% endfor %}
                 </select>
               </div>
@@ -109,7 +110,7 @@ function change_bg_color(id, color) {
             <dt id='{{id}}_content' class="config_content" style="display: none">
                 <label for='{{id}}_title'>Title</label>
                 <input type="text" id='{{id}}_title' name='{{id}}_title' value="{{channel.title}}" required>
-                <input type="hidden" id="{{id}}_opt_count" value="2">
+                <input type="hidden" id="{{id}}_opt_count" value="{{opt_count}}">
                 <div id="{{id}}_options">
                     {% for option in options %}
                     {% set i = loop.index %}
@@ -117,38 +118,42 @@ function change_bg_color(id, color) {
                         <h4 style="text-decoration: underline; margin:0;">Option {{i}}</h4>
 
                         <label>Channel</label>
-                        <input type="number" id="{{id}}_num_{{i}}" name="{{id}}_num_{{i}}" value="{{option.burk_channel}}">
+                        <input id="{{id}}_burk_channel_{{i}}" name="{{id}}_burk_channel_{{i}}"
+                               type="number" value="{{option.burk_channel}}">
 
                         <label>Name</label>
-                        <input type="text" id="{{id}}_name_{{i}}" name="{{id}}_name_{{i}}" value="{{option.selected_value}}">
+                        <input id="{{id}}_selected_value_{{i}}" name="{{id}}_selected_value_{{i}}"
+                               type="text" value="{{option.selected_value}}">
 
                         <label>
                         Selected State
                         </label>
                         <div class="radio_group option_radio_group">
                             <label style="margin-right:25px;">
-                            <input type="radio" name="{{id}}_state_{{i}}" value=true
+                            <input type="radio" name="{{id}}_selected_state_{{i}}" value=true
                             {% if option.selected_state %} checked="checked" {% endif %} required>
                                 On
                             </label>
 
                             <label>
-                            <input type="radio" name="{{id}}_state_{{i}}" value=false
+                            <input type="radio" name="{{id}}_selected_state_{{i}}" value=false
                             {% if not option.selected_state %} checked="checked" {% endif %}>
                                 Off
                             </label>
                         </div>
+
                         <label>
                         Status Color
                         </label>
-
-                        <select id="{{id}}_color_{{i}}" name="{{id}}_color_{{i}}"
+                        <select id="{{id}}_selected_color_{{i}}" name="{{id}}_selected_color_{{i}}"
                                 style="background-color: {{option.selected_color}};"
                                 onchange="change_bg_color('{{id}}_color_{{i}}')" required>
                         <option></option>
                         {% for color in colors %}
                         <option style="background-color: {{color.hex}}" value="{{ color.hex }}"
-                        {% if option.selected_color == color.hex %} selected {% endif %}>{{ color.name }}</option>
+                        {% if option.selected_color == color.hex %} selected {% endif %}>
+                            {{ color.name }}
+                        </option>
                         {% endfor %}
                     </select>
                 </div>
