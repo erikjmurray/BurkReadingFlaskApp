@@ -437,8 +437,9 @@ input[type=number] {
     padding: 2px 0;
 }
 
-.config_content > select {
-    text-align: center;
+
+.config_content > input {
+    margin-bottom: 8px;
 }
 
 .func_button {
@@ -458,6 +459,15 @@ input[type=number] {
     margin-bottom: 10px;
 }
 
+.option_box > label {
+    padding: 5px 0;
+}
+
+
+.option_box > input {
+    margin-bottom: 8px;
+}
+
 
 .option_box > .config_content > label {
     padding-top: 5px;
@@ -467,7 +477,14 @@ input[type=number] {
 
 .option_box > .config_content > input {
     width: 285px;
+    margin-bottom: 8px;
 }
+
+.option_box > select {
+    margin-bottom:8px;
+    text-align: center;
+}
+
 
 .option_radio_group {
     flex-direction: row;

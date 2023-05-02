@@ -276,6 +276,7 @@ def update_site_post(site_id):
 
     try:
         from extensions.encryption import encrypt_api_key
+        # TODO Validate site_name not duplicate
         site.site_name = results.get('site_name')
         site.ip_addr = results.get('ip_addr')
         site.api_key = encrypt_api_key(results.get('api_key'))
@@ -297,6 +298,7 @@ def update_channels(site_id):
     if not current_user.is_admin:
         abort(403)
     else:
+        # abort(404)
         site = Site.query.get_or_404(site_id)
         site_schema = SiteSchema()
         site_data = site_schema.dump(site)
@@ -314,12 +316,6 @@ def update_channels_post(site_id):
     channels = Channel.query.filter_by(site_id=site_id).all()
     results = request.form
 
-    # TODO: Make functional
-
-    for channel in channels:
-        print(channel.title)
-        if channel.html_tag in results.keys():
-            print(channel.html_tag)
     return results
 
 

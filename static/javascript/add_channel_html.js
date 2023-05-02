@@ -29,9 +29,9 @@ get_units();
 
 // Get document elements
 const channel_count = document.getElementById('channel_count');
-console.log(channel_count.value)
 const channels_form = document.getElementById('channels');
 const add_channel_div = document.getElementById('add_channel')
+
 
 const channel_selector_html = `
     <fieldset style="margin-top:5px; border-radius: 5px;">
@@ -138,15 +138,15 @@ function create_meter_channel(id) {
             <label id='${id}_header'>${id}. Meter</label>
             <img class="hide_content_button" id="${id}_hide_content"
             onclick="minimize_channel_data('${id}'); return false;" src='/static/img/minus_sign.png' alt='-'>
-            <input style="display: none;" type="text" id="${id}_type" name="${id}_type" value='meter'>
+            <input type="hidden" id="${id}_type" name="${id}_type" value='meter'>
         </div>
         <dt class="config_content" id='${id}_content'>
             <label for='${id}_title'>Title</label>
             <input type="text" id='${id}_title' name='${id}_title' required>
-            <label for="${id}_num">Channel Number</label><br>
+            <label for="${id}_num">Channel Number</label>
             <input type="number" id="${id}_num" name="${id}_num" required>
 
-            <label for="${id}_nominal">Nominal Output</label><br>
+            <label for="${id}_nominal">Nominal Output</label>
             <input type="number" step="any" id="${id}_nominal" name="${id}_nominal" placeholder="0">
         <h4 style="margin:0;">Limits</h4>
         <div class="option_box">
@@ -159,7 +159,7 @@ function create_meter_channel(id) {
         meter_channel += `
         </div>
           <div class="config_content">
-            <label style="" for="${id}_units">Units: </label></br>
+            <label style="" for="${id}_units">Units: </label>
             <select style="" id="${id}_units" name="${id}_units" required>
         `
         meter_channel += add_unit_options()
@@ -183,7 +183,7 @@ function create_limit_html(id, limit) {
         message = 'Color below lower limit'
     }
     limit_html = `
-        <label for="${id}_${limit.toLowerCase()}">${limit} Limit</label><br>
+        <label for="${id}_${limit.toLowerCase()}">${limit} Limit</label>
         <input type="number" step="any" id="${id}_${limit.toLowerCase()}" name="${id}_${limit.toLowerCase()}" placeholder="0" required>
 
         <label>
@@ -230,25 +230,21 @@ function create_status_channel(id) {
     options = create_option_content(id, 1) + create_option_content(id, 2)
 
     status_channel = `
-        <div style="display: none;">
-            <input type="number" id="${id}_opt_count" name="${id}_opt_count" value=2>
-        </div>
+        <input type="hidden" id="${id}_opt_count" name="${id}_opt_count" value=2>
         <fieldset>
           <dl>
             <div class="channel_header">
                 <label id='${id}_header'>${id}. Status</label>
                 <img class="hide_content_button" id="${id}_hide_content"
                 onclick="minimize_channel_data('${id}'); return false;" src='/static/img/minus_sign.png' alt='-'>
-                <input style="display: none;" type="text" id="${id}_type" name="${id}_type" value='status'>
+                <input type="hidden" id="${id}_type" name="${id}_type" value='status'>
             </div>
-            <div id='${id}_content' class="config_content" style="">
-                <label for='${id}_title'>Title</label></br>
-                <input style="margin-bottom:10px; width:285px;" type="text" id='${id}_title' name='${id}_title' required>
+            <dt id='${id}_content' class="config_content" style="">
+                <label for='${id}_title'>Title</label>
+                <input type="text" id='${id}_title' name='${id}_title' required>
                 <div id="${id}_options">${options}</div>
-                <dt>
                 <button class="func_button" onclick="add_next_option('${id}'); return false;">Add Option</button>
-                </dt>
-            </div>
+            </dt>
           </dl>
         </fieldset>
         `
@@ -260,40 +256,38 @@ function create_status_channel(id) {
 function create_option_content(id, opt_num) {
     option_content = `
     <div class="option_box" id="${id}_option_${opt_num}">
-        <dt class="config_content">
-            <h4 style="text-decoration: underline; margin:0;">Option ${opt_num}</h4>
+        <h4 style="text-decoration: underline; margin:0;">Option ${opt_num}</h4>
 
-            <label>Channel</label>
-            <input type="number" id="${id}_num_${opt_num}" name="${id}_num_${opt_num}" placeholder="Channel Number">
+        <label>Channel</label>
+        <input type="number" id="${id}_num_${opt_num}" name="${id}_num_${opt_num}" placeholder="Channel Number">
 
-            <label>Name</label>
-            <input type="text" id="${id}_name_${opt_num}" name="${id}_name_${opt_num}" placeholder="Channel Name">
+        <label>Name</label>
+        <input type="text" id="${id}_name_${opt_num}" name="${id}_name_${opt_num}" placeholder="Channel Name">
 
+        <label>
+        Selected State
+        </label>
+        <div class="radio_group option_radio_group">
+            <label style="margin-right:25px;">
+                <input type="radio" name="${id}_state_${opt_num}" value=true required>
+                On
+            </label>
             <label>
-            Selected State
+                <input type="radio" name="${id}_state_${opt_num}" value=false>
+                Off
             </label>
-            <div class="radio_group option_radio_group">
-                <label style="margin-right:25px;">
-                    <input type="radio" name="${id}_state_${opt_num}" value=true required>
-                    On
-                </label>
-                <label>
-                    <input type="radio" name="${id}_state_${opt_num}" value=false>
-                    Off
-                </label>
-            </div>
+        </div>
 
-            <label for="${id}_color_${opt_num}">
-                Status Color
-            </label>
+        <label for="${id}_color_${opt_num}">
+            Status Color
+        </label>
 
-            <select style="" id="${id}_color_${opt_num}" name="${id}_color_${opt_num}"
-                    onchange="change_bg_color('${id}_color_${opt_num}')" required>
+        <select style="" id="${id}_color_${opt_num}" name="${id}_color_${opt_num}"
+                onchange="change_bg_color('${id}_color_${opt_num}')" required>
         `
         option_content += add_color_picker()
         option_content += `
-            </select>
-        </dt>
+        </select>
     </div>
     `
     return option_content
@@ -318,7 +312,8 @@ function add_next_option(id) {
 
 // on color select, change background color to match selection
 function change_bg_color(id) {
-    color_select = document.getElementById(id)
-    color = color_select.value
-    color_select.style.backgroundColor = color
+    color_selector = document.getElementById(id)
+    color = color_selector.value
+    color_selector.style.backgroundColor = color
 }
+

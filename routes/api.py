@@ -31,8 +31,8 @@ async def api_call(site_id: int):
         return abort(400, f'Could not connect to {site.site_name}')
     else:
         # Add values to the channel dict based on information from Burk
+        # Only data from site passed to Burk data is site_id
         burk_data = get_burk_data(site, meters, statuses)
-        print(burk_data)
         return burk_data
 
 
@@ -131,13 +131,13 @@ def get_channel_data(site_id, channel_id):
         site = Site.query.get_or_404(site_id)
         channel = Channel.query.get_or_404(channel_id)
     except Exception as e:
-        print(e)
         return abort(400, 'Database query failed')
     data = channel.to_dict()
     data['site_name'] = site.site_name
     return data
 
 
+# TODO: This is the most used config route
 @api.route('/channel_config/<int:channel_id>')
 def get_channel_config(channel_id):
     channel = Channel.query.get_or_404(channel_id)

@@ -1,13 +1,23 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<title>Update Site - {{ site.site_name.replace('_', ' ') }}</title>
+<title>Update Channels - {{ site.site_name.replace('_', ' ') }}</title>
+<script>
+// on color select, change background color to match selection
+function change_bg_color(id, color) {
+    color_selector = document.getElementById(id)
+    if (!color) {
+        color = color_selector.value
+    }
+    color_selector.style.backgroundColor = color
+}
+</script>
 {% endblock %}
 
 {% block body %}
 <div class="container" id="header">
-    <h1>Update Site</h1>
-    <h2 style="">{{ site.site_name.replace('_', ' ') }}</h2>
+    <h1>Update Channels</h1>
+    <h2 style="margin-top:10px">{{ site.site_name.replace('_', ' ') }}</h2>
     {% for message in get_flashed_messages() %}
         <br><p style="font-weight:bolder;">{{ message }}</p>
     {% endfor %}
@@ -16,27 +26,26 @@
 <div class="container config_form">
     <form action="#" id="box" method="POST">
         {% for channel in site.channels %}
-        {% set id = channel.html_tag %}
-        {% if channel.chan_type == 'meter' %}
-        {% set meter_config = channel.meter_config[0] %}
+        {% set id = "CH" ~ (channel.channel_order + 1)|string %}
         <fieldset>
           <dl>
-            <dt class="config_header">
-                <label>{{channel.title}}</label>
-                <div style="display: none;">
-                    <input type="text" id="{{id}}_id" name="{{id}}_id" value="{{id}}">
-                    <input type="text" id="{{id}}_type" name="{{id}}_type" value="{{channel.chan_type}}">
-                    <input type="text" id="{{id}}_title" name="{{id}}_title" value="{{channel.title}}">
-                </div>
-            </dt>
-            <dt class="config_content">
+            <div class="channel_header">
+                <label id='{{id}}_header'>{{id}}. {{channel.title}}</label>
+                <img class="hide_content_button" id="{{id}}_hide_content"
+                onclick="maximize_channel_data('{{id}}'); return false;" src='/static/img/plus_sign.png' alt='+'>
+            </div>
+
+
+        {% if channel.chan_type == 'meter' %}
+        {% set meter_config = channel.meter_config[0] %}
+            <dt class="config_content" id='{{id}}_content' style="display: none;">
+                <label for='{{id}}_title'>Title</label>
+                <input type="text" id='{{id}}_title' name='{{id}}_title' value="{{channel.title}}" required>
                 <label for="{{id}}_num">Channel Number</label><br>
-                <input type="number" id="{{id}}_num" name="{{id}}_num" value="{{meter_config.burk_channel}}">
+                <input type="number" id="{{id}}_num" name="{{id}}_num" value="{{meter_config.burk_channel}}" required>
 
-                <label for="{{id}}_nominal">Nominal Value</label><br>
-                <input type="number" id="{{id}}_nominal" name="{{id}}_nominal" step="any"
-                       onchange="auto_adjust_limits('{{id}}')" value="{{meter_config.nominal_output}}" required>
-
+                <label for="{{id}}_nominal">Nominal Output</label><br>
+                <input type="number" step="any" id="{{id}}_nominal" name="{{id}}_nominal" value="{{meter_config.nominal_output}}">
             <h4 style="margin:0;">Limits</h4>
             <div class="option_box">
                 <label for="{{id}}_upper">Upper Limit</label><br>
@@ -50,6 +59,7 @@
                     <option></option>
                     {% for color in colors %}
                     {% if meter_config.upper_lim_color == color.hex %}
+                    <script>change_bg_color('{{id}}_upper_color', '{{color.hex}}')</script>
                     <option style="background-color: {{color.hex}}" value="{{ color.hex }}" selected>{{ color.name }}</option>
                     {% else %}
                     <option style="background-color: {{color.hex}}" value="{{ color.hex }}">{{ color.name }}</option>
@@ -69,6 +79,7 @@
                     <option></option>
                     {% for color in colors %}
                     {% if meter_config.lower_lim_color == color.hex %}
+                    <script>change_bg_color('{{id}}_lower_color', '{{color.hex}}')</script>
                     <option style="background-color: {{color.hex}}" value="{{ color.hex }}" selected>{{color.name}}</option>
                     {% else %}
                     <option style="background-color: {{color.hex}}" value="{{ color.hex }}">{{color.name}}</option>
@@ -91,87 +102,89 @@
                 </select>
               </div>
             </dt>
-          </dl>
-        </fieldset>
+
         {% elif channel.chan_type == 'status' %}
-        <fieldset>
-          <dl>
-            <dt class="config_header">
-                <label>{{channel.title}}</label>
-                <div style="display: none;">
-                    <input type="text" id="{{id}}_id" name="{{id}}_id" value="{{id}}">
-                    <input type="text" id="{{id}}_type" name="{{id}}_type" value="{{channel.chan_type}}">
-                    <input type="text" id="{{id}}_title" name="{{id}}_title" value="{{channel.title}}">
-                </div>
-            </dt>
-            <dt class="config_content">
-                <label>Options</label>
-                {% set options = channel.status_options %}
-                {% set opt_count = options|length %}
-                <div style="display: none;">
-                    <input type="number" id="{{id}}_opt_count" name="{{id}}_opt_count" value="{{opt_count}}">
-                </div>
-                {% for option in options %}
-                {% set i = loop.index %}
-                <div class="option_box" id="{{id}}_option_{{i}}">
-                <h4 style="text-decoration: underline; margin:0;">Option {{i}}</h4>
+        {% set options = channel.status_options %}
+        {% set opt_count = options|length %}
+            <dt id='{{id}}_content' class="config_content" style="display: none">
+                <label for='{{id}}_title'>Title</label>
+                <input type="text" id='{{id}}_title' name='{{id}}_title' value="{{channel.title}}" required>
+                <input type="hidden" id="{{id}}_opt_count" value="2">
+                <div id="{{id}}_options">
+                    {% for option in options %}
+                    {% set i = loop.index %}
+                    <div class="option_box" id="{{id}}_option_{{i}}">
+                        <h4 style="text-decoration: underline; margin:0;">Option {{i}}</h4>
 
-                <label>Channel</label>
-                <input type="number" id="{{id}}_num_{{i}}" name="{{id}}_num_{{i}}" value="{{option.burk_channel}}">
+                        <label>Channel</label>
+                        <input type="number" id="{{id}}_num_{{i}}" name="{{id}}_num_{{i}}" value="{{option.burk_channel}}">
 
-                <label>Name</label>
-                <input type="text" id="{{id}}_name_{{i}}" name="{{id}}_name_{{i}}" value="{{option.selected_value}}">
+                        <label>Name</label>
+                        <input type="text" id="{{id}}_name_{{i}}" name="{{id}}_name_{{i}}" value="{{option.selected_value}}">
 
-                <label style="text-decoration: underline; padding-bottom:5px;">
-                Selected State
-                </label>
-                <div class="radio_group" style="flex-direction: row; padding-bottom:2px;">
-                    {% if option.selected_state %}
-                    <label style="margin-right:25px;">
-                        <input type="radio" name="{{id}}_state_{{i}}" value=true checked="checked" required>
-                        On
-                    </label>
+                        <label>
+                        Selected State
+                        </label>
+                        <div class="radio_group option_radio_group">
+                            <label style="margin-right:25px;">
+                            <input type="radio" name="{{id}}_state_{{i}}" value=true
+                            {% if option.selected_state %} checked="checked" {% endif %} required>
+                                On
+                            </label>
 
-                    <label>
-                        <input type="radio" name="{{id}}_state_{{i}}" value=false>
-                        Off
-                    </label>
-                    {% else %}
-                    <label style="margin-right:25px;">
-                        <input type="radio" name="{{id}}_state_{{i}}" value=true required>
-                        On
-                    </label>
+                            <label>
+                            <input type="radio" name="{{id}}_state_{{i}}" value=false
+                            {% if not option.selected_state %} checked="checked" {% endif %}>
+                                Off
+                            </label>
+                        </div>
+                        <label>
+                        Status Color
+                        </label>
 
-                    <label>
-                        <input type="radio" name="{{id}}_state_{{i}}" value=false checked="checked">
-                        Off
-                    </label>
-                    {% endif %}
-                </div>
-
-                <label>
-                Status Color
-                <select id="{{id}}_color_{{i}}" name="{{id}}_color_{{i}}"
-                        onchange="change_bg_color('{{id}}_color_{{i}}')" required>
-                    <option></option>
-                    {% for color in colors %}
-                    {% if option.selected_color == color.hex %}
-                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}" selected>{{ color.name }}</option>
-                    {% else %}
-                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}">{{ color.name }}</option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
-                </label>
+                        <select id="{{id}}_color_{{i}}" name="{{id}}_color_{{i}}"
+                                style="background-color: {{option.selected_color}};"
+                                onchange="change_bg_color('{{id}}_color_{{i}}')" required>
+                        <option></option>
+                        {% for color in colors %}
+                        <option style="background-color: {{color.hex}}" value="{{ color.hex }}"
+                        {% if option.selected_color == color.hex %} selected {% endif %}>{{ color.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 {% endfor %}
+                </div>
+                <button class="func_button" onclick="add_next_option('{{id}}'); return false;">Add Option</button>
             </dt>
-          </dl>
-        </fieldset>
         {% endif %}
+            </dl>
+        </fieldset>
         {% endfor %}
+
+         <fieldset>
+            <input type="hidden" name="channel_count" id="channel_count" value="{{site.channels|length}}">
+            <dl>
+                <dt>
+                    <div id="add_channel">
+                        <button class="func_button" onclick="add_channel_selector_html(); return false;">Add Channel</button>
+<!--                Button replaced with channel type selector and submit    -->
+                    </div>
+                </dt>
+            </dl>
+        </fieldset>
+
+        <div id="channels">
+<!--    Channel HTML added here each time Add Channel button finishes submission -->
+        </div>
+
+
         <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">SUBMIT</button>
     </form>
 </div>
 <script src="{{ url_for('static', filename='javascript/add_channel_html.js') }}"></script>
+<script>
+    window.onload = function () {
+        channel_count.value = {{site.channels|length}}
+    }
+</script>
 {% endblock %}
