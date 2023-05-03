@@ -70,9 +70,18 @@
         <dt class="config_field">
             <select id="privilege" name="privilege">
                 <option value=""></option>
-                <option value="1">User</option>
-                <option value="2">Admin</option>
-                <option value="3">User with Admin access</option>
+                <option value="1"
+                {% if user.is_operator and not user.is_admin %} selected {% endif %}>
+                    Operator
+                </option>
+                <option value="2"
+                {% if not user.is_operator and user.is_admin %} selected {% endif %}>
+                    Admin
+                </option>
+                <option value="3"
+                {% if user.is_operator and user.is_admin %} selected {% endif %}>
+                    Operator with Admin access
+                </option>
             </select>
         </dt>
       </dl>

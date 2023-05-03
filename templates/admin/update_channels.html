@@ -26,11 +26,13 @@ function change_bg_color(id, color) {
 <div class="container config_form">
     <form action="#" id="box" method="POST">
         {% for channel in site.channels %}
-        {% set id = "CH" ~ (channel.channel_order + 1)|string %}
-        <fieldset>
+        {% set channel_order = (channel.channel_order + 1)|string %}
+        {% set id = "existing_" ~ channel.id %}
+        <fieldset id="{{channel.id}}">
           <dl>
             <div class="channel_header">
-                <label id='{{id}}_header'>{{id}}. {{channel.title}}</label>
+                <label id="{{channel_order}}" style="float:left; margin:0;">{{channel_order}}.</label>
+                <label id='{{id}}_header'>{{channel.title}}</label>
                 <img class="hide_content_button" id="{{id}}_hide_content"
                 onclick="maximize_channel_data('{{id}}'); return false;" src='/static/img/plus_sign.png' alt='+'>
                 <input type="hidden" id="{{id}}_chan_type" name="{{id}}_chan_type" value="{{channel.chan_type}}">
@@ -39,10 +41,10 @@ function change_bg_color(id, color) {
 
         {% if channel.chan_type == 'meter' %}
         {% set meter_config = channel.meter_config[0] %}
-            <dt class="config_content" id='{{id}}_content' style="display: none;">
-                <label for='{{id}}_title'>Title</label>
+            <dt id='{{id}}_content' class="config_content top-border" style="display: none;">
+                <label for='{{id}}_title' class="title-margin">Title</label>
                 <input type="text" id='{{id}}_title' name='{{id}}_title' value="{{channel.title}}" required>
-                <label for="{{id}}_burk_channel">Channel Number</label><br>
+                <label for="{{id}}_burk_channel">Burk Channel Number</label><br>
                 <input type="number" id="{{id}}_burk_channel" name="{{id}}_burk_channel"
                        value="{{meter_config.burk_channel}}" required>
 
@@ -102,26 +104,29 @@ function change_bg_color(id, color) {
                     {% endfor %}
                 </select>
               </div>
+              <button class="func_button" onclick="add_delete_channel_tag('{{channel.id}}'); return false">
+                    DELETE CHANNEL
+              </button>
             </dt>
 
         {% elif channel.chan_type == 'status' %}
         {% set options = channel.status_options %}
         {% set opt_count = options|length %}
-            <dt id='{{id}}_content' class="config_content" style="display: none">
-                <label for='{{id}}_title'>Title</label>
+            <dt id='{{id}}_content' class="config_content top-border" style="display: none">
+                <label for='{{id}}_title' class="title-margin">Title</label>
                 <input type="text" id='{{id}}_title' name='{{id}}_title' value="{{channel.title}}" required>
-                <input type="hidden" id="{{id}}_opt_count" value="{{opt_count}}">
+                <input type="hidden" id="{{id}}_opt_count" name="{{id}}_opt_count" value="{{opt_count}}">
                 <div id="{{id}}_options">
                     {% for option in options %}
                     {% set i = loop.index %}
                     <div class="option_box" id="{{id}}_option_{{i}}">
                         <h4 style="text-decoration: underline; margin:0;">Option {{i}}</h4>
 
-                        <label>Channel</label>
+                        <label>Burk Channel Number</label>
                         <input id="{{id}}_burk_channel_{{i}}" name="{{id}}_burk_channel_{{i}}"
                                type="number" value="{{option.burk_channel}}">
 
-                        <label>Name</label>
+                        <label>Option Name</label>
                         <input id="{{id}}_selected_value_{{i}}" name="{{id}}_selected_value_{{i}}"
                                type="text" value="{{option.selected_value}}">
 
@@ -143,11 +148,11 @@ function change_bg_color(id, color) {
                         </div>
 
                         <label>
-                        Status Color
+                        Background Color When Selected
                         </label>
                         <select id="{{id}}_selected_color_{{i}}" name="{{id}}_selected_color_{{i}}"
                                 style="background-color: {{option.selected_color}};"
-                                onchange="change_bg_color('{{id}}_color_{{i}}')" required>
+                                onchange="change_bg_color('{{id}}_selected_color_{{i}}')" required>
                         <option></option>
                         {% for color in colors %}
                         <option style="background-color: {{color.hex}}" value="{{ color.hex }}"
@@ -160,6 +165,9 @@ function change_bg_color(id, color) {
                 {% endfor %}
                 </div>
                 <button class="func_button" onclick="add_next_option('{{id}}'); return false;">Add Option</button>
+                <button class="func_button" onclick="add_delete_channel_tag('{{channel.id}}'); return false">
+                    DELETE CHANNEL
+                </button>
             </dt>
         {% endif %}
             </dl>

@@ -240,7 +240,7 @@ function meter_manually_changed(channel, html_tag) {
     let value = document.getElementById(html_tag).value
     channel.value = value
     channel.html_tag = html_tag
-    check_limits(channel.site_name, channel)
+    check_limits(channel.site_name.replace('_', ' '), channel)
 }
 
 

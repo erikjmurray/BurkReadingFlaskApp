@@ -410,24 +410,21 @@ input[type=number] {
 .channel_header {
     display: flex;
     justify-content: center;
-    margin-bottom: 3px;
+    padding-top: 5px;
+    margin: 5px auto;
 }
 
 
 .channel_header > label {
     font-weight: bold;
     float: left;
-    margin-top: 5px;
-    margin-left: auto;
-    margin-right: -20px;
+    margin: auto;
 }
 
 
 .channel_header > img {
     float: right;
     width: fit-content;
-    margin-left: auto;
-    margin-top: 3px;
 }
 
 
@@ -440,6 +437,15 @@ input[type=number] {
 
 .config_content > input {
     margin-bottom: 8px;
+}
+
+.top-border {
+    border-top: 2px solid black;
+}
+
+
+.title-margin {
+    margin-top: 5px;
 }
 
 .func_button {

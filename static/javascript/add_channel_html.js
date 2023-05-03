@@ -74,7 +74,7 @@ function add_channel_html() {
 
             // create meter html
             let channel_div = document.createElement('div');
-            let meter_channel = create_meter_channel(`CH${channel_number}`)
+            let meter_channel = create_meter_channel(`new_${channel_number}`)
             channel_div.innerHTML = meter_channel
 
             // add to page
@@ -87,7 +87,7 @@ function add_channel_html() {
 
             // create status html
             let channel_div = document.createElement('div');
-            let status_channel = create_status_channel(`CH${channel_number}`)
+            let status_channel = create_status_channel(`new_${channel_number}`)
             channel_div.innerHTML = status_channel
 
             // add to page
@@ -107,9 +107,9 @@ function minimize_channel_data(channel_id) {
     content = document.getElementById(`${channel_id}_content`)
     header = document.getElementById(`${channel_id}_header`)
     title = document.getElementById(`${channel_id}_title`)
-    content.style = 'display: none;'
+    content.style.display = 'none'
 
-    if (title.value) {  header.innerHTML = `${channel_id}. ${title.value}`  }
+    if (title.value) {  header.innerHTML = `${title.value}`  }
 
     hide_content_button = document.getElementById(`${channel_id}_hide_content`)
     hide_content_button.src = '/static/img/plus_sign.png'
@@ -120,7 +120,7 @@ function minimize_channel_data(channel_id) {
 
 function maximize_channel_data(channel_id) {
     content = document.getElementById(`${channel_id}_content`)
-    content.style = ''
+    content.style.display = ''
 
     hide_content_button = document.getElementById(`${channel_id}_hide_content`)
     hide_content_button.src = '/static/img/minus_sign.png'
@@ -135,13 +135,14 @@ function create_meter_channel(id) {
     <fieldset>
       <dl>
         <div class="channel_header">
-            <label id='${id}_header'>${id}. Meter</label>
+            <label id="${id}" style="float:left; margin:0;">${id.replace('new_', '')}.</label>
+            <label id='${id}_header'>Meter</label>
             <img class="hide_content_button" id="${id}_hide_content"
             onclick="minimize_channel_data('${id}'); return false;" src='/static/img/minus_sign.png' alt='-'>
             <input type="hidden" id="${id}_chan_type" name="${id}_chan_type" value='meter'>
         </div>
-        <dt class="config_content" id='${id}_content'>
-            <label for='${id}_title'>Title</label>
+        <dt class="config_content top-border" id='${id}_content'>
+            <label for='${id}_title' class="title-margin">Title</label>
             <input type="text" id='${id}_title' name='${id}_title' required placeholder='Channel Name'>
             <label for="${id}_burk_channel">Burk Channel Number</label>
             <input type="number" id="${id}_burk_channel" name="${id}_burk_channel" required placeholder="0">
@@ -234,14 +235,15 @@ function create_status_channel(id) {
         <fieldset>
           <dl>
             <div class="channel_header">
-                <label id='${id}_header'>${id}. Status</label>
+                <label id="${id}" style="float:left; margin:0;">${id.replace('new_', '')}.</label>
+                <label id='${id}_header'>Status</label>
                 <img class="hide_content_button" id="${id}_hide_content"
                 onclick="minimize_channel_data('${id}'); return false;" src='/static/img/minus_sign.png' alt='-'>
                 <input type="hidden" id="${id}_chan_type" name="${id}_chan_type" value='status'>
                 <input type="hidden" id="${id}_opt_count" name="${id}_opt_count" value=2>
             </div>
-            <dt id='${id}_content' class="config_content" style="">
-                <label for='${id}_title'>Title</label>
+            <dt id='${id}_content' class="config_content to-border" style="">
+                <label for='${id}_title' class="title-margin">Title</label>
                 <input type="text" id='${id}_title' name='${id}_title' required placeholder="Channel Name">
                 <div id="${id}_options">${options}</div>
                 <button class="func_button" onclick="add_next_option('${id}'); return false;">Add Option</button>
@@ -318,5 +320,30 @@ function change_bg_color(id) {
     color_selector = document.getElementById(id)
     color = color_selector.value
     color_selector.style.backgroundColor = color
+}
+
+
+function remove_new_channel() {
+    // TODO: Add logic to delete added channel before posting
+}
+
+
+function add_delete_channel_tag(channel_id) {
+    // on delete confirmation in form, add input delete_${channel_id} remove all data from fieldset
+    const fieldset_to_replace = document.getElementById(channel_id);
+
+    const confirmation = confirm(`WARNING: Deleting this channel will destroy all associated reading values. Are you sure you want to proceed?`);
+
+    if (confirmation) {
+        // create a new input element
+        const input_to_add = document.createElement('input');
+        input_to_add.type = 'hidden';
+        input_to_add.id = `delete_${channel_id}_tag`;
+        input_to_add.name = `delete_${channel_id}_tag`;
+        input_to_add.value = 'true';
+
+        // replace the fieldset with the new input element
+        fieldset_to_replace.parentNode.replaceChild(input_to_add, fieldset_to_replace);
+    }
 }
 

@@ -4,7 +4,7 @@ Create routes for Admin page to edit config
 import os
 
 # -----IMPORTS-----
-from flask import abort, Blueprint, current_app, flash, render_template, request, redirect, url_for
+from flask import abort, Blueprint, current_app, flash, jsonify, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -176,12 +176,10 @@ def add_new_site_post():
 
         target_site = Site.query.filter_by(site_name=site_name).first()
 
-        # Construct site data
-        meter_configs, status_options = create_channel_model_data(results, target_site.id)
-
-        db.session.add_all(meter_configs)
-        db.session.add_all(status_options)
-        db.session.commit()
+        # Create channel data and add to database
+        from extensions.channel_CRUD import sort_results_channel_data, create_new_channels
+        channel_data = sort_results_channel_data(results)[1]    # returns tuple, new_channel data is at index 1
+        create_new_channels(channel_data, target_site.id)
 
         flash_message = f"Site: {site_name} added successfully!"
     except Exception as e:
@@ -189,76 +187,6 @@ def add_new_site_post():
         flash_message = str(e)
     flash(flash_message)
     return redirect(url_for('admin.home'))
-
-
-def create_channel_model_data(results, site_id):
-    """
-    Given form data, input_channels, and a target site
-    Return channels associated to the site with correct config objects
-    """
-    meter_configs = []
-    status_options = []
-
-    for channel_num in range(1, int(results.get('channel_count'))+1):
-        html_tag = f"CH{channel_num}"
-
-        #
-        channel_data = []
-        for key, value in results.items():
-            if html_tag in key:
-                channel_data.append({key.replace(f"{html_tag}_", ""): value})
-
-        print(channel_data)
-        continue
-
-        channel = Channel(
-            chan_type=results.get(f'{html_tag}_chan_type'),
-            title=results.get(f'{html_tag}_title'),
-            site_id=site_id
-        )
-        db.session.add(channel)
-        target_channel = Channel.query.filter_by(title=channel.title, site_id=site_id).first()
-        if channel.chan_type == 'meter':
-            # TODO: strip html_tag off results, MeterConfigCreationSchema
-            config = MeterConfig(
-                units=results[f'{html_tag}_units'],
-                burk_channel=int(results[f'{html_tag}_burk_channel']),
-                nominal_output=float(results[f'{html_tag}_nominal_output']),
-                upper_limit=float(results[f'{html_tag}_upper_limit']),
-                upper_lim_color=results.get(f'{html_tag}_upper_lim_color'),
-                lower_limit=float(results[f'{html_tag}_lower_limit']),
-                lower_lim_color=results.get(f'{html_tag}_lower_lim_color'),
-                channel_id=target_channel.id,
-            )
-            meter_configs.append(config)
-        if channel.chan_type == 'status':
-            options = get_options(html_tag, results)
-            for option in options:
-                # TODO: Add target_channel.id to option dict, StatusOptionCreationSchema validation
-                status_opt = StatusOption(
-                    burk_channel=option['burk_channel'],
-                    selected_value=option['selected_value'],
-                    selected_state=option['selected_state'],
-                    selected_color=option['selected_color'],
-                    channel_id=target_channel.id,
-                )
-                status_options.append(status_opt)
-    return meter_configs, status_options
-
-
-def get_options(html_tag, results):
-    """ Get status options from form data """
-    option_counter = int(results[f"{html_tag}_opt_count"])
-    options = []
-    for count in range(1, option_counter + 1):
-        option = {
-            'burk_channel': int(results[f"{html_tag}_burk_channel_{count}"]),
-            'selected_value': results[f"{html_tag}_selected_value_{count}"],
-            'selected_state': True if results[f"{html_tag}_selected_state_{count}"] == 'true' else False,
-            'selected_color': results[f"{html_tag}_selected_color_{count}"],
-        }
-        options.append(option)
-    return options
 
 
 @admin.route('site/<int:site_id>/update_site')
@@ -286,18 +214,23 @@ def update_site_post(site_id):
     results = request.form
 
     try:
-        from extensions.encryption import encrypt_api_key
-        # TODO Validate site_name not duplicate
-        site.site_name = results.get('site_name')
+        site_name = results.get('site_name').replace(' ', '_')
+        obj_w_site_name = Site.query.filter_by(site_name=site_name).first()
+        if obj_w_site_name and obj_w_site_name != site:
+            raise ValidationError('Conflict in the database. Site of that name already exists.')
+
+        site.site_name = site_name
         site.ip_addr = results.get('ip_addr')
+
+        from extensions.encryption import encrypt_api_key
         site.api_key = encrypt_api_key(results.get('api_key'))
 
         db.session.commit()
-        flash_message = 'Site updated'
-    except Exception as e:
+        flash_message = 'Site updated', 'success'
+    except ValidationError as err:
         db.session.rollback()
-        current_app.logger.info(e)
-        flash_message = 'Something went wrong with update'
+        current_app.logger.info(err)
+        flash_message = err.messages, 'error'
     flash(flash_message)
     return redirect(url_for('admin.update_site', site_id=site_id))
 
@@ -309,7 +242,6 @@ def update_channels(site_id):
     if not current_user.is_admin:
         abort(403)
     else:
-        # abort(404)
         site = Site.query.get_or_404(site_id)
         site_schema = SiteSchema()
         site_data = site_schema.dump(site)
@@ -324,12 +256,15 @@ def update_channels(site_id):
 @admin.route('site/<int:site_id>/update_channels', methods=['POST'])
 @login_required
 def update_channels_post(site_id):
-    channels = Channel.query.filter_by(site_id=site_id).all()
     results = request.form
 
-    create_channel_model_data(results, site_id)
+    from extensions.channel_CRUD import handle_channel_update
+    handle_channel_update(results, site_id)
 
     return results
+
+    flash(f'Channels for site {(Site.query.get(site_id)).site_name}')
+    return redirect(url_for('admin.update_channels'))
 
 
 @admin.route('site/<int:site_id>/delete')
@@ -342,18 +277,9 @@ def delete_site(site_id):
         site_to_delete = Site.query.get_or_404(site_id)
         site_name = site_to_delete.site_name
 
-        channels = Channel.query.filter_by(site_id=site_id).all()
-        for channel in channels:
-            # delete meter configs associated with channel
-            meter_config_to_del = MeterConfig.query.filter_by(channel_id=channel.id).all()
-            for config in meter_config_to_del:
-                db.session.delete(config)
-
-            # delete status options associated with channel
-            status_opt_to_del = StatusOption.query.filter_by(channel_id=channel.id).all()
-            for option in status_opt_to_del:
-                db.session.delete(option)
-            db.session.delete(channel)
+        from extensions.channel_CRUD import delete_channel
+        for channel in site_to_delete.channels:
+            delete_channel(channel.id)
         db.session.delete(site_to_delete)
         db.session.commit()
 
