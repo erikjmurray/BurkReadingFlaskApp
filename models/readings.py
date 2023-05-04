@@ -41,14 +41,6 @@ class Message(db.Model):
     site_id = db.Column(db.Integer, db.ForeignKey('sites.id'), nullable=False)
     reading_id = db.Column(db.Integer, db.ForeignKey('readings.id'), nullable=False)
 
-    def to_dict(self):
-        return dict(
-            id=self.id,
-            message=self.message,
-            site_id=self.site_id,
-            reading_id=self.reading_id
-        )
-
     def __repr__(self):
         return f"Reading: {self.reading_id} | Message: {self.message}"
 
@@ -62,12 +54,6 @@ class ReadingValue(db.Model):
     reading_id = db.Column(db.Integer, db.ForeignKey('readings.id'), primary_key=True)
     reading_value = db.Column(db.String(250), nullable=False)
 
-    def to_dict(self):
-        return dict(
-            reading_value=self.reading_value,
-            channel_id=self.channel_id,
-            reading_id=self.reading_id
-        )
 
     def __repr__(self):
         return f"Reading: {self.reading_id}, CH{self.channel_id} | Value: {self.reading_value}"
@@ -92,15 +78,24 @@ class EAS(db.Model):
     sites = db.relationship('Site', secondary=eas_site_association, backref='eas_tests', lazy=True)
 
     def to_dict(self):
-        return dict(
-            id=self.id,
-            originating=True if self.originating else False,
-            test_type=self.test_type,
-            rx_from=self.rx_from,
-            rx_timestamp=self.rx_timestamp,
-            tx_timestamp=self.tx_timestamp,
-            sites=[site.site_name for site in self.sites]
-        )
+        if self.originating:
+            return dict(
+                id=self.id,
+                originating=True ,
+                test_type=self.test_type,
+                tx_timestamp=self.tx_timestamp,
+                sites=[site.site_name for site in self.sites]
+            )
+        else:
+            return dict(
+                id=self.id,
+                originating=False,
+                test_type=self.test_type,
+                rx_from=self.rx_from,
+                rx_timestamp=self.rx_timestamp,
+                tx_timestamp=self.tx_timestamp,
+                sites=[site.site_name for site in self.sites]
+            )
 
 
 

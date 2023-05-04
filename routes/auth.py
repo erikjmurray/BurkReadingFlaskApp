@@ -6,7 +6,8 @@ from marshmallow import ValidationError
 from werkzeug.security import check_password_hash
 
 from extensions import db
-from models import Site, User, UserCreationSchema
+from models import Site, User
+from models.schemas import UserCreationSchema
 
 # create Flask blueprint
 auth = Blueprint('auth', __name__)
@@ -59,7 +60,7 @@ def signup_post():
     form_data = request.form
 
     try:
-        add_user_schema = UserCreationSchema()      # password hashed in creation
+        add_user_schema = UserCreationSchema()              # password hashed in creation
         new_user = add_user_schema.load_user(form_data)
 
         db.session.add(new_user)
@@ -86,7 +87,7 @@ def check_username():
 @auth.route('/check_site_name')
 def check_site_name():
     """ Given a site in the database return associated channels """
-    site_name = request.args.get('site_name')
+    site_name = request.args.get('site_name').replace(' ', '_')
     site = Site.query.filter_by(site_name=site_name).first()
     if site:
         return jsonify({'exists': True, 'message': f'Site {site_name} already exists in database'}), 400

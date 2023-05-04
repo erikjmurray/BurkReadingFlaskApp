@@ -7,7 +7,7 @@ from flask import abort, Blueprint, current_app, jsonify, Response
 from extensions.encryption import decrypt_api_key
 from extensions import ArcPlus
 from models import Site, Channel
-from models.schemas import SiteSchema
+from models.schemas import SiteSchema, ChannelSchema, MeterConfigSchema, StatusOptionSchema
 
 # create Blueprint object
 api = Blueprint('api', __name__)
@@ -15,7 +15,7 @@ api = Blueprint('api', __name__)
 
 # ----- BURK API CALL -----
 @api.route('/burk/<int:site_id>/')
-async def api_call(site_id: int):
+async def burk_api_call(site_id: int):
     """
     Call API for meter and status data from Burk
     Sort and add data to channels based on extensions setup
@@ -30,38 +30,32 @@ async def api_call(site_id: int):
     if not meters and not statuses:
         return abort(400, f'Could not connect to {site.site_name}')
     else:
-        # Add values to the channel dict based on information from Burk
         burk_data = get_burk_data(site, meters, statuses)
-        print(burk_data)
         return burk_data
 
 
 # ----- BURK VALUE SORTING -----
 def get_burk_data(site, meters, statuses):
     data = []
-    channels = site.channels
+    channel_schema = ChannelSchema(many=True)
+    channels = channel_schema.dump(site.channels)
     for channel in channels:
-        if channel.chan_type == 'meter':
+        if channel['chan_type'] == 'meter':
             meter_value = get_meter_value(channel, meters)
-            channel_data = channel.to_dict()
-            channel_data['html_tag'] = f'S{site.id}*C{channel.id}'
-            channel_data['value'] = meter_value
-            data.append(channel_data)
-        elif channel.chan_type == 'status':
+            channel['value'] = meter_value
+            data.append(channel)
+        elif channel['chan_type'] == 'status':
             status_values = get_status_value(channel, statuses)
-            channel_data = channel.to_dict()
-            channel_data['html_tag'] = f'S{site.id}*C{channel.id}'
-            channel_data['value'] = status_values
-            data.append(channel_data)
+            channel['value'] = status_values
+            data.append(channel)
     return data
 
 
 def get_meter_value(channel: Channel, meters):
     """ Using meter values from Burk API call, append value to channel """
     try:
-        config = channel.meter_config[0]
-        num = config.burk_channel
-        meter_value = meters[num - 1]['value']
+        burk_channel = channel['meter_config'][0]['burk_channel']
+        meter_value = meters[burk_channel - 1]['value']
     except IndexError:
         current_app.logger.info(f'Meter Channel {channel.id} at Site {channel.site_id} Burk Data index error')
         meter_value = None
@@ -71,17 +65,58 @@ def get_meter_value(channel: Channel, meters):
 def get_status_value(channel: Channel, statuses):
     """ Using status values from Burk API, append value to channel """
     status_values = []
-    for i, option in enumerate(channel.status_options):
+    for i, option in enumerate(channel['status_options']):
         try:
-            num = option.burk_channel
-            if not num:
+            burk_channel = option['burk_channel']
+            if not burk_channel:
                 status_values.append(None)
                 continue
-            status_value = statuses[num - 1]['value']
+            status_value = statuses[burk_channel - 1]['value']
             status_values.append(status_value)
         except IndexError:
             current_app.logger.info(f'Status Channel {channel.id} at Site {channel.site_id} Burk Data index error')
     return status_values
+
+
+# ----- Pass data from database to Javascript -----
+@api.route('/sites')
+def all_sites() -> Response:
+    """ Called by JS to get list of site names only """
+    sites = Site.query.all()
+    schema = SiteSchema(many=True)
+    site_data = schema.dump(sites)
+    return jsonify(site_data)
+
+
+@api.route('/site/<int:site_id>/channels')
+def all_site_channels(site_id) -> Response:
+    """ Called by JS on site refresh failure to connect """
+    channels = Channel.query.filter_by(site_id=site_id).all()
+    channel_schema = ChannelSchema(many=True)
+    channel_data = channel_schema.dump(channels)
+    return jsonify(channel_data)
+
+
+@api.route('/channel/<int:channel_id>')
+def get_channel_data(channel_id):
+    channel = Channel.query.get_or_404(channel_id)
+    channel_schema = ChannelSchema()
+    channel_data = channel_schema.dump(channel)
+    return channel_data
+
+
+@api.route('/channel_config/<int:channel_id>')
+def get_channel_config(channel_id):
+    channel = Channel.query.get_or_404(channel_id)
+    if channel.chan_type == 'meter':
+        config_schema = MeterConfigSchema(many=True)
+        config_data = config_schema.dump(channel.meter_config)
+        return jsonify(config_data)
+    elif channel.chan_type == 'status':
+        option_schema = StatusOptionSchema(many=True)
+        option_data = option_schema.dump(channel.status_options)
+        return jsonify(option_data)
+    return
 
 
 # ----- CHANNEL CONFIGURATION OPTIONS -----
@@ -112,43 +147,6 @@ def get_units():
         'Volts',
     ]
     return units
-
-
-# ----- Pass data from database to Javascript -----
-@api.route('/sites')
-def all_sites() -> Response:
-    """ Called by JS to get list of site names only """
-    sites = Site.query.all()
-    schema = SiteSchema(many=True)
-    site_data = schema.dump(sites)
-    return jsonify(site_data)
-
-
-# TODO: Adjust ma.Schemas to combine channels
-@api.route('/<int:site_id>/channel/<int:channel_id>')
-def get_channel_data(site_id, channel_id):
-    try:
-        site = Site.query.get_or_404(site_id)
-        channel = Channel.query.get_or_404(channel_id)
-    except Exception as e:
-        print(e)
-        return abort(400, 'Database query failed')
-    data = channel.to_dict()
-    data['site_name'] = site.site_name
-    return data
-
-
-@api.route('/channel_config/<int:channel_id>')
-def get_channel_config(channel_id):
-    channel = Channel.query.get_or_404(channel_id)
-    config = []
-    if channel.chan_type == 'meter':
-        for option in channel.meter_config:
-            config.append(option.to_dict())
-    elif channel.chan_type == 'status':
-        for option in channel.status_options:
-            config.append(option.to_dict())
-    return config
 
 
 # ----- THIS WAS A TEST ROUTE TO GET VALUES FOR SPECIFIC CHANNEL

@@ -29,9 +29,9 @@ get_units();
 
 // Get document elements
 const channel_count = document.getElementById('channel_count');
-console.log(channel_count.value)
 const channels_form = document.getElementById('channels');
 const add_channel_div = document.getElementById('add_channel')
+
 
 const channel_selector_html = `
     <fieldset style="margin-top:5px; border-radius: 5px;">
@@ -74,7 +74,7 @@ function add_channel_html() {
 
             // create meter html
             let channel_div = document.createElement('div');
-            let meter_channel = create_meter_channel(`CH${channel_number}`)
+            let meter_channel = create_meter_channel(`new_${channel_number}`)
             channel_div.innerHTML = meter_channel
 
             // add to page
@@ -87,7 +87,7 @@ function add_channel_html() {
 
             // create status html
             let channel_div = document.createElement('div');
-            let status_channel = create_status_channel(`CH${channel_number}`)
+            let status_channel = create_status_channel(`new_${channel_number}`)
             channel_div.innerHTML = status_channel
 
             // add to page
@@ -107,9 +107,9 @@ function minimize_channel_data(channel_id) {
     content = document.getElementById(`${channel_id}_content`)
     header = document.getElementById(`${channel_id}_header`)
     title = document.getElementById(`${channel_id}_title`)
-    content.style = 'display: none;'
+    content.style.display = 'none'
 
-    if (title.value) {  header.innerHTML = `${channel_id}. ${title.value}`  }
+    if (title.value) {  header.innerHTML = `${title.value}`  }
 
     hide_content_button = document.getElementById(`${channel_id}_hide_content`)
     hide_content_button.src = '/static/img/plus_sign.png'
@@ -120,7 +120,7 @@ function minimize_channel_data(channel_id) {
 
 function maximize_channel_data(channel_id) {
     content = document.getElementById(`${channel_id}_content`)
-    content.style = ''
+    content.style.display = ''
 
     hide_content_button = document.getElementById(`${channel_id}_hide_content`)
     hide_content_button.src = '/static/img/minus_sign.png'
@@ -135,19 +135,20 @@ function create_meter_channel(id) {
     <fieldset>
       <dl>
         <div class="channel_header">
-            <label id='${id}_header'>${id}. Meter</label>
+            <label id="${id}" style="float:left; margin:0;">${id.replace('new_', '')}.</label>
+            <label id='${id}_header'>Meter</label>
             <img class="hide_content_button" id="${id}_hide_content"
             onclick="minimize_channel_data('${id}'); return false;" src='/static/img/minus_sign.png' alt='-'>
-            <input style="display: none;" type="text" id="${id}_type" name="${id}_type" value='meter'>
+            <input type="hidden" id="${id}_chan_type" name="${id}_chan_type" value='meter'>
         </div>
-        <dt class="config_content" id='${id}_content'>
-            <label for='${id}_title'>Title</label>
-            <input type="text" id='${id}_title' name='${id}_title' required>
-            <label for="${id}_num">Channel Number</label><br>
-            <input type="number" id="${id}_num" name="${id}_num" required>
+        <dt class="config_content top-border" id='${id}_content'>
+            <label for='${id}_title' class="title-margin">Title</label>
+            <input type="text" id='${id}_title' name='${id}_title' required placeholder='Channel Name'>
+            <label for="${id}_burk_channel">Burk Channel Number</label>
+            <input type="number" id="${id}_burk_channel" name="${id}_burk_channel" required placeholder="0">
 
-            <label for="${id}_nominal">Nominal Output</label><br>
-            <input type="number" step="any" id="${id}_nominal" name="${id}_nominal" placeholder="0">
+            <label for="${id}_nominal">Nominal Output</label>
+            <input type="number" step="any" id="${id}_nominal_output" name="${id}_nominal_output" required placeholder="0">
         <h4 style="margin:0;">Limits</h4>
         <div class="option_box">
         `
@@ -159,7 +160,7 @@ function create_meter_channel(id) {
         meter_channel += `
         </div>
           <div class="config_content">
-            <label style="" for="${id}_units">Units: </label></br>
+            <label style="" for="${id}_units">Units: </label>
             <select style="" id="${id}_units" name="${id}_units" required>
         `
         meter_channel += add_unit_options()
@@ -183,13 +184,14 @@ function create_limit_html(id, limit) {
         message = 'Color below lower limit'
     }
     limit_html = `
-        <label for="${id}_${limit.toLowerCase()}">${limit} Limit</label><br>
-        <input type="number" step="any" id="${id}_${limit.toLowerCase()}" name="${id}_${limit.toLowerCase()}" placeholder="0" required>
+        <label for="${id}_${limit.toLowerCase()}_limit">${limit} Limit</label>
+        <input id="${id}_${limit.toLowerCase()}_limit" name="${id}_${limit.toLowerCase()}_limit"
+               type="number" step="any" placeholder="0" required>
 
         <label>
         ${message}
-        <select style="" id="${id}_${limit.toLowerCase()}_color" name="${id}_${limit.toLowerCase()}_color"
-                onchange="change_bg_color('${id}_${limit.toLowerCase()}_color')" required>
+        <select style="" id="${id}_${limit.toLowerCase()}_lim_color" name="${id}_${limit.toLowerCase()}_lim_color"
+                onchange="change_bg_color('${id}_${limit.toLowerCase()}_lim_color')" required>
     `
     limit_html += add_color_picker()
     limit_html += `
@@ -230,25 +232,22 @@ function create_status_channel(id) {
     options = create_option_content(id, 1) + create_option_content(id, 2)
 
     status_channel = `
-        <div style="display: none;">
-            <input type="number" id="${id}_opt_count" name="${id}_opt_count" value=2>
-        </div>
         <fieldset>
           <dl>
             <div class="channel_header">
-                <label id='${id}_header'>${id}. Status</label>
+                <label id="${id}" style="float:left; margin:0;">${id.replace('new_', '')}.</label>
+                <label id='${id}_header'>Status</label>
                 <img class="hide_content_button" id="${id}_hide_content"
                 onclick="minimize_channel_data('${id}'); return false;" src='/static/img/minus_sign.png' alt='-'>
-                <input style="display: none;" type="text" id="${id}_type" name="${id}_type" value='status'>
+                <input type="hidden" id="${id}_chan_type" name="${id}_chan_type" value='status'>
+                <input type="hidden" id="${id}_opt_count" name="${id}_opt_count" value=2>
             </div>
-            <div id='${id}_content' class="config_content" style="">
-                <label for='${id}_title'>Title</label></br>
-                <input style="margin-bottom:10px; width:285px;" type="text" id='${id}_title' name='${id}_title' required>
+            <dt id='${id}_content' class="config_content to-border" style="">
+                <label for='${id}_title' class="title-margin">Title</label>
+                <input type="text" id='${id}_title' name='${id}_title' required placeholder="Channel Name">
                 <div id="${id}_options">${options}</div>
-                <dt>
                 <button class="func_button" onclick="add_next_option('${id}'); return false;">Add Option</button>
-                </dt>
-            </div>
+            </dt>
           </dl>
         </fieldset>
         `
@@ -260,40 +259,40 @@ function create_status_channel(id) {
 function create_option_content(id, opt_num) {
     option_content = `
     <div class="option_box" id="${id}_option_${opt_num}">
-        <dt class="config_content">
-            <h4 style="text-decoration: underline; margin:0;">Option ${opt_num}</h4>
+        <h4 style="text-decoration: underline; margin:0;">Option ${opt_num}</h4>
 
-            <label>Channel</label>
-            <input type="number" id="${id}_num_${opt_num}" name="${id}_num_${opt_num}" placeholder="Channel Number">
+        <label for="${id}_burk_channel_${opt_num}">Burk Channel Number</label>
+        <input type="number" placeholder="0"
+               id="${id}_burk_channel_${opt_num}" name="${id}_burk_channel_${opt_num}">
 
-            <label>Name</label>
-            <input type="text" id="${id}_name_${opt_num}" name="${id}_name_${opt_num}" placeholder="Channel Name">
+        <label>Option Name</label>
+        <input type="text" placeholder="Text When Selected"
+               id="${id}_selected_value_${opt_num}" name="${id}_selected_value_${opt_num}">
 
+        <label>
+        Selected State
+        </label>
+        <div class="radio_group option_radio_group">
+            <label style="margin-right:25px;">
+                <input type="radio" name="${id}_selected_state_${opt_num}" value=true required>
+                On
+            </label>
             <label>
-            Selected State
+                <input type="radio" name="${id}_selected_state_${opt_num}" value=false>
+                Off
             </label>
-            <div class="radio_group option_radio_group">
-                <label style="margin-right:25px;">
-                    <input type="radio" name="${id}_state_${opt_num}" value=true required>
-                    On
-                </label>
-                <label>
-                    <input type="radio" name="${id}_state_${opt_num}" value=false>
-                    Off
-                </label>
-            </div>
+        </div>
 
-            <label for="${id}_color_${opt_num}">
-                Status Color
-            </label>
+        <label for="${id}_selected_color_${opt_num}">
+            Background Color When Selected
+        </label>
 
-            <select style="" id="${id}_color_${opt_num}" name="${id}_color_${opt_num}"
-                    onchange="change_bg_color('${id}_color_${opt_num}')" required>
+        <select style="" id="${id}_selected_color_${opt_num}" name="${id}_selected_color_${opt_num}"
+                onchange="change_bg_color('${id}_selected_color_${opt_num}')" required>
         `
         option_content += add_color_picker()
         option_content += `
-            </select>
-        </dt>
+        </select>
     </div>
     `
     return option_content
@@ -318,7 +317,33 @@ function add_next_option(id) {
 
 // on color select, change background color to match selection
 function change_bg_color(id) {
-    color_select = document.getElementById(id)
-    color = color_select.value
-    color_select.style.backgroundColor = color
+    color_selector = document.getElementById(id)
+    color = color_selector.value
+    color_selector.style.backgroundColor = color
 }
+
+
+function remove_new_channel() {
+    // TODO: Add logic to delete added channel before posting
+}
+
+
+function add_delete_channel_tag(channel_id) {
+    // on delete confirmation in form, add input delete_${channel_id} remove all data from fieldset
+    const fieldset_to_replace = document.getElementById(channel_id);
+
+    const confirmation = confirm(`WARNING: Deleting this channel will destroy all associated reading values. Are you sure you want to proceed?`);
+
+    if (confirmation) {
+        // create a new input element
+        const input_to_add = document.createElement('input');
+        input_to_add.type = 'hidden';
+        input_to_add.id = `delete_${channel_id}_tag`;
+        input_to_add.name = `delete_${channel_id}_tag`;
+        input_to_add.value = 'true';
+
+        // replace the fieldset with the new input element
+        fieldset_to_replace.parentNode.replaceChild(input_to_add, fieldset_to_replace);
+    }
+}
+

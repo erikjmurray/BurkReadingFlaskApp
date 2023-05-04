@@ -38,17 +38,6 @@ class Channel(db.Model):
             return max_channel_order + 1
 
 
-    def to_dict(self):
-        return dict(
-            id=self.id,
-            chan_type=self.chan_type,
-            title=self.title,
-            meter_config=[config.id for config in self.meter_config],
-            status_options=[opt.id for opt in self.status_options],
-            site_id=self.site_id,
-        )
-
-
 class MeterConfig(db.Model):
     """
     Define config for meter channel
@@ -64,18 +53,6 @@ class MeterConfig(db.Model):
     lower_lim_color = db.Column(db.String(15), nullable=False)
     channel_id = db.Column(db.Integer, db.ForeignKey('channels.id'), nullable=False)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'burk_channel': self.burk_channel,
-            'units': self.units,
-            'nominal_output': self.nominal_output,
-            'upper_limit': self.upper_limit,
-            'upper_lim_color': self.upper_lim_color,
-            'lower_limit': self.lower_limit,
-            'lower_lim_color': self.lower_lim_color,
-        }
-
 
 class StatusOption(db.Model):
     """
@@ -90,12 +67,4 @@ class StatusOption(db.Model):
     selected_color = db.Column(db.String(15), nullable=False)
     channel_id = db.Column(db.Integer, db.ForeignKey('channels.id'), nullable=False)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'burk_channel': self.burk_channel,
-            'selected_value': self.selected_value,
-            'selected_state': self.selected_state,
-            'selected_color': self.selected_color,
-        }
 
