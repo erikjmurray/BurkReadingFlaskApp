@@ -347,6 +347,11 @@ input[type=number] {
 
 .error-message {
     text-align: center;
+    width: 285px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 3px;
 }
 /*******************************************/
 /* ----- ADD NEW SITE PAGE ----- */
