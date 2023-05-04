@@ -399,9 +399,13 @@ def build_report_for_date(report_data, readings, messages):
 def build_eas_report(site, date_range):
     """ Create a page in the report detailing the EAS test sent and received """
     eas_tests = query_eas_tests_by_date_range(site, date_range)
-    print(eas_tests)
+    eas_df = create_eas_dataframe([eas_test.to_dict() for eas_test in eas_tests])
+    print(eas_df.to_string())
     return
-    # create_eas_dataframe(eas_tests)
+
+
+def create_eas_dataframe(eas_tests):
+    return pd.DataFrame(eas_tests)
 
 
 

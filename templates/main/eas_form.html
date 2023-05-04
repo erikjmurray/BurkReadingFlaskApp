@@ -40,17 +40,17 @@
             </td>
             </dl>
         </tr>
-        <tr>
+        <tr id="received_from_row">
             <td class="form_label">Received From:</td>
             <td>
-                <input id="eas_from" name="eas_from" placeholder="WXYZ"/>
+                <input id="eas_from" name="eas_from" placeholder="WXYZ" required/>
             </td>
         </tr>
-        <tr>
+        <tr id="received_at_row">
             <td class="form_label">Received At:</td>
             <td>
                 <input type="datetime-local" id="eas_time_rx" name="eas_time_rx"
-                    value="{{ current_time }}"/>
+                    value="{{ current_time }}" required/>
             </td>
         </tr>
         <tr>
@@ -67,10 +67,25 @@
                 {% for site in sites %}
                 <label>
                 <input type='checkbox' id='{{site.site_name}}_eas' name='{{site.site_name}}' value='{{site.id}}'/>
-                    {{site.site_name}}
+                    {{site.site_name.replace('_', ' ')}}
                 </label>
                 {% endfor %}
                 </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                <label>MCEOD</label>
+                <select id="mceod" name="mceod" required>
+                    <option value=""></option>
+                    {% for op in operator %}
+                    <option value="{{op.id}}"
+                            {% if op.name == current_user.name %} selected {% endif %}>
+                        {{op.name}}
+                    </option>
+                    {% endfor %}
+                </select>
             </td>
         </tr>
         <tr>
@@ -82,5 +97,33 @@
 </form>
 </div>
 <script src="{{ url_for('static', filename='javascript/date_query_form.js') }}"></script>
+<script>
+// if originating test, remove received data inputs
+const originatingCheckbox = document.getElementById("originating");
+
+const receivedFromRow =  document.getElementById("received_from_row")
+const receivedFromInput =  document.getElementById("eas_from")
+
+const receivedAtRow =  document.getElementById("received_at_row")
+const receivedAtInput =  document.getElementById("eas_time_rx")
+
+originatingCheckbox.addEventListener("change", () => {
+  if (originatingCheckbox.checked) {
+    receivedFromRow.style.display = "none";
+    receivedFromInput.value = "";
+    receivedFromInput.required = false;
+
+    receivedAtRow.style.display = "none";
+    receivedAtInput.value = ""
+    receivedAtInput.required = false;
+  } else {
+    receivedFromRow.style.display = "";
+    receivedFromInput.required = true;
+
+    receivedAtRow.style.display = "";
+    receivedAtInput.required = true;
+  }
+});
+</script>
 
 {% endblock%}

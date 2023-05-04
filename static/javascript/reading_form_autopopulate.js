@@ -27,8 +27,8 @@ async function load_data_to_form() {
     // gets names of all sites
     await get_sites().then(sites => {
         for (let site of sites) {
-            get_burk_data(site.id, site.site_name).then(channels => {
-                update_site_section(site.site_name, channels)
+            get_burk_data(site.id, site.display_name).then(channels => {
+                update_site_section(site.display_name, channels)
         })
     }
   })
@@ -47,7 +47,7 @@ async function get_sites() {
 async function get_burk_data(site_id, site_name) {
     response = await fetch(`/api/burk/${site_id}`)
     if (!response.ok) {
-        error = `Data from ${site_name.replace('_', ' ')} did not load automatically. All readings input by user.\n`
+        error = `Data from ${site_name} did not load automatically. All readings input by user.\n`
         add_message(error)
         return Promise.error
     }
@@ -61,9 +61,10 @@ async function update_site_section(site_name, channels) {
     if (!channels) {return}
     for (let channel of channels) {
         // find input by designation
-        let input = document.getElementById(channel.html_tag);
         if (channel.chan_type === 'meter') {
             check_limits(site_name, channel)
+
+            let input = document.getElementById(`C${channel.id}`);
             input.value = +channel.value.toFixed(3)
         } else if (channel.chan_type === 'status') {
             update_radio_status(channel)
@@ -75,7 +76,7 @@ async function update_site_section(site_name, channels) {
 // Checks if meter values are within accepted values
 // NOTE: Channel format is the output of the get_burk_data API call not Channel from database
 async function check_limits(site_name, channel) {
-    let cell = document.getElementById(`${channel.html_tag}_cell`)
+    let cell = document.getElementById(`C${channel.id}_cell`)
 
     // query db for meter config
     get_channel_config(channel.id).then(config => {
@@ -114,11 +115,11 @@ async function update_radio_status(channel) {
             if (channel.value[index] == null) { continue }
             if (channel.value[index] == option.selected_state) {
                 // select input if burk status value equals config value
-                let input=document.getElementById(`${channel.html_tag}*${index+1}`)
+                let input=document.getElementById(`C${channel.id}*${index+1}`)
                 input.checked = true
 
                 // change background color to config setting
-                let cell = document.getElementById(`${channel.html_tag}_cell`)
+                let cell = document.getElementById(`C${channel.id}_cell`)
                 cell.style.backgroundColor = option.selected_color
             }
         }
@@ -167,30 +168,36 @@ async function get_channels(site_id) {
 
 // Clears inputs for specific site
 function clear_site_inputs(site_id) {
-    const inputs = document.querySelectorAll(`[id*="S${site_id}"]`)
-    for (let input of inputs) {
-        if (!input.style.backgroundColor == '') {
-            input.style.backgroundColor = ''
+    get_channels(site_id).then(channels => {
+        for (let channel of channels) {
+            const inputs = document.querySelectorAll(`[id*="C${channel.id}"]`)
+
+            for (let input of inputs) {
+                if (!input.style.backgroundColor == '') {
+                    input.style.backgroundColor = ''
+                    }
+                if (input.type == 'checkbox' || input.type == 'radio') {
+                    // breaks loop so as not to clear value from inputs
+                    input.checked = false;
+                    continue}
+                // resets meter values
+                input.value= ''
             }
-        if (input.type == 'checkbox' || input.type == 'radio') {
-            // breaks loop so as not to clear value from inputs
-            input.checked = false;
-            continue}
-        // resets meter values
-        input.value= ''
-    }
+        }
+    })
 }
+
 
 // if load error for site, remove
 async function remove_load_error_message(site_name) {
-    message = `Data from ${site_name.replace('_', ' ')} did not load automatically. All readings input by user.`
+    message = `Data from ${site_name} did not load automatically. All readings input by user.`
     remove_matched_message(message)
 }
 
 
 // if refresh or manual update clear related messages
 async function remove_message_on_update(site_name, channel_title) {
-    let identifier = `${site_name.replace('_', ' ')} ${channel_title}`
+    let identifier = `${site_name} ${channel_title}`
     remove_matched_message(identifier)
 }
 
@@ -223,9 +230,8 @@ function manually_changed(html_tag) {
     let cell = document.getElementById(`${html_tag}_cell`)
     cell.style.backgroundColor = ''
 
-    // get channel info from html tag in format S1*C1
-    // where the integer are the ids of the site and channel respectively
-    let channel_id = `${html_tag.split('*')[1].replace('C', '')}`
+    let channel_id = html_tag.replace('C', '')
+    console.log(channel_id)
 
     // get config data for channel
     get_channel_data(channel_id).then(channel => {
@@ -233,10 +239,10 @@ function manually_changed(html_tag) {
         site_name = channel.site_name
         remove_message_on_update(site_name, channel.title)
         if (channel.chan_type == 'meter') {
-            meter_manually_changed(channel, html_tag)
+            meter_manually_changed(channel)
             }
         else if (channel.chan_type == 'status') {
-            status_manually_changed(channel, html_tag)
+            status_manually_changed(channel)
             }
         add_manually_updated_message(site_name, channel.title)
     })
@@ -251,18 +257,17 @@ async function get_channel_data(channel_id) {
 }
 
 
-function meter_manually_changed(channel, html_tag) {
-    let value = document.getElementById(html_tag).value
+function meter_manually_changed(channel) {
+    let value = document.getElementById(`C${channel.id}`).value
     channel.value = value
-    channel.html_tag = html_tag
-    check_limits(channel.site_name.replace('_', ' '), channel)
+    check_limits(channel.site_name, channel)
 }
 
 
-function status_manually_changed(channel, html_tag) {
+function status_manually_changed(channel) {
     // find selected radio button and assign value to selected value
-    let value = get_checked_status_value(html_tag)
-    let cell = document.getElementById(`${html_tag}_cell`)
+    let value = get_checked_status_value(`C${channel.id}`)
+    let cell = document.getElementById(`C${channel.id}_cell`)
 
     get_channel_config(channel.id).then(options => {
         for (option of options) {
@@ -289,11 +294,11 @@ function get_checked_status_value(html_tag) {
 function add_manually_updated_message(site_name, channel_title) {
     // If data didn't load automatically, all channels will be manual. Skip.
     let messages = document.getElementById('messages')
-    message = `Data from ${site_name.replace('_', ' ')} did not load automatically.`
+    message = `Data from ${site_name} did not load automatically.`
     if (messages.value.match(message)) {return}
 
     // Add message that the channel was manually updated
-    let changed = `${site_name.replace('_', ' ')} ${channel_title} manually updated\n`
+    let changed = `${site_name} ${channel_title} manually updated\n`
     add_message(changed)
 }
 

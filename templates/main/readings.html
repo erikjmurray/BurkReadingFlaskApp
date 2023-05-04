@@ -22,18 +22,17 @@
         <section class="readings">
             {# Create a table for each site in config #}
             {% for site in sites %}
-            {% set site_name = site.site_name %}
             {% set channels = site.channels %}
             <table>
             <thead>
             <tr class="site_heading">
                 {# Header provides site name, link to database readings, and a link to retry the Burk API form load #}
                 <th colspan="12" style="background-color: #ddd; color: black;">
-                    <p>{{ site_name.replace("_", " ") }} -
-                        <a href="site/{{site.id}}/readings" id="{{site_name}}_view_readings">view readings</a>
+                    <p>{{ site.display_name }} -
+                        <a href="site/{{site.id}}/readings" id="{{site.site_name}}_view_readings">view readings</a>
                     </p>
-                    <span style="float:right;" onclick="refresh_site('{{site.id}}', '{{site_name}}')">
-                        <img src="{{url_for('static', filename='img/refresh.png')}}" id="{{site_name}}_refresh"/>
+                    <span style="float:right;" onclick="refresh_site('{{site.id}}', '{{site.display_name}}')">
+                        <img src="{{url_for('static', filename='img/refresh.png')}}" id="{{site.site_name}}_refresh"/>
                     </span>
                 </th>
             </tr>
@@ -44,39 +43,34 @@
             {% for channel in channels %}
                 <th>{{ channel.title }}</th>
             {% endfor %}
-            {# Added regardless of config #}
                 <th>Approve</th>
             </tr>
 
             {# Creates inputs associated with headers #}
-<!--        *********** !IMPORTANT ************     -->
-            {# ID Format here is crucial to form update and database posting #}
-            {# do not change without serious consideration #}
             <tr class="table_data">
                 {% for channel in channels %}
-                {% set id = 'S' + site.id|string + '*C' + channel.id|string %}
-                {% if channel.chan_type == 'status' %}
-                <td class="status" id="{{id}}_cell">
-                    <div class="radio_group">
-                    {# Each status may have multiple options available, index helps JS find correct input #}
-                    {% for option in channel.status_options %}
-                    <label>
-                    <input type="radio" id="{{id}}*{{loop.index}}" name="{{id}}"
-                           onchange="manually_changed('{{id}}')" value="{{option.selected_value}}" required>
-                    {{option.selected_value}}
-                    </label>
-                        {% endfor %}
-                    </div>
-                </td>
-                {% elif channel.chan_type == 'meter' %}
-                <td class="meter" id="{{id}}_cell" style="">
+                {% set id = 'C' + channel.id|string %}
+                  {% if channel.chan_type == 'meter' %}
+                  <td class="meter" id="{{id}}_cell" style="">
                     {# Step allows floats, onchange func checks input against meter limits, adds message: manually changed #}
                     <input type="number" step="any" id="{{id}}" name="{{id}}" value=""
                            onchange="manually_changed('{{id}}')" required>
                     <br>
                     <label id="{{channel.title}}_label">{{channel.meter_config[0].units}}</label>
-                </td>
-                {% endif %}
+                  </td>
+                  {% elif channel.chan_type == 'status' %}
+                  <td class="status" id="{{id}}_cell">
+                    <div class="radio_group">
+                    {% for option in channel.status_options %}
+                        <label>
+                        <input type="radio" id="{{id}}*{{loop.index}}" name="{{id}}"
+                           onchange="manually_changed('{{id}}')" value="{{option.selected_value}}" required>
+                        {{option.selected_value}}
+                    </label>
+                    {% endfor %}
+                    </div>
+                  </td>
+                  {% endif %}
                 {% endfor %}
                 {# Added regardless of config, val not actually passed to results, but required for submission #}
                 <td id="{{site.site_name}}_approved_cell">
@@ -139,10 +133,13 @@
                             to be correct to the best of my knowledge.... blah blah legal nonsense blah</p>
                         {# Adds blank user and makes field required #}
                         <select id="mceod" name="mceod" style="margin-bottom:10px;" required>
-                            <option value="" selected></option>
+                            <option value=""></option>
                         {# Reads users from config and adds each to the dropdown #}
                         {% for op in operators %}
-                            <option value="{{op.id}}">{{op.name}}</option>
+                            <option value="{{op.id}}"
+                                    {%if op.id == current_user.id %} selected {% endif %}>
+                                {{op.name}}
+                            </option>
                         {% endfor %}
                         </select>
                     </td>

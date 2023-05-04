@@ -33,5 +33,10 @@ class Site(db.Model):
             return max_site_order + 1
 
 
+    @property
+    def display_name(self):
+        return self.site_name.replace('_', ' ')
+
+
     def __repr__(self):
         return f"Site {self.site_name}"

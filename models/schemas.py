@@ -3,7 +3,7 @@ from marshmallow import fields, post_dump, post_load, ValidationError, validates
 from werkzeug.security import generate_password_hash
 
 from extensions import ma
-from models import Site, User, Channel, StatusOption, MeterConfig
+from models import Site, User, Channel, StatusOption, MeterConfig, Reading
 
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
@@ -34,7 +34,7 @@ class UserCreationSchema(ma.SQLAlchemyAutoSchema):
             raise ValidationError('Username already exists')
 
     @post_load
-    def load_user(self, data):
+    def load_user(self, data) -> User:
         self.validate_username(data.get('username'))
         user = User(
             first_name=data['first_name'],
@@ -77,7 +77,7 @@ class ChannelSchema(ma.SQLAlchemyAutoSchema):
         if site_id:
             site = Site.query.get(site_id)
             if site:
-                data['site_name'] = site.site_name
+                data['site_name'] = site.display_name
         return data
 
 
@@ -88,3 +88,12 @@ class SiteSchema(ma.SQLAlchemyAutoSchema):
         model = Site
         exclude = ('api_key',)
 
+    @post_dump
+    def add_display_name(self, data, **kwargs):
+        data['display_name'] = data['site_name'].replace('_', ' ')
+        return data
+
+
+class ReadingSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Reading

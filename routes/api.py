@@ -37,27 +37,24 @@ async def burk_api_call(site_id: int):
 # ----- BURK VALUE SORTING -----
 def get_burk_data(site, meters, statuses):
     data = []
-    channels = site.channels
+    channel_schema = ChannelSchema(many=True)
+    channels = channel_schema.dump(site.channels)
     for channel in channels:
-        if channel.chan_type == 'meter':
+        if channel['chan_type'] == 'meter':
             meter_value = get_meter_value(channel, meters)
-            channel_data = channel.to_dict()
-            channel_data['html_tag'] = f'S{site.id}*C{channel.id}'
-            channel_data['value'] = meter_value
-            data.append(channel_data)
-        elif channel.chan_type == 'status':
+            channel['value'] = meter_value
+            data.append(channel)
+        elif channel['chan_type'] == 'status':
             status_values = get_status_value(channel, statuses)
-            channel_data = channel.to_dict()
-            channel_data['html_tag'] = f'S{site.id}*C{channel.id}'
-            channel_data['value'] = status_values
-            data.append(channel_data)
+            channel['value'] = status_values
+            data.append(channel)
     return data
 
 
 def get_meter_value(channel: Channel, meters):
     """ Using meter values from Burk API call, append value to channel """
     try:
-        burk_channel = channel.meter_config[0].burk_channel
+        burk_channel = channel['meter_config'][0]['burk_channel']
         meter_value = meters[burk_channel - 1]['value']
     except IndexError:
         current_app.logger.info(f'Meter Channel {channel.id} at Site {channel.site_id} Burk Data index error')
@@ -68,9 +65,9 @@ def get_meter_value(channel: Channel, meters):
 def get_status_value(channel: Channel, statuses):
     """ Using status values from Burk API, append value to channel """
     status_values = []
-    for i, option in enumerate(channel.status_options):
+    for i, option in enumerate(channel['status_options']):
         try:
-            burk_channel = option.burk_channel
+            burk_channel = option['burk_channel']
             if not burk_channel:
                 status_values.append(None)
                 continue
