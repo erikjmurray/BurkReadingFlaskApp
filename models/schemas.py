@@ -71,6 +71,16 @@ class ChannelSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
 
 
+    @post_dump(pass_many=False)
+    def add_site_name(self, data, **kwargs):
+        site_id = data.get('site_id')
+        if site_id:
+            site = Site.query.get(site_id)
+            if site:
+                data['site_name'] = site.site_name
+        return data
+
+
 class SiteSchema(ma.SQLAlchemyAutoSchema):
     channels = ma.Nested(ChannelSchema, many=True)
 

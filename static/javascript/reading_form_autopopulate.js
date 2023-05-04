@@ -139,13 +139,29 @@ async function refresh_site(site_id, site_name) {
 
     // on refresh, remove log messages
     get_burk_data(site_id, site_name).then(channels => {
-        if (!channels) {return}
+        if (channels) {
+            for (let channel of channels) {
+                remove_message_on_update(site_name, channel.title)
+                }
+            update_site_section(site_name, channels)
+            return
+            }
+        })
+
+    // remove messages if get_burk_data fails
+    get_channels(site_id).then(channels => {
         for (let channel of channels) {
             remove_message_on_update(site_name, channel.title)
         }
-        // func in onload section
-        update_site_section(site_name, channels)
     })
+}
+
+
+// Calls Flask route to get channels all channels for a site
+async function get_channels(site_id) {
+    const response = await fetch(`/api/site/${site_id}/channels`);
+    const channels = await response.json();
+    return channels
 }
 
 
@@ -209,11 +225,10 @@ function manually_changed(html_tag) {
 
     // get channel info from html tag in format S1*C1
     // where the integer are the ids of the site and channel respectively
-    let site_id = `${html_tag.split('*')[0].replace('S', '')}`
     let channel_id = `${html_tag.split('*')[1].replace('C', '')}`
 
     // get config data for channel
-    get_channel_data(site_id, channel_id).then(channel => {
+    get_channel_data(channel_id).then(channel => {
         // NOTE: Channel does not usually include the site name
         site_name = channel.site_name
         remove_message_on_update(site_name, channel.title)
@@ -229,8 +244,8 @@ function manually_changed(html_tag) {
 
 
 // Calls Flask route to get channel config data
-async function get_channel_data(site_id, channel_id) {
-    const response = await fetch(`/api/${site_id}/channel/${channel_id}`);
+async function get_channel_data(channel_id) {
+    const response = await fetch(`/api/channel/${channel_id}`);
     const channel = await response.json();
     return channel
 }
@@ -319,5 +334,3 @@ function verify_eas(eas_verification) {
     })
 }
 
-
-console.log('Javascript loaded!')

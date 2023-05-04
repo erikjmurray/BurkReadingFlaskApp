@@ -261,10 +261,8 @@ def update_channels_post(site_id):
     from extensions.channel_CRUD import handle_channel_update
     handle_channel_update(results, site_id)
 
-    return results
-
-    flash(f'Channels for site {(Site.query.get(site_id)).site_name}')
-    return redirect(url_for('admin.update_channels'))
+    flash(f'Channels for site {(Site.query.get(site_id)).site_name} have been updated')
+    return redirect(url_for('admin.home'))
 
 
 @admin.route('site/<int:site_id>/delete')
