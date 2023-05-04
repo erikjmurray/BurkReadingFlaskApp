@@ -77,9 +77,16 @@ def signup_post():
 @auth.route("/check_username")
 def check_username():
     username = request.args.get("username")
+    current_username = request.args.get('current_username')
+
+    # if updating, don't raise error on existing username
+    if username == current_username:
+        return jsonify({'exists': False})
+
+    # check if username exists, raise error
     user = User.query.filter_by(username=username).first()
     if user:
-        return jsonify({"exists": True})
+        jsonify({'exists': True, 'message': f'Username {username} already exists in database'}), 400
     else:
         return jsonify({"exists": False})
 
@@ -88,6 +95,13 @@ def check_username():
 def check_site_name():
     """ Given a site in the database return associated channels """
     site_name = request.args.get('site_name').replace(' ', '_')
+    current_site_name = request.args.get('current_site_name').replace(' ', '_')
+
+    # if updating, don't raise error on existing site_name
+    if site_name == current_site_name:
+        return jsonify({'exists': False})
+
+    # if site name exists, raise error
     site = Site.query.filter_by(site_name=site_name).first()
     if site:
         return jsonify({'exists': True, 'message': f'Site {site_name} already exists in database'}), 400

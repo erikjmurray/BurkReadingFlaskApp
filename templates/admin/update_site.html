@@ -25,6 +25,7 @@
             </dt>
             <dt class="config_field">
                 <input type="text" id="site_name" name="site_name" value="{{ site.site_name.replace('_', ' ') }}" required>
+                <div class="error-message" id="site_name_errors"></div>
             </dt>
           </dl>
         </fieldset>
@@ -36,8 +37,8 @@
             </dt>
             <dt class="config_field">
                 <input type="text" id="ip_addr" name="ip_addr" value="{{ site.ip_addr }}" required>
+                <div class="error-message" id="ip_addr_errors"></div>
             </dt>
-            <div class="error-message" id="ip_addr_errors"></div>
           </dl>
         </fieldset>
 
@@ -63,6 +64,8 @@
 </div>
 <script src="{{ url_for('static', filename='javascript/site_form_verification.js') }}"></script>
 <script>
+    current_site_name = '{{site.site_name}}'
+
     function delete_site() {
         let confirmation_message = 'Are you sure you want to delete this site? '
         if (confirm(confirmation_message)) {
@@ -81,4 +84,5 @@
         }
     });
 </script>
+
 {% endblock %}
