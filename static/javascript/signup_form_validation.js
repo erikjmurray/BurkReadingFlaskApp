@@ -6,8 +6,8 @@ const lastNameInput = document.getElementById('last_name');
 const usernameInput = document.getElementById("username");
 const usernameErrorMessage = document.getElementById("username-error-message");
 
-//const passwordInput = document.getElementById("password");
-//const passwordErrorMessage = document.getElementById("password-error-message");
+let current_username;
+
 
 // Listeners for DOM elements
 firstNameInput.addEventListener('input', generateUsername);
@@ -37,28 +37,17 @@ usernameInput.addEventListener('input', function() {
     check_database_for_username(usernameInput.value)
 });
 
-// Alerts User that their password should include Upper, Lower, Number, and Symbol
-//passwordInput.addEventListener("input", function() {
-//  passwordErrorMessage.style=""
-//    let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
-//  if (passwordRegex.test(passwordInput.value)) {
-//    passwordErrorMessage.textContent = ""; // clear error message if email is valid
-//  } else {
-//    passwordErrorMessage.textContent = "Password must be at least 8 characters long and include a minimum of uppercase, lowercase, number, and symbol";
-//  }
-//});
 
-
-// Database queries for unique values
 function check_database_for_username(username) {
-    fetch(`/check_username?username=${encodeURIComponent(username)}`)
-    .then(response => response.json())
-    .then(data => {
-      if (data.exists) {
+    fetch(`/check_username?username=${encodeURIComponent(username)}&current_username=${encodeURIComponent(current_username)}`)
+    .then(response => {
+      if (!response.ok) {
         usernameErrorMessage.textContent = "That username already exists. Please contact your local admin";
         usernameErrorMessage.style.backgroundColor = 'yellow'
       } else {
         usernameErrorMessage.textContent = "";
+        usernameErrorMessage.style.backgroundColor = ''
       }
     });
 }
+

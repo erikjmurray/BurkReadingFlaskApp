@@ -67,38 +67,40 @@ function add_channel_html() {
     // On submit, creates either a meter or status channel form
     const channel_type = document.querySelectorAll('input[name="channel_type"]');
     channel_type.forEach(option => {
+        // increment channel count, create new id
         if (option.checked && option.value == 'meter') {
-            // increment channel number
-            channel_number = parseInt(channel_count.value) + 1;
-            channel_count.value = channel_number
-
-            // create meter html
-            let channel_div = document.createElement('div');
-            let meter_channel = create_meter_channel(`new_${channel_number}`)
-            channel_div.innerHTML = meter_channel
-
-            // add to page
-            channels_form.appendChild(channel_div)
+            channel_id = create_channel_id()
+            channel_html = create_meter_channel(channel_id)
+            create_channel_div(channel_html, channel_id)
             }
         else if (option.checked && option.value == 'status') {
-            // increment channel number
-            channel_number = parseInt(channel_count.value) + 1;
-            channel_count.value = channel_number
-
-            // create status html
-            let channel_div = document.createElement('div');
-            let status_channel = create_status_channel(`new_${channel_number}`)
-            channel_div.innerHTML = status_channel
-
-            // add to page
-            channels_form.appendChild(channel_div)
+            channel_id = create_channel_id()
+            channel_html = create_status_channel(channel_id)
+            create_channel_div(channel_html, channel_id)
         }
     })
 
-    // Clears Meter/Status selector and default to ADD CHANNEL
+    // Clears Meter/Status selector and defaults to ADD CHANNEL
     add_channel_div.innerHTML = `
         <button class="func_button" onclick="add_channel_selector_html(); return false;">Add Channel</button>
         `
+}
+
+
+function create_channel_id() {
+    channel_number = parseInt(channel_count.value) + 1;
+    channel_count.value = channel_number
+    return `new_${channel_number}`
+}
+
+
+function create_channel_div(channel_html, channel_id) {
+    // create new div and add channel to form
+    let channel_div = document.createElement('div');
+    channel_div.setAttribute('id', channel_id)
+    channel_div.innerHTML = channel_html
+    channels_form.appendChild(channel_div)
+    return
 }
 
 
@@ -149,8 +151,8 @@ function create_meter_channel(id) {
 
             <label for="${id}_nominal">Nominal Output</label>
             <input type="number" step="any" id="${id}_nominal_output" name="${id}_nominal_output" required placeholder="0">
-        <h4 style="margin:0;">Limits</h4>
-        <div class="option_box">
+            <h4 style="margin:0;">Limits</h4>
+            <div class="option_box">
         `
 
         // Add limit html
@@ -158,7 +160,7 @@ function create_meter_channel(id) {
         meter_channel += create_limit_html(id, 'Lower')
 
         meter_channel += `
-        </div>
+          </div>
           <div class="config_content">
             <label style="" for="${id}_units">Units: </label>
             <select style="" id="${id}_units" name="${id}_units" required>
@@ -166,10 +168,17 @@ function create_meter_channel(id) {
         meter_channel += add_unit_options()
         meter_channel += `
             </select>
+            </div>
+            <button class="func_button" onclick="remove_channel_section('${id}'); return false">
+                REMOVE CHANNEL
+            </button>
         </dt>
       </dl>
+
     </fieldset>
+
     </div>
+
     `
 
     return meter_channel
@@ -242,11 +251,14 @@ function create_status_channel(id) {
                 <input type="hidden" id="${id}_chan_type" name="${id}_chan_type" value='status'>
                 <input type="hidden" id="${id}_opt_count" name="${id}_opt_count" value=2>
             </div>
-            <dt id='${id}_content' class="config_content to-border" style="">
+            <dt id='${id}_content' class="config_content top-border" style="">
                 <label for='${id}_title' class="title-margin">Title</label>
                 <input type="text" id='${id}_title' name='${id}_title' required placeholder="Channel Name">
                 <div id="${id}_options">${options}</div>
                 <button class="func_button" onclick="add_next_option('${id}'); return false;">Add Option</button>
+                <button class="func_button" onclick="remove_channel_section('${id}'); return false">
+                    REMOVE CHANNEL
+                </button>
             </dt>
           </dl>
         </fieldset>
@@ -293,6 +305,9 @@ function create_option_content(id, opt_num) {
         option_content += add_color_picker()
         option_content += `
         </select>
+        <button class="func_button" onclick="remove_option_section('${id}', '${opt_num}'); return false">
+            REMOVE OPTION
+        </button>
     </div>
     `
     return option_content
@@ -323,9 +338,38 @@ function change_bg_color(id) {
 }
 
 
-function remove_new_channel() {
-    // TODO: Add logic to delete added channel before posting
+function remove_option_section(html_tag, opt_num) {
+    const section_to_delete = document.getElementById(`${html_tag}_option_${opt_num}`);
+    const confirmation = confirm('Would you like to remove this option?')
+
+    if (confirmation) {
+        opt_count = document.getElementById(`${html_tag}_opt_count`);
+        opt_count.value = parseInt(opt_count.value) - 1;
+        section_to_delete.remove()
+    }
 }
+
+
+function remove_channel_section(html_tag) {
+    const section_to_delete = document.getElementById(html_tag);
+    const confirmation = confirm('Would you like to remove this section?')
+
+    if (confirmation) {
+        channel_count.value = parseInt(channel_count.value) - 1;
+        section_to_delete.remove()
+    }
+}
+
+
+function add_delete_option_tag(html_tag, opt_num) {
+    const section_to_delete = document.getElementById(`${html_tag}_option_${opt_num}`);
+    const confirmation = confirm('Would you like to remove this option?')
+
+    if (confirmation) {
+        // replace section with hidden input of status option id as delete
+   }
+}
+
 
 
 function add_delete_channel_tag(channel_id) {

@@ -47,6 +47,7 @@
         </dt>
         <dt class="config_field">
             <input type="text" id="username" name="username" value="{{user.username}}" required>
+            <div class="error-message" id="username-error-message"></div>
         </dt>
       </dl>
     </fieldset>
@@ -92,6 +93,8 @@
 </div>
 <script src="{{ url_for('static', filename='javascript/signup_form_validation.js') }}"></script>
 <script>
+    current_username = '{{ user.username }}'
+
     function delete_user() {
         let confirmation_message = 'Are you sure you want to delete this user? All reference to readings they provided will be replaced with [DELETED]'
         if (confirm(confirmation_message)) {
