@@ -71,7 +71,7 @@ def add_new_user_post():
         current_app.logger.warning(e)
         flash_message = e
     flash(flash_message)
-    return redirect(url_for('admin.home'))
+    return redirect(url_for('admin.admin_home'))
 
 
 @admin.route('user/<int:user_id>/update')
@@ -135,7 +135,7 @@ def delete_user(user_id: int):
         except Exception as e:
             current_app.logger.info(e)
             flash(f'User ({name}) deletion failed', 'error')
-        return redirect(url_for('admin.home'))
+        return redirect(url_for('admin.admin_home'))
 
 
 # ----- SITE CONFIG -----
@@ -185,7 +185,7 @@ def add_new_site_post():
         current_app.logger.info(e)
         flash_message = str(e)
     flash(flash_message)
-    return redirect(url_for('admin.home'))
+    return redirect(url_for('admin.admin_home'))
 
 
 @admin.route('site/<int:site_id>/update_site')
@@ -261,7 +261,7 @@ def update_channels_post(site_id: int):
     handle_channel_update(results, site_id)
 
     flash(f'Channels for site {(Site.query.get(site_id)).site_name} have been updated')
-    return redirect(url_for('admin.home'))
+    return redirect(url_for('admin.admin_home'))
 
 
 @admin.route('site/<int:site_id>/delete')
@@ -281,4 +281,4 @@ def delete_site(site_id: int):
         db.session.commit()
 
         flash(f'{site_name} removed and associated channel data')
-        return redirect(url_for('admin.home'))
+        return redirect(url_for('admin.admin_home'))

@@ -2,7 +2,7 @@
 import re
 from typing import List, Tuple
 
-from models import Channel, MeterConfig, StatusOption
+from models import Channel, MeterConfig, ReadingValue, StatusOption
 from extensions import db
 
 
@@ -63,7 +63,9 @@ def delete_channel(channel_id: int) -> None:
     for option in status_opt_to_del:
         db.session.delete(option)
 
-    # TODO: Remove ReadingValues?
+    reading_vals_to_del = ReadingValue.query.filter_by(channel_id=channel_to_delete.id).all()
+    for reading in reading_vals_to_del:
+        db.session.delete(reading)
 
     # delete channel
     db.session.delete(channel_to_delete)
