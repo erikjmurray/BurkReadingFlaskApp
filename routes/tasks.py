@@ -12,7 +12,6 @@ from reportlab.lib import colors
 import numpy as np
 import pandas as pd
 from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 # ----- BUILT IN IMPORTS ----
 from datetime import datetime, timedelta
 from io import BytesIO
@@ -27,7 +26,9 @@ tasks = Blueprint('tasks', __name__)
 
 
 @tasks.route('/<int:site_id>/<start_date>/<end_date>')
-def generate_pdf(site_id: int, start_date: str, end_date: str) -> Response:
+def generate_pdf(site_id: int,
+                 start_date: str,
+                 end_date: str) -> Response:
     """ Route to initiate PDF report of site readings for a date range """
     site = Site.query.get(site_id)
 
@@ -52,7 +53,8 @@ def input_dates_to_datetime(date_string: str) -> datetime:
     return date_as_datetime_obj
 
 
-def create_pdf(site: Site, date_range: Tuple[datetime, datetime]) -> bytes:
+def create_pdf(site: Site,
+               date_range: Tuple[datetime, datetime]) -> bytes:
     """ Create pdf of site readings """
     # create pdf document
     buffer = BytesIO()

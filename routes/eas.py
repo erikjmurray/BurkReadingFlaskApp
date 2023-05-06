@@ -7,8 +7,8 @@ from datetime import datetime
 from typing import List, Tuple
 # ----- PROJECT IMPORTS -----
 from extensions import db
-from models import Site, EAS
-from models.schemas import SiteSchema
+from models import EAS, Site, User
+from models.schemas import SiteSchema, UserSchema
 
 # Initialize Blueprint
 eas = Blueprint('eas', __name__)
@@ -20,9 +20,14 @@ def eas_form():
     site_schema = SiteSchema(many=True)
     sites = Site.query.order_by(Site.site_order.asc()).all()
     site_data = site_schema.dump(sites)
+
+    user_schema = UserSchema(many=True)
+    operators = User.query.filter_by(is_operator=True).order_by(User.last_name).all()
+    operator_data = user_schema.dump(operators)
+
     # Current time used as a default value for receive or transmitted.
     current_time = datetime.now().strftime('%Y-%m-%dT%H:%M')
-    return render_template('main/eas_form.html', sites=site_data, current_time=current_time)
+    return render_template('main/eas_form.html', sites=site_data, current_time=current_time, operators=operator_data)
 
 
 @eas.route('/eas', methods=['POST'])

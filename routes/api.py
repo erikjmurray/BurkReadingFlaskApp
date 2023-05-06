@@ -6,8 +6,8 @@ from flask import abort, Blueprint, current_app, jsonify, Response
 # ----- BUILT IN IMPORTS -----
 from typing import List
 # ----- PROJECT IMPORTS -----
-from utils.encryption import decrypt_api_key
 from utils import ArcPlus
+from utils.encryption import decrypt_api_key
 from models import Site, Channel
 from models.schemas import SiteSchema, ChannelSchema, MeterConfigSchema, StatusOptionSchema
 

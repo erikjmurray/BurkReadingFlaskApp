@@ -79,9 +79,9 @@
                 <label>MCEOD</label>
                 <select id="mceod" name="mceod" required>
                     <option value=""></option>
-                    {% for op in operator %}
+                    {% for op in operators %}
                     <option value="{{op.id}}"
-                            {% if op.name == current_user.name %} selected {% endif %}>
+                            {% if op.id == current_user.id %} selected {% endif %}>
                         {{op.name}}
                     </option>
                     {% endfor %}

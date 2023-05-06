@@ -88,15 +88,14 @@ def post_channel_values(form_data, reading):
     """ Post readings values for channels """
     channel_values = []
     error_messages = []
-    regex_pattern = r'S(\d+)\*C(\d+)'
 
     for key, value in form_data.items():
         # ignore any input that is not a channel input
-        match = re.match(regex_pattern, key)
+        match = re.match(r'C(\d+)', key)
         if not match:
             continue
         # gets channel id from input html tag
-        channel_id = int(match.group(2))
+        channel_id = int(match.group(1))
         channel_values.append(ReadingValue(
             reading_value=value,
             channel_id=channel_id,
@@ -120,7 +119,7 @@ def post_messages(results, reading):
     sites = Site.query.all()
     error_messages = []
     for site in sites:
-        site_name = site.site_name.replace('_', ' ')
+        site_name = site.display_name
         site_messages = []
         for message in messages:
             if site_name in message:
@@ -134,6 +133,7 @@ def post_messages(results, reading):
             db.session.commit()
         except Exception as e:
             # if failure rollback commit and flash error message
+            current_app.logger.info(e)
             db.session.rollback()
             message = f"Automated messages for {site.site_name} failed to post"
             error_messages.append(message)
@@ -142,7 +142,7 @@ def post_messages(results, reading):
 
 @views.route('/site/<int:site_id>/readings')
 @login_required
-async def site(site_id):
+async def site(site_id: int):
     site = Site.query.get_or_404(site_id)
     site_schema = SiteSchema()
     site_data = site_schema.dump(site)
@@ -158,7 +158,7 @@ async def site(site_id):
 
 @views.route('/site/<int:site_id>/eas_tests/')
 @login_required
-def site_eas_tests(site_id):
+def site_eas_tests(site_id: int):
     """ Displays the twelve most recent EAS tests"""
     site = Site.query.get(site_id)
     site_schema = SiteSchema()
@@ -171,11 +171,3 @@ def site_eas_tests(site_id):
     ).limit(12).all()
 
     return render_template('main/site_eas_log.html', site=site_data, eas_tests=eas_tests)
-
-
-
-
-
-
-
-
