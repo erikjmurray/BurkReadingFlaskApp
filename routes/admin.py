@@ -280,5 +280,5 @@ def delete_site(site_id: int):
         db.session.delete(site_to_delete)
         db.session.commit()
 
-        flash(f'{site_name} removed and associated channel data')
+        flash(f'{site_name} removed and associated channel data deleted')
         return redirect(url_for('admin.admin_home'))
