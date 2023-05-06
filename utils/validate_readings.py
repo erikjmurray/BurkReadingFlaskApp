@@ -1,9 +1,11 @@
 """ Returns reading data if there was value data for the site on the queried date """
 # ----- IMPORTS -----
-from models import Message, ReadingValue, User
+from typing import List, Optional
+
+from models import Message, Reading, ReadingValue, Site, User
 
 
-def get_valid_readings(readings, site):
+def get_valid_readings(readings: List[Reading], site: Site) -> List[dict]:
     """ Returns non-null readings data from gather_reading_data """
     output_data = []
     for reading in readings:
@@ -14,7 +16,7 @@ def get_valid_readings(readings, site):
     return output_data
 
 
-def gather_reading_data(reading, site):
+def gather_reading_data(reading: Reading, site: Site) -> dict:
     """ Gather readings data associated to specific site """
     # Create dict
     reading_data = reading.to_dict()
@@ -36,14 +38,14 @@ def gather_reading_data(reading, site):
     user = User.query.get(reading.user_id)
     reading_data['user'] = user.name if user else '[DELETED]'
 
-    # Add any messsages associated to site from current reading
+    # Add any messages associated to site from current reading
     messages = Message.query.filter_by(site_id=site.id, reading_id=reading.id).all()
     reading_data['messages'] = list([message.message for message in messages])
 
     return reading_data
 
 
-def check_list(input_list):
+def check_list(input_list: list) -> Optional[List]:
     """ If all entries empty return, else return None in list as N/A string """
     if all(elem is None for elem in input_list):
         return None

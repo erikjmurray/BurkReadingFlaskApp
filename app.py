@@ -29,7 +29,7 @@ def create_app(app_name) -> Flask:
     return app
 
 
-def setup_loggers(app):
+def setup_loggers(app: Flask) -> None:
     """ Sets up logging """
     import logging
     from logging.handlers import RotatingFileHandler
@@ -60,7 +60,7 @@ def setup_loggers(app):
     return
 
 
-def load_settings(app) -> None:
+def load_settings(app: Flask) -> None:
     """ Load app settings to app """
     # Load environment setup values
     load_dotenv(env_file_path)
@@ -75,7 +75,7 @@ def load_settings(app) -> None:
     return
 
 
-def add_secret_key(app) -> None:
+def add_secret_key(app: Flask) -> None:
     """ Adds secret key to .env if no value is present """
     import secrets
     # Generate a new random hex value for FLASK_SECRET_KEY
@@ -84,7 +84,7 @@ def add_secret_key(app) -> None:
     return
 
 
-def add_encryption_key(app) -> None:
+def add_encryption_key(app: Flask) -> None:
     """
     Adds an encryption key to .env if no value is present.
     Uses Fernet cryptography to generate a new key.
@@ -97,13 +97,13 @@ def add_encryption_key(app) -> None:
     return
 
 
-def update_env_file(key_name, value) -> None:
+def update_env_file(key_name: str, value: str) -> None:
     """ Set key to value in .env """
     set_key(env_file_path, key_name, value)
     return
 
 
-def register_blueprints(app) -> None:
+def register_blueprints(app: Flask) -> None:
     """ Loads blueprints to app, details what happens when visiting routes """
     from routes import views, admin, api, auth, eas, errors, tasks
     app.register_blueprint(views, url_prefix='/')           # register routes laid out in routes.views
@@ -116,14 +116,14 @@ def register_blueprints(app) -> None:
     return
 
 
-def initialize_addons(app) -> None:
+def initialize_addons(app: Flask) -> None:
     """ Register Flask add-ons with the app """
     db.init_app(app)
     login_manager.init_app(app)
     ma.init_app(app)
 
     @login_manager.user_loader
-    def load_user(user_id):
+    def load_user(user_id: int):
         # In this example, the user ID is the user's email address
         user = User.query.get(user_id)
         return user

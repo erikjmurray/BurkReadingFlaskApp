@@ -1,12 +1,13 @@
 """
 Defines routes to user accessible pages on site
 """
-import datetime
-import re
-
-# -----IMPORTS-----
+# ----- 3RD PARTY IMPORTS -----
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_required, current_user
+# ----- BUILT IN IMPORTS -----
+import datetime
+import re
+# ----- PROJECT IMPORTS -----
 from extensions import db
 from models import Site, User, Channel, Reading, ReadingValue, Message, EAS
 from models.schemas import SiteSchema, UserSchema
@@ -149,7 +150,7 @@ async def site(site_id):
     # get the 12 most recent readings from the database
     readings = Reading.query.order_by(Reading.timestamp.desc()).limit(12).all()
 
-    from extensions import get_valid_readings
+    from utils import get_valid_readings
     reading_data = get_valid_readings(readings, site)
 
     return render_template('main/site.html', site=site_data, channels=site_data['channels'], readings=reading_data)

@@ -54,16 +54,15 @@ class ReadingValue(db.Model):
     reading_id = db.Column(db.Integer, db.ForeignKey('readings.id'), primary_key=True)
     reading_value = db.Column(db.String(250), nullable=False)
 
-
     def __repr__(self):
         return f"Reading: {self.reading_id}, CH{self.channel_id} | Value: {self.reading_value}"
 
 
 # Association table creating a many-to-many relationship between EAS and Site
 eas_site_association = db.Table('eas_site_association',
-    db.Column('eas_id', db.Integer, db.ForeignKey('eas_tests.id')),
-    db.Column('site_id', db.Integer, db.ForeignKey('sites.id'))
-)
+                                db.Column('eas_id', db.Integer, db.ForeignKey('eas_tests.id')),
+                                db.Column('site_id', db.Integer, db.ForeignKey('sites.id'))
+                                )
 
 
 class EAS(db.Model):
@@ -71,9 +70,9 @@ class EAS(db.Model):
     __tablename__ = 'eas_tests'
     id = db.Column(db.Integer, primary_key=True)
     originating = db.Column(db.Boolean, nullable=False)
-    test_type = db.Column(db.String(10), nullable=False)    # Consider what test types there are
-    rx_from = db.Column(db.String(50), nullable=True)       # make nullable only if originating = False
-    rx_timestamp = db.Column(db.DateTime, nullable=True)    # make nullable only if originating = False
+    test_type = db.Column(db.String(10), nullable=False)  # Consider what test types there are
+    rx_from = db.Column(db.String(50), nullable=True)     # make nullable only if originating = False
+    rx_timestamp = db.Column(db.DateTime, nullable=True)  # make nullable only if originating = False
     tx_timestamp = db.Column(db.DateTime, nullable=False)
     sites = db.relationship('Site', secondary=eas_site_association, backref='eas_tests', lazy=True)
 
@@ -81,7 +80,7 @@ class EAS(db.Model):
         if self.originating:
             return dict(
                 id=self.id,
-                originating=True ,
+                originating=True,
                 test_type=self.test_type,
                 tx_timestamp=self.tx_timestamp,
                 sites=[site.site_name for site in self.sites]
@@ -96,8 +95,3 @@ class EAS(db.Model):
                 tx_timestamp=self.tx_timestamp,
                 sites=[site.site_name for site in self.sites]
             )
-
-
-
-
-

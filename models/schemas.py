@@ -1,7 +1,8 @@
 """ Details Marshmallow data serialization schemas """
-from marshmallow import fields, post_dump, post_load, ValidationError, validates
+# ----- 3RD PARTY IMPORTS -----
+from marshmallow import fields, post_dump, post_load, ValidationError
 from werkzeug.security import generate_password_hash
-
+# ----- PROJECT IMPORTS -----
 from extensions import ma
 from models import Site, User, Channel, StatusOption, MeterConfig, Reading
 
@@ -9,7 +10,7 @@ from models import Site, User, Channel, StatusOption, MeterConfig, Reading
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
-        exclude = ('password', )
+        exclude = ('password',)
 
     @post_dump
     def add_name(self, data, **kwargs):
@@ -29,6 +30,7 @@ class UserCreationSchema(ma.SQLAlchemyAutoSchema):
     is_operator = fields.Boolean(required=True)
 
     def validate_username(self, username, **kwargs):
+        """ Raises error if user already exists """
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
             raise ValidationError('Username already exists')
@@ -69,7 +71,6 @@ class ChannelSchema(ma.SQLAlchemyAutoSchema):
         model = Channel
         include_fk = True
         load_instance = True
-
 
     @post_dump(pass_many=False)
     def add_site_name(self, data, **kwargs):

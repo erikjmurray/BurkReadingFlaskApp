@@ -3,6 +3,7 @@
 from flask import current_app
 from cryptography.fernet import Fernet
 
+
 def encrypt_api_key(api_key: str) -> bytes:
     """ Obfuscate API KEY before storing in database """
     fernet_obj = create_fernet_object()

@@ -1,7 +1,7 @@
 """
 SQL Table definitions for configuration.
 """
-from extensions import db, ma
+from extensions import db
 from models.readings import ReadingValue
 
 
@@ -22,16 +22,15 @@ class Channel(db.Model):
     status_options = db.relationship('StatusOption', backref='channel', lazy=True)
     reading_values = db.relationship('ReadingValue', backref='channel', lazy=True)
 
-
     def __init__(self, chan_type, title, site_id):
         self.title = title
         self.chan_type = chan_type
         self.site_id = site_id
         self.channel_order = self.get_next_channel_order(site_id)
 
-
     def get_next_channel_order(self, site_id):
-        max_channel_order = Channel.query.filter_by(site_id=site_id).with_entities(db.func.max(Channel.channel_order)).scalar()
+        max_channel_order = Channel.query.filter_by(site_id=site_id).with_entities(
+            db.func.max(Channel.channel_order)).scalar()
         if max_channel_order is None:
             return 0
         else:
@@ -66,5 +65,3 @@ class StatusOption(db.Model):
     selected_state = db.Column(db.Boolean, nullable=False)
     selected_color = db.Column(db.String(15), nullable=False)
     channel_id = db.Column(db.Integer, db.ForeignKey('channels.id'), nullable=False)
-
-

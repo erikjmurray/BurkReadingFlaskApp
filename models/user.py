@@ -1,10 +1,9 @@
-
-# ----- IMPORTS -----
-from extensions import db
+# ----- 3RD PARTY IMPORT -----
 from flask_login import UserMixin
+# ----- PROJECT IMPORT -----
+from extensions import db
 
 
-# ----- MODELS -----
 class User(UserMixin, db.Model):
     """
     Users of the web app

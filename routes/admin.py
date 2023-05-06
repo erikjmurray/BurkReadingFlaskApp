@@ -1,17 +1,16 @@
 """
 Create routes for Admin page to edit config
 """
-import os
 
-# -----IMPORTS-----
-from flask import abort, Blueprint, current_app, flash, jsonify, render_template, request, redirect, url_for
+# -----3RD PARTY IMPORTS -----
+from flask import abort, Blueprint, current_app, flash, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
-
-from extensions import db
-from models import User, Site, Channel, MeterConfig, StatusOption
-from models.schemas import SiteSchema, UserSchema, UserCreationSchema
 from marshmallow import ValidationError
+from werkzeug.security import generate_password_hash
+# ----- PROJECT IMPORTS -----
+from extensions import db
+from models import User, Site
+from models.schemas import SiteSchema, UserSchema, UserCreationSchema
 
 
 # create Blueprint object
@@ -19,9 +18,9 @@ admin = Blueprint('admin', __name__)
 
 
 # -----ROUTES-----
-@admin.route('/home')
+@admin.route('/')
 @login_required
-def home():
+def admin_home() -> str:
     """ Admin homepage """
     if not current_user.is_admin:
         abort(403)
@@ -40,7 +39,7 @@ def home():
 # ----- USER CONFIG -----
 @admin.route('/add_user')
 @login_required
-def add_new_user():
+def add_new_user() -> str:
     """ Route to Add User """
     if not current_user.is_admin:
         abort(403)
@@ -77,7 +76,7 @@ def add_new_user_post():
 
 @admin.route('user/<int:user_id>/update')
 @login_required
-def update_user(user_id):
+def update_user(user_id: int) -> str:
     """ Load user data at index if exists """
     if not current_user.is_admin:
         abort(403)
@@ -91,7 +90,7 @@ def update_user(user_id):
 
 @admin.route('user/<int:user_id>/update', methods=['POST'])
 @login_required
-def update_user_post(user_id):
+def update_user_post(user_id: int):
     # gather data
     user = User.query.get(user_id)
     results = request.form
@@ -123,7 +122,7 @@ def update_user_post(user_id):
 
 @admin.route('user/<int:user_id>/delete')
 @login_required
-def delete_user(user_id):
+def delete_user(user_id: int):
     if not current_user.is_admin:
         abort(403)
     else:
@@ -142,7 +141,7 @@ def delete_user(user_id):
 # ----- SITE CONFIG -----
 @admin.route('/add_site')
 @login_required
-def add_new_site():
+def add_new_site() -> str:
     """ Render page for adding a new site """
     if not current_user.is_admin:
         abort(403)
@@ -161,7 +160,7 @@ def add_new_site_post():
         site_name = results.get('site_name').replace(' ', '_')
 
         # Encrypt API KEY
-        from extensions.encryption import encrypt_api_key
+        from utils.encryption import encrypt_api_key
         encrypted_api_key = encrypt_api_key(results['api_key'])
 
         # Add site to database
@@ -177,7 +176,7 @@ def add_new_site_post():
         target_site = Site.query.filter_by(site_name=site_name).first()
 
         # Create channel data and add to database
-        from extensions.channel_CRUD import sort_results_channel_data, create_new_channels
+        from utils import sort_results_channel_data, create_new_channels
         channel_data = sort_results_channel_data(results)[1]    # returns tuple, new_channel data is at index 1
         create_new_channels(channel_data, target_site.id)
 
@@ -191,12 +190,12 @@ def add_new_site_post():
 
 @admin.route('site/<int:site_id>/update_site')
 @login_required
-def update_site(site_id):
+def update_site(site_id: int):
     """ Load site data if site in config """
     if not current_user.is_admin:
         abort(403)
     else:
-        from extensions.encryption import decrypt_api_key
+        from utils.encryption import decrypt_api_key
         site = Site.query.get_or_404(site_id)
         site_schema = SiteSchema()
         site_data = site_schema.dump(site)
@@ -207,7 +206,7 @@ def update_site(site_id):
 
 @admin.route('site/<int:site_id>/update_site', methods=['POST'])
 @login_required
-def update_site_post(site_id):
+def update_site_post(site_id: int):
     """ Updates config of site if  """
     # Gather form results and current config data
     site = Site.query.get_or_404(site_id)
@@ -222,7 +221,7 @@ def update_site_post(site_id):
         site.site_name = site_name
         site.ip_addr = results.get('ip_addr')
 
-        from extensions.encryption import encrypt_api_key
+        from utils.encryption import encrypt_api_key
         site.api_key = encrypt_api_key(results.get('api_key'))
 
         db.session.commit()
@@ -237,7 +236,7 @@ def update_site_post(site_id):
 
 @admin.route('site/<int:site_id>/update_channels')
 @login_required
-def update_channels(site_id):
+def update_channels(site_id: int) -> str:
     """ Update channel for a specific site"""
     if not current_user.is_admin:
         abort(403)
@@ -255,10 +254,10 @@ def update_channels(site_id):
 
 @admin.route('site/<int:site_id>/update_channels', methods=['POST'])
 @login_required
-def update_channels_post(site_id):
+def update_channels_post(site_id: int):
     results = request.form
 
-    from extensions.channel_CRUD import handle_channel_update
+    from utils import handle_channel_update
     handle_channel_update(results, site_id)
 
     flash(f'Channels for site {(Site.query.get(site_id)).site_name} have been updated')
@@ -267,7 +266,7 @@ def update_channels_post(site_id):
 
 @admin.route('site/<int:site_id>/delete')
 @login_required
-def delete_site(site_id):
+def delete_site(site_id: int):
     """ Delete site and associated channels from database """
     if not current_user.is_admin:
         abort(403)
@@ -275,7 +274,7 @@ def delete_site(site_id):
         site_to_delete = Site.query.get_or_404(site_id)
         site_name = site_to_delete.site_name
 
-        from extensions.channel_CRUD import delete_channel
+        from utils import delete_channel
         for channel in site_to_delete.channels:
             delete_channel(channel.id)
         db.session.delete(site_to_delete)

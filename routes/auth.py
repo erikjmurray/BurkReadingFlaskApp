@@ -1,10 +1,10 @@
 """ Blueprint for Flask routes regarding login and authorization """
-
-from flask import Blueprint, flash, jsonify, redirect, render_template, request, session, url_for
+# ----- 3RD PARTY IMPORTS -----
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, Response, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from marshmallow import ValidationError
 from werkzeug.security import check_password_hash
-
+# ----- PROJECT IMPORTS -----
 from extensions import db
 from models import Site, User
 from models.schemas import UserCreationSchema
@@ -75,7 +75,7 @@ def signup_post():
 
 
 @auth.route("/check_username")
-def check_username():
+def check_username() -> Response:
     username = request.args.get("username")
     user = User.query.filter_by(username=username).first()
     if user:
@@ -85,7 +85,7 @@ def check_username():
 
 
 @auth.route('/check_site_name')
-def check_site_name():
+def check_site_name() -> Response:
     """ Given a site in the database return associated channels """
     site_name = request.args.get('site_name').replace(' ', '_')
     site = Site.query.filter_by(site_name=site_name).first()

@@ -1,11 +1,13 @@
 """
 Defines routes to gather data from config/database
 """
-
-# -----IMPORTS-----
+# ----- 3RD PARTY IMPORTS-----
 from flask import abort, Blueprint, current_app, jsonify, Response
-from extensions.encryption import decrypt_api_key
-from extensions import ArcPlus
+# ----- BUILT IN IMPORTS -----
+from typing import List
+# ----- PROJECT IMPORTS -----
+from utils.encryption import decrypt_api_key
+from utils import ArcPlus
 from models import Site, Channel
 from models.schemas import SiteSchema, ChannelSchema, MeterConfigSchema, StatusOptionSchema
 
@@ -15,7 +17,7 @@ api = Blueprint('api', __name__)
 
 # ----- BURK API CALL -----
 @api.route('/burk/<int:site_id>/')
-async def burk_api_call(site_id: int):
+async def burk_api_call(site_id: int) -> List[dict]:
     """
     Call API for meter and status data from Burk
     Sort and add data to channels based on extensions setup
@@ -35,7 +37,7 @@ async def burk_api_call(site_id: int):
 
 
 # ----- BURK VALUE SORTING -----
-def get_burk_data(site, meters, statuses):
+def get_burk_data(site: Site, meters: list, statuses: list) -> List[dict]:
     data = []
     channel_schema = ChannelSchema(many=True)
     channels = channel_schema.dump(site.channels)
@@ -51,7 +53,7 @@ def get_burk_data(site, meters, statuses):
     return data
 
 
-def get_meter_value(channel: Channel, meters):
+def get_meter_value(channel: Channel, meters: List[dict]) -> str:
     """ Using meter values from Burk API call, append value to channel """
     try:
         burk_channel = channel['meter_config'][0]['burk_channel']
@@ -62,7 +64,7 @@ def get_meter_value(channel: Channel, meters):
     return meter_value
 
 
-def get_status_value(channel: Channel, statuses):
+def get_status_value(channel: Channel, statuses: List[dict]) -> List[str]:
     """ Using status values from Burk API, append value to channel """
     status_values = []
     for i, option in enumerate(channel['status_options']):
@@ -89,7 +91,7 @@ def all_sites() -> Response:
 
 
 @api.route('/site/<int:site_id>/channels')
-def all_site_channels(site_id) -> Response:
+def all_site_channels(site_id: int) -> Response:
     """ Called by JS on site refresh failure to connect """
     channels = Channel.query.filter_by(site_id=site_id).all()
     channel_schema = ChannelSchema(many=True)
@@ -98,15 +100,15 @@ def all_site_channels(site_id) -> Response:
 
 
 @api.route('/channel/<int:channel_id>')
-def get_channel_data(channel_id):
+def get_channel_data(channel_id: int) -> Response:
     channel = Channel.query.get_or_404(channel_id)
     channel_schema = ChannelSchema()
     channel_data = channel_schema.dump(channel)
-    return channel_data
+    return jsonify(channel_data)
 
 
 @api.route('/channel_config/<int:channel_id>')
-def get_channel_config(channel_id):
+def get_channel_config(channel_id: int) -> Response:
     channel = Channel.query.get_or_404(channel_id)
     if channel.chan_type == 'meter':
         config_schema = MeterConfigSchema(many=True)
@@ -116,13 +118,13 @@ def get_channel_config(channel_id):
         option_schema = StatusOptionSchema(many=True)
         option_data = option_schema.dump(channel.status_options)
         return jsonify(option_data)
-    return
+    return jsonify({'error': 'Undefined channel type'})
 
 
 # ----- CHANNEL CONFIGURATION OPTIONS -----
 # Anything added to units or colors will be available in config settings
 @api.route('/colors')
-def get_colors():
+def get_colors() -> List[dict]:
     """ Background color options for config """
     colors = [
         {'hex': 'transparent', 'name': 'None'},
@@ -136,7 +138,7 @@ def get_colors():
 
 
 @api.route('/units')
-def get_units():
+def get_units() -> list:
     """ Options for units in channel config """
     units = [
         'kW',

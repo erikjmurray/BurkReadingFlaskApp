@@ -1,7 +1,8 @@
 """ Details Site model and schema """
-
-from extensions import db
+# ----- 3RD PARTY IMPORTS -----
 from sqlalchemy import BLOB
+# ----- PROJECT IMPORTS -----
+from extensions import db
 
 
 class Site(db.Model):
@@ -17,13 +18,11 @@ class Site(db.Model):
     site_order = db.Column(db.Integer, unique=True, nullable=False)
     channels = db.relationship('Channel', backref='site', lazy=True)
 
-
     def __init__(self, site_name, ip_addr, api_key):
         self.site_name = site_name
         self.ip_addr = ip_addr
         self.api_key = api_key
         self.site_order = self.get_next_site_order()
-
 
     def get_next_site_order(self):
         max_site_order = Site.query.with_entities(db.func.max(Site.site_order)).scalar()
@@ -32,11 +31,9 @@ class Site(db.Model):
         else:
             return max_site_order + 1
 
-
     @property
     def display_name(self):
         return self.site_name.replace('_', ' ')
-
 
     def __repr__(self):
         return f"Site {self.site_name}"

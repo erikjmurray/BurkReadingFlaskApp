@@ -1,24 +1,25 @@
 """
 Executes tasks such as PDF generation
 """
-
-from flask import Blueprint, make_response
-from datetime import datetime, timedelta
-
-from models import Site, Reading, EAS
-from extensions import get_valid_readings
-
+# ----- 3RD PARTY IMPORTS -----
+from flask import Blueprint, make_response, Response
 from reportlab.platypus import (BaseDocTemplate, Frame, Image, NextPageTemplate,
                                 PageBreak, PageTemplate, Paragraph, Table)
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import legal, landscape
 from reportlab.lib.units import inch
 from reportlab.lib import colors
-
-from io import BytesIO
 import numpy as np
 import pandas as pd
+from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
+# ----- BUILT IN IMPORTS ----
+from datetime import datetime, timedelta
+from io import BytesIO
+from typing import Tuple, List, Optional
+# ----- PROJECT IMPORTS -----
+from models import EAS, Channel, Reading, Site
+from utils import get_valid_readings
 
 
 # create Blueprint object
@@ -26,7 +27,7 @@ tasks = Blueprint('tasks', __name__)
 
 
 @tasks.route('/<int:site_id>/<start_date>/<end_date>')
-def generate_pdf(site_id, start_date, end_date):
+def generate_pdf(site_id: int, start_date: str, end_date: str) -> Response:
     """ Route to initiate PDF report of site readings for a date range """
     site = Site.query.get(site_id)
 
@@ -44,14 +45,14 @@ def generate_pdf(site_id, start_date, end_date):
     return response
 
 
-def input_dates_to_datetime(date_string):
+def input_dates_to_datetime(date_string: str) -> datetime:
     """ Converts string date input to datetime object """
     date_format = '%Y-%m-%d %H:%M:%S'
     date_as_datetime_obj = datetime.strptime(date_string, date_format)
     return date_as_datetime_obj
 
 
-def create_pdf(site, date_range):
+def create_pdf(site: Site, date_range: Tuple[datetime, datetime]) -> bytes:
     """ Create pdf of site readings """
     # create pdf document
     buffer = BytesIO()
@@ -87,7 +88,7 @@ def create_pdf(site, date_range):
         message_df = create_message_dataframe(message_headers, readings_data_for_date)
 
         # Remove rows from dataframe if no input. If no rows, do not create blank page of messages.
-        message_df = remove_df_rows_w_no_data(message_df, ['Messages', 'User Notes'])
+        message_df = remove_df_rows_w_no_data(['Messages', 'User Notes'], message_df)
 
         # create page data for the current date
         report_data['current_date'] = date
@@ -121,7 +122,7 @@ def create_pdf(site, date_range):
 
 
 # ----- DOCUMENT SETUP -----
-def create_pdf_document(pdf_path):
+def create_pdf_document(pdf_path: BytesIO) -> BaseDocTemplate:
     """ Build the document object with templates """
     # Create Templates
     templates = define_templates()
@@ -134,7 +135,7 @@ def create_pdf_document(pdf_path):
     return pdf_doc
 
 
-def define_templates():
+def define_templates() -> List[PageTemplate]:
     """ Create templates for the document """
     # define onPage functions
     def add_page_number(canvas, doc):
@@ -176,7 +177,7 @@ def define_templates():
     return [base_template, figure_template]
 
 
-def define_styles():
+def define_styles() -> dict:
     """ Define styles for the document """
     # get general styles
     styles = getSampleStyleSheet()
@@ -197,7 +198,8 @@ def define_styles():
     return styles
 
 
-def create_list_of_individual_dates(start_date, end_date):
+def create_list_of_individual_dates(start_date: datetime,
+                                    end_date: datetime) -> List[datetime]:
     """ Get a list of datetime objects in a given range """
     dates = []
     while start_date <= end_date:
@@ -207,7 +209,7 @@ def create_list_of_individual_dates(start_date, end_date):
 
 
 # ----- SQL Queries -----
-def query_readings_by_date(date):
+def query_readings_by_date(date: datetime) -> List[Reading]:
     """ Queries SQL that match a specific date """
     # if timestamp between 00:00:00:00.. and 23:59:59:99.. return data
     start_datetime = datetime.combine(date, datetime.min.time())
@@ -217,13 +219,14 @@ def query_readings_by_date(date):
     return readings
 
 
-def query_readings_by_date_range(dates):
+def query_readings_by_date_range(dates: Tuple[datetime, datetime]) -> List[Reading]:
     """ Queries SQL for a range of dates worth of readings """
     readings = Reading.query.filter(Reading.timestamp >= dates[0], Reading.timestamp <= dates[1]).all()
     return readings
 
 
-def query_eas_tests_by_date_range(site, dates):
+def query_eas_tests_by_date_range(site: Site,
+                                  dates: Tuple[datetime, datetime]) -> List[EAS]:
     """ Queries SQL for EAS Tests transmitted on the site for a specific range of dates """
     eas_tests = EAS.query.join(EAS.sites).filter(
         Site.id == site.id,
@@ -236,7 +239,8 @@ def query_eas_tests_by_date_range(site, dates):
 
 
 # ----- PANDAS DATAFRAME CREATION -----
-def create_readings_dataframe(headers, readings):
+def create_readings_dataframe(headers: List[str],
+                              readings: List[dict]) -> pd.DataFrame:
     """  Create pandas dataframe for Readings PDF """
     rows = []
     for row in readings:
@@ -255,7 +259,8 @@ def create_readings_dataframe(headers, readings):
     return pd.DataFrame.from_records(rows, columns=headers)
 
 
-def create_message_dataframe(headers, readings):
+def create_message_dataframe(headers: List[str],
+                             readings: List[dict]) -> pd.DataFrame:
     """ Create pandas dataframe for Message page """
     rows = []
     for row in readings:
@@ -270,7 +275,8 @@ def create_message_dataframe(headers, readings):
     return pd.DataFrame.from_records(rows, columns=headers)
 
 
-def remove_df_rows_w_no_data(df, headers):
+def remove_df_rows_w_no_data(headers: List[str],
+                             df: pd.DataFrame) -> pd.DataFrame:
     """ Given known headers removes row if all header = None """
     # replace empty string with numpy NaN none type
     for header in headers:
@@ -281,7 +287,9 @@ def remove_df_rows_w_no_data(df, headers):
 
 
 # ----- REPORTLAB TABLE CREATION -----
-def create_table_from_readings_dataframe(df, styles, channels):
+def create_table_from_readings_dataframe(df: pd.DataFrame,
+                                         styles: dict,
+                                         channels: List[Channel]) -> Table:
     """ Create a ReportLab table object from the dataframe """
     # Adds to table data
     columns = [Paragraph(col, styles['table_headers']) for col in df.columns]
@@ -304,7 +312,8 @@ def create_table_from_readings_dataframe(df, styles, channels):
     return Table(table_data, style=table_style, hAlign='LEFT')
 
 
-def create_table_from_messages_dataframe(df, styles):
+def create_table_from_messages_dataframe(df: pd.DataFrame,
+                                         styles: dict) -> Table:
     """ Create a ReportLab table object from the dataframe """
     # Adds to table data
     columns = [Paragraph(col, styles['table_headers']) for col in df.columns]
@@ -328,7 +337,9 @@ def create_table_from_messages_dataframe(df, styles):
     return Table(table_data, style=table_style, hAlign='LEFT')
 
 
-def format_df_rows(df, styles, channels):
+def format_df_rows(df: pd.DataFrame,
+                   styles: dict,
+                   channels: Optional[List[Channel]]) -> List:
     rows = []
     for row_i, row in df.iterrows():
         table_row = []
@@ -351,7 +362,9 @@ def format_df_rows(df, styles, channels):
     return rows
 
 
-def check_meter_limits_apply_bg_color(meter_value, channel, cell_style):
+def check_meter_limits_apply_bg_color(meter_value: float,
+                                      channel: Channel,
+                                      cell_style: ParagraphStyle) -> ParagraphStyle:
     if meter_value >= channel.meter_config[0].upper_limit:
         meter_style = ParagraphStyle('above_upper', parent=cell_style, backColor=channel.meter_config[0].upper_lim_color)
     elif meter_value <= channel.meter_config[0].lower_limit:
@@ -362,7 +375,9 @@ def check_meter_limits_apply_bg_color(meter_value, channel, cell_style):
 
 
 # ----- BUILD PDF PAGES -----
-def build_report_for_date(report_data, readings, messages):
+def build_report_for_date(report_data: dict,
+                          readings: Table,
+                          messages: pd.DataFrame) -> list:
     """ Build a ReportLab page using database query data of specific date """
     # init passed settings
     date = report_data.get('current_date')
@@ -375,7 +390,7 @@ def build_report_for_date(report_data, readings, messages):
     report_for_date += [
         title,
         subheader,
-        Paragraph(f'Readings for {date.strftime(("%B %d, %Y"))}', styles['table_title']),
+        Paragraph(f'Readings for {date.strftime("%B %d, %Y")}', styles['table_title']),
         readings,
     ]
     # add messages, user notes, and EAS information if available
@@ -386,7 +401,7 @@ def build_report_for_date(report_data, readings, messages):
             PageBreak(),
             # On new page display user notes and auto generated messages
             title, subheader,
-            Paragraph(f'Notes for {date.strftime(("%B %d, %Y"))}', styles['table_title']),
+            Paragraph(f'Notes for {date.strftime("%B %d, %Y")}', styles['table_title']),
             message_table,
         ]
     else:
@@ -396,21 +411,22 @@ def build_report_for_date(report_data, readings, messages):
     return report_for_date
 
 
-def build_eas_report(site, date_range):
+def build_eas_report(site: Site,
+                     date_range: Tuple[datetime, datetime]) -> List:
     """ Create a page in the report detailing the EAS test sent and received """
     eas_tests = query_eas_tests_by_date_range(site, date_range)
     eas_df = create_eas_dataframe([eas_test.to_dict() for eas_test in eas_tests])
     print(eas_df.to_string())
-    return
+    return []
 
 
-def create_eas_dataframe(eas_tests):
+def create_eas_dataframe(eas_tests: List[EAS]) -> pd.DataFrame:
     return pd.DataFrame(eas_tests)
 
 
-
 # ----- BUILD HISTOGRAM OF VALUES OF DATERANGE -----
-def build_histogram(site, date_range):
+def build_histogram(site: Site,
+                    date_range: Tuple[datetime, datetime]) -> Optional[Figure]:
     """ Gather data and create histogram of meter readings over input dates range """
     # get database data
     readings_for_date_range = query_readings_by_date_range(date_range)
@@ -429,9 +445,10 @@ def build_histogram(site, date_range):
     return histogram
 
 
-def create_histogram_of_readings(df, dates, meter_channels):
+def create_histogram_of_readings(df: pd.DataFrame,
+                                 dates: Tuple[datetime, datetime],
+                                 meter_channels: List[str]) -> Figure:
     """ Plot readings data over time as line graph """
-    from matplotlib.figure import Figure
     # Datetime objects for x-axis
     df['Timestamp'] = pd.to_datetime(df['Timestamp'])
     df.set_index('Timestamp', inplace=True)
@@ -457,10 +474,9 @@ def create_histogram_of_readings(df, dates, meter_channels):
     return fig
 
 
-def figure_to_image(fig):
+def figure_to_image(fig: Figure) -> Image:
     buffer = BytesIO()
     fig.savefig(buffer, format='png', dpi=300)
     buffer.seek(0)
     x, y = fig.get_size_inches()
     return Image(buffer, x * inch, y * inch)
-

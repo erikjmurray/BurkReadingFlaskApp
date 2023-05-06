@@ -1,13 +1,16 @@
 """ Details routes regarding EAS pages """
-
-from datetime import datetime
+# ----- 3RD PARTY IMPORTS -----
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_required
-
+# ----- BUILT IN IMPORTS -----
+from datetime import datetime
+from typing import List, Tuple
+# ----- PROJECT IMPORTS -----
 from extensions import db
 from models import Site, EAS
 from models.schemas import SiteSchema
 
+# Initialize Blueprint
 eas = Blueprint('eas', __name__)
 
 
@@ -59,13 +62,13 @@ def eas_post():
     return redirect(url_for('eas.eas_form'))
 
 
-def input_to_datetime(timestamp):
+def input_to_datetime(timestamp: str) -> datetime:
     """ Converts HTML Input to Python datetime object """
     return datetime.fromisoformat(timestamp.replace('T', ' '))
 
 
 @eas.route('/eas/log/<start_date>/<end_date>')
-def eas_log(start_date, end_date):
+def eas_log(start_date: str, end_date: str):
     """ Gets log of EAS tests for Date Range """
     from routes.tasks import input_dates_to_datetime
     date_range = (input_dates_to_datetime(start_date), input_dates_to_datetime(end_date))
@@ -74,7 +77,7 @@ def eas_log(start_date, end_date):
     return render_template('main/eas_log.html', eas_tests=tests_for_dates)
 
 
-def query_eas_by_date_range(dates):
+def query_eas_by_date_range(dates: Tuple[datetime, datetime]) -> List[EAS]:
     """ Gets EAS entries that correspond with specific date range """
     eas_tests = EAS.query.filter(EAS.tx_timestamp >= dates[0], EAS.tx_timestamp <= dates[1]).all()
     return eas_tests

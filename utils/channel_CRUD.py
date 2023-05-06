@@ -1,10 +1,12 @@
 """ Used to create new channels in database from results """
+import re
+from typing import List, Tuple
+
 from models import Channel, MeterConfig, StatusOption
 from extensions import db
-import re
 
-# TODO: Rename this function to reflect sorting of both new and existing channels
-def handle_channel_update(results, site_id):
+
+def handle_channel_update(results: dict, site_id: int) -> None:
     """
     Given form data and a target site
     Create or update channels associated with site
@@ -20,7 +22,7 @@ def handle_channel_update(results, site_id):
     return
 
 
-def sort_results_channel_data(results):
+def sort_results_channel_data(results: dict) -> Tuple[dict, dict, list]:
     """ Given channel data, sort new and existing channels into associated dictionaries """
     existing_channels = {}
     new_channels = {}
@@ -32,14 +34,14 @@ def sort_results_channel_data(results):
         if not match:
             continue
         dict_tag = match.group(1)
-        channel_tag = match.group(2)
+        channel_tag = int(match.group(2))
         data_tag = match.group(3)
         if dict_tag == 'existing':
-            if not channel_tag in existing_channels:
+            if channel_tag not in existing_channels:
                 existing_channels[channel_tag] = {}
             existing_channels[channel_tag][data_tag] = value
         elif dict_tag == 'new':
-            if not channel_tag in new_channels:
+            if channel_tag not in new_channels:
                 new_channels[channel_tag] = {}
             new_channels[channel_tag][data_tag] = value
         elif dict_tag == 'delete':
@@ -47,7 +49,7 @@ def sort_results_channel_data(results):
     return existing_channels, new_channels, channels_to_delete
 
 
-def delete_channel(channel_id):
+def delete_channel(channel_id: int) -> None:
     """ Given list of channel ids, remove channels from database """
     channel_to_delete = Channel.query.get(int(channel_id))
 
@@ -69,7 +71,7 @@ def delete_channel(channel_id):
     return
 
 
-def update_existing_channel(channel_data: dict, channel_id):
+def update_existing_channel(channel_data: dict, channel_id: int) -> None:
     channel_to_update = Channel.query.get(channel_id)
 
     channel_to_update.title = channel_data['title']
@@ -96,7 +98,7 @@ def update_existing_channel(channel_data: dict, channel_id):
     return
 
 
-def update_meter_config(config: MeterConfig, channel_data):
+def update_meter_config(config: MeterConfig, channel_data: dict) -> None:
     """ Given meter config object, adjust values based on form data """
     config.burk_channel = channel_data['burk_channel']
     config.units = channel_data['units']
@@ -106,22 +108,22 @@ def update_meter_config(config: MeterConfig, channel_data):
     config.lower_limit = channel_data['lower_limit']
     config.lower_lim_color = channel_data['lower_lim_color']
 
-    db.session.commit()     # commit changes to database
+    db.session.commit()  # commit changes to database
     return
 
 
-def update_status_option(option: StatusOption, option_data):
+def update_status_option(option: StatusOption, option_data: dict) -> None:
     """ Given status option data, adjust values based on form data """
     option.burk_channel = option_data['burk_channel']
     option.selected_value = option_data['selected_value']
     option.selected_state = option_data['selected_state']
     option.selected_color = option_data['selected_color']
 
-    db.session.commit()     # commit changes to database
+    db.session.commit()  # commit changes to database
     return
 
 
-def create_new_channels(new_channels, site_id):
+def create_new_channels(new_channels, site_id: int):
     """ Create new channels from new channel data """
     meter_configs = []
     status_options = []
@@ -156,7 +158,7 @@ def create_new_channels(new_channels, site_id):
     return
 
 
-def create_channel(channel_data, site_id):
+def create_channel(channel_data: dict, site_id: int) -> Channel:
     """ Create new channel given channel data """
     return Channel(
         chan_type=channel_data['chan_type'],
@@ -165,7 +167,7 @@ def create_channel(channel_data, site_id):
     )
 
 
-def create_new_meter_config(channel_data, channel_id):
+def create_new_meter_config(channel_data: dict, channel_id: int) -> MeterConfig:
     return MeterConfig(
         units=channel_data['units'],
         burk_channel=int(channel_data['burk_channel']),
@@ -178,7 +180,7 @@ def create_new_meter_config(channel_data, channel_id):
     )
 
 
-def create_new_status_option(option_data, channel_id):
+def create_new_status_option(option_data: dict, channel_id: int) -> StatusOption:
     return StatusOption(
         burk_channel=option_data['burk_channel'],
         selected_value=option_data['selected_value'],
@@ -188,7 +190,7 @@ def create_new_status_option(option_data, channel_id):
     )
 
 
-def sort_status_options(channel_data):
+def sort_status_options(channel_data: dict) -> List[dict]:
     option_counter = int(channel_data['opt_count'])
     options = []
     for count in range(1, option_counter + 1):

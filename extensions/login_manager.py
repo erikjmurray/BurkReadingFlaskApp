@@ -1,0 +1,4 @@
+# instantiation of LoginManager object
+from flask_login import LoginManager
+
+login_manager = LoginManager()
