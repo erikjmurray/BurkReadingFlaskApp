@@ -1,0 +1,72 @@
+Expired originated/forwarded alerts:
+----------------------------------------------------------------------
+Server: 'WQXW EAS' @ 172.16.132.131
+DASDEC-1EN '/dasdec_originated_events/' Alert Report at 'Wed Mar  8 11:43:17 2023 EST'
+From 'Sun Jan  8 00:00:00 2023 EST' to 'Thu Mar  9 00:00:00 2023 EST'
+----------------------------------------------------------------------
+18430:	RWT	REQUIRED WEEKLY TEST		'Orig'(WQXW    )	ORG=EAS 
+		'Mon Jan  9 15:44:00 2023 EST' to 'Mon Jan  9 15:59:00 2023 EST' 
+	Originated : 'Mon Jan  9 15:44:03 2023 EST' 
+		 Westchester, NY(036119)	
+
+18431:	RWT	REQUIRED WEEKLY TEST		'Orig'(WQXW    )	ORG=EAS 
+		'Thu Jan 19 13:49:00 2023 EST' to 'Thu Jan 19 14:04:00 2023 EST' 
+	Originated : 'Thu Jan 19 13:49:43 2023 EST' 
+		 Westchester, NY(036119)	
+
+18439:	RWT	REQUIRED WEEKLY TEST		'Orig'(WQXW    )	ORG=EAS 
+		'Thu Jan 26 12:27:00 2023 EST' to 'Thu Jan 26 12:42:00 2023 EST' 
+	Originated : 'Thu Jan 26 12:27:43 2023 EST' 
+		 Westchester, NY(036119)	
+
+18443:	RWT	REQUIRED WEEKLY TEST		'Orig'(WQXW    )	ORG=EAS 
+		'Tue Jan 31 13:54:00 2023 EST' to 'Tue Jan 31 14:09:00 2023 EST' 
+	Originated : 'Tue Jan 31 13:54:49 2023 EST' 
+		 Westchester, NY(036119)	
+
+18448:	RWT	REQUIRED WEEKLY TEST		'Orig'(WQXW    )	ORG=EAS 
+		'Mon Feb  6 14:37:00 2023 EST' to 'Mon Feb  6 14:52:00 2023 EST' 
+	Originated : 'Mon Feb  6 14:37:15 2023 EST' 
+		 Westchester, NY(036119)	
+
+18452:	RWT	REQUIRED WEEKLY TEST		'Orig'(WQXW    )	ORG=EAS 
+		'Thu Feb 16 15:20:00 2023 EST' to 'Thu Feb 16 15:35:00 2023 EST' 
+	Originated : 'Thu Feb 16 15:20:40 2023 EST' 
+		 Westchester, NY(036119)	
+
+18461:	RWT	REQUIRED WEEKLY TEST		'Orig'(WQXW    )	ORG=EAS 
+		'Tue Feb 21 17:49:00 2023 EST' to 'Tue Feb 21 18:04:00 2023 EST' 
+	Originated : 'Tue Feb 21 17:49:42 2023 EST' 
+		 Westchester, NY(036119)	
+
+18469:	RWT	REQUIRED WEEKLY TEST		'Orig'(WQXW    )	ORG=EAS 
+		'Tue Feb 21 17:49:00 2023 EST' to 'Tue Feb 21 18:04:00 2023 EST' 
+	Originated : 'Tue Feb 21 17:49:50 2023 EST' 
+		 Westchester, NY(036119)	
+
+18470:	RWT	REQUIRED WEEKLY TEST		'Orig'(WQXW    )	ORG=EAS 
+		'Fri Mar  3 13:52:00 2023 EST' to 'Fri Mar  3 14:07:00 2023 EST' 
+	Originated : 'Fri Mar  3 13:52:10 2023 EST' 
+		 Westchester, NY(036119)	
+
+
+9 events for this time period.
+
+----------------------------------------------------------------------
+Server: 'WQXW EAS' @ 172.16.132.131
+DASDEC-1EN '/dasdec_forwarded_events/' Alert Report at 'Wed Mar  8 11:43:17 2023 EST'
+From 'Sun Jan  8 00:00:00 2023 EST' to 'Thu Mar  9 00:00:00 2023 EST'
+----------------------------------------------------------------------
+18456:	RMT	REQUIRED MONTHLY TEST		'L1'(WQXW    )	ORG=CIV 
+		'Wed Feb 15 01:02:00 2023 EST' to 'Wed Feb 15 03:02:00 2023 EST' 
+	Forwarded : 'Wed Feb 15 01:33:52 2023 EST' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+
+1 event for this time period.
+
+++++++++++++++++++++++++++++++++++++++++++++++
+10 total events found for this time period.
+++++++++++++++++++++++++++++++++++++++++++++++
