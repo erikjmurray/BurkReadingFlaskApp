@@ -1,0 +1,44 @@
+{% from 'macros/create_limit_macro.html' import create_limit_html %}
+{% from 'macros/add_units_macro.html' import add_unit_options %}
+
+
+{% macro create_meter_channel(html_id) %}
+    <fieldset>
+        <dl>
+            <div class="channel_header">
+                <label id="{{ html_id }}" style="float:left; margin:0;">{{ html_id.replace('new_', '') }}.</label>
+                <label id="{{ html_id }}_header">Meter</label>
+                <img class="hide_content_button" id="{{ html_id }}_hide_content"
+                     onclick="minimize_channel_data('{{ html_id }}'); return false;" src='/static/img/minus_sign.png' alt='-'>
+                <input type="hidden" id="{{ html_id }}_chan_type" name="{{ html_id }}_chan_type" value='meter'>
+            </div>
+            <dt class="config_content top-border" id="{{ html_id }}_content">
+                <label for="{{ html_id }}_title" class="title-margin">Title</label>
+                <input type="text" id="{{ html_id }}_title" name="{{ html_id }}_title" required placeholder='Channel Name'>
+                <label for="{{ html_id }}_burk_channel">Burk Channel Number</label>
+                <input type="number" id="{{ html_id }}_burk_channel" name="{{ html_id }}_burk_channel" required placeholder="0">
+
+                <label for="{{ html_id }}_nominal_output">Nominal Output</label>
+                <input type="number" step="any" id="{{ html_id }}_nominal_output" name="{{ html_id }}_nominal_output" required placeholder="0">
+                <h4 style="margin:0;">Limits</h4>
+                <div class="option_box">
+                    {{ create_limit_html(html_id, 'Upper', colors) }}
+                    {{ create_limit_html(html_id, 'Lower', colors) }}
+                </div>
+                <div class="config_content">
+                    <label style="" for="{{ html_id }}_units">Units: </label>
+                    <select style="" id="{{ html_id }}_units" name="{{ html_id }}_units" required>
+                        {{ add_unit_options(units) }}
+                    </select>
+                </div>
+                <button class="func_button" onclick="remove_channel_section('{{ html_id }}'); return false">
+                    REMOVE CHANNEL
+                </button>
+            </dt>
+        </dl>
+    </fieldset>
+{% endmacro %}
+
+
+{# Generates Meter Channel for input ID when this template is rendered using macros above #}
+{{ create_meter_channel(html_id) }}

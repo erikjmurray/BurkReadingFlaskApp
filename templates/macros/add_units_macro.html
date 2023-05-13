@@ -1,0 +1,7 @@
+
+{% macro add_unit_options(units) %}
+    <option></option>
+    {% for unit in units %}
+        <option value="{{ unit }}">{{ unit }}</option>
+    {% endfor %}
+{% endmacro %}

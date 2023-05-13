@@ -37,9 +37,9 @@ class DasdecLogParser:
 
         self.header_pattern = re.compile(r"----------------------------------------------------------------------")
         self.origination_pattern = re.compile(r'(?<=dasdec_)(.*?)(?=_events)')
-        self.test_pattern = re.compile(r"(\d{0,4}):\t([A-Z]{3})\t([^\t]+)\t+'([^']*)'\s*\(([^)]*)\)\s*ORG=([A-Z]{3})")
+        self.test_pattern = re.compile(r"(\d{0,6}):\t([A-Z]{3})\t([^\t]+)\t+'([^']*)'\s*\(((?:[^)]|\([^)]*\))*)\)\s*ORG=([A-Z]{3})")
         self.datetime_pattern = re.compile(r'(\b\w{3} \w{3} (?:\d{2}| \d{1}) \d{2}:\d{2}:\d{2} \d{4} \w{3}\b)')
-        self.location_pattern = re.compile(r"\w+(?:\s+\w+){0,3}(?:,?\s[a-zA-Z]{2,})?,?\s[a-zA-Z]{2,}\(\d{6}\)")
+        self.location_pattern = re.compile(r'\b.*?\(\d+\)')
 
     def parse_content(self) -> AllTests:
         for line in self.content.split('\n'):
@@ -47,8 +47,8 @@ class DasdecLogParser:
             if header_flag:
                 event = self._parse_origination(line)
                 if event:
-                    self.current_list = getattr(self.all_tests, f"{event}_tests")
                     self._append_current_test()
+                    self.current_list = getattr(self.all_tests, f"{event}_tests")
                 continue
 
             test_match = self._match_test(line)
@@ -57,7 +57,6 @@ class DasdecLogParser:
                 self.current_test = self._create_new_test(test_match)
             else:
                 self._parse_test_data(line)
-
         self._append_current_test()
         return self.all_tests
 
@@ -76,6 +75,8 @@ class DasdecLogParser:
     def _append_current_test(self) -> None:
         if self.current_test:
             self.current_list.append(self.current_test)
+            self.current_test = None
+        return
 
     def _match_test(self, line: str) -> Optional[Match]:
         return self.test_pattern.search(line)
@@ -90,7 +91,6 @@ class DasdecLogParser:
         )
 
     def _parse_test_data(self, line: str) -> None:
-        line = line.strip().replace('\t', '')
         datetime_match = self.datetime_pattern.findall(line)
         location_match = self.location_pattern.findall(line)
 
@@ -107,9 +107,16 @@ class DasdecLogParser:
             if not self.current_test.locations:
                 self.current_test.locations = []
             self.current_test.locations.extend(location_match)
-        else:
-            if line.replace(' ', '').replace('\t', '') != '':
-                print('Unmatched line:', line)
+        # else:
+        #     if line.replace(' ', '').replace('\t', '') == '':
+        #         return
+        #     if line == '----------------------------------------------------------------------' \
+        #        or line == '++++++++++++++++++++++++++++++++++++++++++++++':
+        #         return
+        #     if 'for this time period.' in line \
+        #         or 'Expired originated/forwarded alerts:' in line:
+        #         return
+        #     print('Unmatched line:', line)
 
 
 def read_from_file(filename) -> str:
@@ -123,11 +130,13 @@ def parse_dasdec_log():
     eas_log_dir = os.path.join('..', 'eas_logs')
     files = os.listdir(eas_log_dir)
     for file in files:
+        print()
+        print(file)
         content = read_from_file(os.path.join(eas_log_dir, file))
         all_tests = DasdecLogParser(content).parse_content()
-        # for test in all_tests.originated_tests:
-        #     print('\n-----------\n')
-        #     print(test)
+        for test in all_tests.originated_tests:
+            print('-----------')
+            print(test)
     print('Content parsed')
 
 

@@ -1,0 +1,34 @@
+{% from 'macros/option_content_macro.html' import create_option_content %}
+
+
+{% macro create_status_channel(html_id) %}
+  {% set options = create_option_content(html_id, 1, colors) + create_option_content(html_id, 2, colors) %}
+
+  <fieldset>
+    <dl>
+      <div class="channel_header">
+        <label id="{{ html_id }}" style="float:left; margin:0;">{{ html_id.replace('new_', '') }}.</label>
+        <label id="{{ html_id }}_header">Status</label>
+        <img class="hide_content_button" id="{{ html_id }}_hide_content"
+          onclick="minimize_channel_data('{{ html_id }}'); return false;" src='/static/img/minus_sign.png' alt='-'>
+        <input type="hidden" id="{{ html_id }}_chan_type" name="{{ html_id }}_chan_type" value='status'>
+        <input type="hidden" id="{{ html_id }}_opt_count" name="{{ html_id }}_opt_count" value=2>
+      </div>
+      <dt id="{{ html_id }}_content" class="config_content top-border" style="">
+        <label for="{{ html_id }}_title" class="title-margin">Title</label>
+        <input type="text" id="{{ html_id }}_title" name="{{ html_id }}_title" required placeholder="Channel Name">
+        <div id="{{ html_id }}_options">{{ options }}</div>
+        <button class="func_button" onclick="add_next_option('{{ html_id }}'); return false;">Add Option</button>
+        <button class="func_button" onclick="remove_channel_section('{{ html_id }}'); return false">
+          REMOVE CHANNEL
+        </button>
+      </dt>
+    </dl>
+  </fieldset>
+{% endmacro %}
+
+
+{# Generates Status Channel for input ID when this template is rendered using macros above #}
+{{ create_status_channel(html_id) }}
+
+

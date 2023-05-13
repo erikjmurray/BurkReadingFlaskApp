@@ -1,0 +1,6 @@
+{% macro add_color_picker(colors) %}
+    <option></option>
+    {% for color in colors %}
+            <option style="background-color: {{ color.hex }}" value="{{ color.hex }}">{{ color.name }}</option>
+    {% endfor %}
+{% endmacro %}

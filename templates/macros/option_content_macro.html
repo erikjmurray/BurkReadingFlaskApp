@@ -1,0 +1,46 @@
+{% from 'macros/color_picker_macro.html' import add_color_picker %}
+
+
+{% macro create_option_content(html_id, opt_num, colors) %}
+  <div class="option_box" id="{{ html_id }}_option_{{ opt_num }}">
+    <h4 style="text-decoration: underline; margin:0;">Option {{ opt_num }}</h4>
+
+    <label for="{{ html_id }}_burk_channel_{{ opt_num }}">Burk Channel Number</label>
+    <input type="number" placeholder="0"
+      id="{{ html_id }}_burk_channel_{{ opt_num }}" name="{{ html_id }}_burk_channel_{{ opt_num }}">
+
+    <label>Option Name</label>
+    <input type="text" placeholder="Text When Selected"
+      id="{{ html_id }}_selected_value_{{ opt_num }}" name="{{ html_id }}_selected_value_{{ opt_num }}">
+
+    <label>
+      Selected State
+    </label>
+    <div class="radio_group option_radio_group">
+      <label style="margin-right:25px;">
+        <input type="radio" name="{{ html_id }}_selected_state_{{ opt_num }}" value=true required>
+        On
+      </label>
+      <label>
+        <input type="radio" name="{{ html_id }}_selected_state_{{ opt_num }}" value=false>
+        Off
+      </label>
+    </div>
+
+    <label for="{{ html_id }}_selected_color_{{ opt_num }}">
+      Background Color When Selected
+    </label>
+
+    <select style="" id="{{ html_id }}_selected_color_{{ opt_num }}" name="{{ html_id }}_selected_color_{{ opt_num }}"
+      onchange="change_bg_color('{{ html_id }}_selected_color_{{ opt_num }}')" required>
+      {{ add_color_picker(colors) }}
+    </select>
+    <button class="func_button" onclick="remove_option_section('{{ html_id }}','{{ opt_num }}'); return false">
+      REMOVE OPTION
+    </button>
+  </div>
+{% endmacro %}
+
+
+{# Generates Option Content for input ID and Number when this template is rendered using macros above #}
+{{ create_option_content(html_id, opt_num, colors) }}

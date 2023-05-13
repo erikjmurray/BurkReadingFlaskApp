@@ -1,0 +1,20 @@
+{% from 'macros/color_picker_macro.html' import add_color_picker %}
+
+
+{% macro create_limit_html(html_id, limit, colors) %}
+    {% if limit == 'Upper' %}
+        {% set message = 'Color above upper limit' %}
+    {% else %}
+        {% set message = 'Color below lower limit' %}
+    {% endif %}
+    <label for="{{ html_id }}_{{ limit|lower }}_limit">{{ limit }} Limit</label>
+    <input id="{{ html_id }}_{{ limit|lower }}_limit" name="{{ html_id }}_{{ limit|lower }}_limit"
+           type="number" step="any" placeholder="0" required>
+    <label>
+        {{ message }}
+        <select style="" id="{{ html_id }}_{{ limit|lower }}_lim_color" name="{{ html_id }}_{{ limit|lower }}_lim_color"
+                onchange="change_bg_color('{{ html_id }}_{{ limit|lower }}_lim_color')" required>
+            {{ add_color_picker(colors) }}
+        </select>
+    </label>
+{% endmacro %}

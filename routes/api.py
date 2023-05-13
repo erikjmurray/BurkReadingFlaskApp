@@ -2,7 +2,7 @@
 Defines routes to gather data from config/database
 """
 # ----- 3RD PARTY IMPORTS-----
-from flask import abort, Blueprint, current_app, jsonify, Response
+from flask import abort, Blueprint, current_app, jsonify, render_template, Response
 # ----- BUILT IN IMPORTS -----
 from typing import List
 # ----- PROJECT IMPORTS -----
@@ -149,6 +149,25 @@ def get_units() -> list:
         'Volts',
     ]
     return units
+
+
+@api.route('generate_meter_channel/<html_id>')
+def generate_meter_channel(html_id):
+    units = get_units()
+    colors = get_colors()
+    return render_template('macros/meter_channel_macro.html', html_id=html_id, colors=colors, units=units)
+
+
+@api.route('generate_status_channel/<html_id>')
+def generate_status_channel(html_id):
+    colors = get_colors()
+    return render_template('macros/status_channel_macro.html', html_id=html_id, colors=colors)
+
+
+@api.route('generate_option_content/<html_id>/<opt_num>')
+def generate_option_content(html_id, opt_num):
+    colors = get_colors()
+    return render_template('macros/option_content_macro.html', html_id=html_id, opt_num=opt_num, colors=colors)
 
 
 # ----- THIS WAS A TEST ROUTE TO GET VALUES FOR SPECIFIC CHANNEL
