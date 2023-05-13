@@ -170,7 +170,7 @@ function add_next_option(id) {
 
     // create option content
     option_div = document.createElement('div')
-    create_option_content(id, next_num, colors).then(next_option => {
+    create_option_content(id, next_num).then(next_option => {
         option_div.innerHTML = next_option
 
         // insert option content to html
@@ -210,16 +210,14 @@ function remove_channel_section(html_tag) {
     }
 }
 
-
 function add_delete_option_tag(html_tag, opt_num) {
     const section_to_delete = document.getElementById(`${html_tag}_option_${opt_num}`);
-    const confirmation = confirm('Would you like to remove this option?')
+    const confirmation = confirm('Would you like to delete this option? Note: All previously saved readings will maintain their current values')
 
     if (confirmation) {
-        // replace section with hidden input of status option id as delete
+        // // TODO: Replace section with hidden input of status option id as delete
    }
 }
-
 
 
 function add_delete_channel_tag(channel_id) {
