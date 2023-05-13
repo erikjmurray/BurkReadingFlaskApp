@@ -1,0 +1,801 @@
+Expired originated/decoded/forwarded alerts:
+----------------------------------------------------------------------
+Server: 'WNYC AM EAS' @ 172.16.132.121
+DASDEC-1EN '/dasdec_originated_events/' Alert Report at 'Mon May  8 08:29:37 2023 EDT'
+From 'Fri Mar 10 00:00:00 2023 EST' to 'Tue May  9 00:00:00 2023 EDT'
+----------------------------------------------------------------------
+2826:	RWT	REQUIRED WEEKLY TEST		'Orig'(WNYC    )	ORG=EAS 
+		'Fri Mar 17 17:18:00 2023 EDT' to 'Fri Mar 17 17:33:00 2023 EDT' 
+	Originated : 'Fri Mar 17 17:18:11 2023 EDT' 
+		 New York, NY(036061)	
+
+2843:	RWT	REQUIRED WEEKLY TEST		'Orig'(WNYC    )	ORG=EAS 
+		'Wed Mar 22 18:18:00 2023 EDT' to 'Wed Mar 22 18:33:00 2023 EDT' 
+	Originated : 'Wed Mar 22 18:18:16 2023 EDT' 
+		 New York, NY(036061)	
+
+2848:	RWT	REQUIRED WEEKLY TEST		'Orig'(WNYC    )	ORG=EAS 
+		'Tue Mar 28 18:17:00 2023 EDT' to 'Tue Mar 28 18:32:00 2023 EDT' 
+	Originated : 'Tue Mar 28 18:17:47 2023 EDT' 
+		 New York, NY(036061)	
+
+2852:	RWT	REQUIRED WEEKLY TEST		'Orig'(WNYC    )	ORG=EAS 
+		'Thu Apr 13 20:19:00 2023 EDT' to 'Thu Apr 13 20:34:00 2023 EDT' 
+	Originated : 'Thu Apr 13 20:19:31 2023 EDT' 
+		 New York, NY(036061)	
+
+2883:	RWT	REQUIRED WEEKLY TEST		'Orig'(WNYC    )	ORG=EAS 
+		'Wed Apr 19 20:19:00 2023 EDT' to 'Wed Apr 19 20:34:00 2023 EDT' 
+	Originated : 'Wed Apr 19 20:19:01 2023 EDT' 
+		 New York, NY(036061)	
+
+2893:	RWT	REQUIRED WEEKLY TEST		'Orig'(WNYC    )	ORG=EAS 
+		'Mon Apr 24 20:19:00 2023 EDT' to 'Mon Apr 24 20:34:00 2023 EDT' 
+	Originated : 'Mon Apr 24 20:19:43 2023 EDT' 
+		 New York, NY(036061)	
+
+2914:	RWT	REQUIRED WEEKLY TEST		'Orig'(WNYC    )	ORG=EAS 
+		'Tue May  2 17:18:00 2023 EDT' to 'Tue May  2 17:33:00 2023 EDT' 
+	Originated : 'Tue May  2 17:18:18 2023 EDT' 
+		 New York, NY(036061)	
+
+2943:	RWT	REQUIRED WEEKLY TEST		'Orig'(WNYC    )	ORG=EAS 
+		'Thu May  4 14:11:00 2023 EDT' to 'Thu May  4 14:26:00 2023 EDT' 
+	Originated : 'Thu May  4 14:11:14 2023 EDT' 
+		 New York, NY(036061)	
+
+2946:	RWT	REQUIRED WEEKLY TEST		'Orig'(WNYC    )	ORG=EAS 
+		'Thu May  4 14:25:00 2023 EDT' to 'Thu May  4 14:40:00 2023 EDT' 
+	Originated : 'Thu May  4 14:25:22 2023 EDT' 
+		 New York, NY(036061)	
+
+2947:	RWT	REQUIRED WEEKLY TEST		'Orig'(WNYC    )	ORG=EAS 
+		'Thu May  4 14:33:00 2023 EDT' to 'Thu May  4 14:48:00 2023 EDT' 
+	Originated : 'Thu May  4 14:33:00 2023 EDT' 
+		 New York, NY(036061)	
+
+
+10 events for this time period.
+
+----------------------------------------------------------------------
+Server: 'WNYC AM EAS' @ 172.16.132.121
+DASDEC-1EN '/dasdec_forwarded_events/' Alert Report at 'Mon May  8 08:29:37 2023 EDT'
+From 'Fri Mar 10 00:00:00 2023 EST' to 'Tue May  9 00:00:00 2023 EDT'
+----------------------------------------------------------------------
+2857:	RMT	REQUIRED MONTHLY TEST		'Right 2(R2)'(WNYC    )	ORG=EAS 
+		'Wed Apr  5 01:17:00 2023 EDT' to 'Wed Apr  5 06:17:00 2023 EDT' 
+	Forwarded : 'Wed Apr  5 02:23:39 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+
+1 event for this time period.
+
+----------------------------------------------------------------------
+Server: 'WNYC AM EAS' @ 172.16.132.121
+DASDEC-1EN '/dasdec_decoded_events/' Alert Report at 'Mon May  8 08:29:37 2023 EDT'
+From 'Fri Mar 10 00:00:00 2023 EST' to 'Tue May  9 00:00:00 2023 EDT'
+----------------------------------------------------------------------
+2837:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Sat Mar 11 03:25:00 2023 EST' to 'Sat Mar 11 04:25:00 2023 EST' 
+	Decoded : 'Sat Mar 11 03:25:46 2023 EST' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2836:	RWT	REQUIRED WEEKLY TEST		'Left 1(L1)'(WOR AM  )	ORG=EAS 
+		'Wed Mar 15 01:04:00 2023 EDT' to 'Wed Mar 15 02:04:00 2023 EDT' 
+	Decoded : 'Wed Mar 15 01:04:49 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2835:	RWT	REQUIRED WEEKLY TEST		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Wed Mar 15 11:02:00 2023 EDT' to 'Wed Mar 15 11:17:00 2023 EDT' 
+	Decoded : 'Wed Mar 15 11:05:08 2023 EDT' 
+		 Essex, NJ(034013)	 Somerset, NJ(034035)	
+		 Middlesex, NJ(034023)	 Bronx, NY(036005)	
+		 Nassau, NY(036059)	 Suffolk, NY(036103)	
+		 Hudson, NJ(034017)	 Union, NJ(034039)	
+		 Kings, NY(036047)	 Morris, NJ(034027)	
+		 Putnam, NY(036079)	 Sussex, NJ(034037)	
+		 Bergen, NJ(034003)	 Monmouth, NJ(034025)	
+		 Rockland, NY(036087)	 Richmond, NY(036085)	
+		 Fairfield, CT(009001)	 Passaic, NJ(034031)	
+		 New York, NY(036061)	 Warren, NJ(034041)	
+		 Orange, NY(036071)	 Queens, NY(036081)	
+		 Hunterdon, NJ(034019)	 Westchester, NY(036119)	
+
+2838:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Fri Mar 17 10:48:00 2023 EDT' to 'Fri Mar 17 11:48:00 2023 EDT' 
+	Decoded : 'Fri Mar 17 10:48:49 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2842:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Sat Mar 18 03:25:00 2023 EDT' to 'Sat Mar 18 04:25:00 2023 EDT' 
+	Decoded : 'Sat Mar 18 03:25:45 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2840:	RWT	REQUIRED WEEKLY TEST		'Left 1(L1)'(WOR AM  )	ORG=EAS 
+		'Tue Mar 21 02:31:00 2023 EDT' to 'Tue Mar 21 03:31:00 2023 EDT' 
+	Decoded : 'Tue Mar 21 02:31:29 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2841:	RWT	REQUIRED WEEKLY TEST		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Wed Mar 22 11:04:00 2023 EDT' to 'Wed Mar 22 11:19:00 2023 EDT' 
+	Decoded : 'Wed Mar 22 11:06:56 2023 EDT' 
+		 Essex, NJ(034013)	 Somerset, NJ(034035)	
+		 Middlesex, NJ(034023)	 Bronx, NY(036005)	
+		 Nassau, NY(036059)	 Suffolk, NY(036103)	
+		 Hudson, NJ(034017)	 Union, NJ(034039)	
+		 Kings, NY(036047)	 Morris, NJ(034027)	
+		 Putnam, NY(036079)	 Sussex, NJ(034037)	
+		 Bergen, NJ(034003)	 Monmouth, NJ(034025)	
+		 Rockland, NY(036087)	 Richmond, NY(036085)	
+		 Fairfield, CT(009001)	 Passaic, NJ(034031)	
+		 New York, NY(036061)	 Warren, NJ(034041)	
+		 Orange, NY(036071)	 Queens, NY(036081)	
+		 Hunterdon, NJ(034019)	 Westchester, NY(036119)	
+
+2844:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Sat Mar 25 03:25:00 2023 EDT' to 'Sat Mar 25 04:25:00 2023 EDT' 
+	Decoded : 'Sat Mar 25 03:25:45 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2846:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Mar 25 12:36:00 2023 EDT' to 'Sat Mar 25 13:36:00 2023 EDT' 
+	Decoded : 'Sat Mar 25 12:38:19 2023 EDT' 
+		 Northwest North Atlantic Ocean(073451)	 Northwest North Atlantic Ocean(073450)	
+		 Northwest North Atlantic Ocean(073471)	 Northwest North Atlantic Ocean(073470)	
+
+2845:	RWT	REQUIRED WEEKLY TEST		'Left 1(L1)'(WOR AM  )	ORG=EAS 
+		'Wed Mar 29 05:17:00 2023 EDT' to 'Wed Mar 29 06:17:00 2023 EDT' 
+	Decoded : 'Wed Mar 29 05:17:56 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2850:	RWT	REQUIRED WEEKLY TEST		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Wed Mar 29 11:03:00 2023 EDT' to 'Wed Mar 29 11:18:00 2023 EDT' 
+	Decoded : 'Wed Mar 29 11:06:02 2023 EDT' 
+		 Essex, NJ(034013)	 Somerset, NJ(034035)	
+		 Middlesex, NJ(034023)	 Bronx, NY(036005)	
+		 Nassau, NY(036059)	 Suffolk, NY(036103)	
+		 Hudson, NJ(034017)	 Union, NJ(034039)	
+		 Kings, NY(036047)	 Morris, NJ(034027)	
+		 Putnam, NY(036079)	 Sussex, NJ(034037)	
+		 Bergen, NJ(034003)	 Monmouth, NJ(034025)	
+		 Rockland, NY(036087)	 Richmond, NY(036085)	
+		 Fairfield, CT(009001)	 Passaic, NJ(034031)	
+		 New York, NY(036061)	 Warren, NJ(034041)	
+		 Orange, NY(036071)	 Queens, NY(036081)	
+		 Hunterdon, NJ(034019)	 Westchester, NY(036119)	
+
+2849:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Thu Mar 30 10:50:00 2023 EDT' to 'Thu Mar 30 11:50:00 2023 EDT' 
+	Decoded : 'Thu Mar 30 10:51:18 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2855:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Sat Apr  1 03:25:00 2023 EDT' to 'Sat Apr  1 04:25:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 03:25:46 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2854:	SVA	SEVERE THUNDERSTORM WATCH		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 17:15:00 2023 EDT' to 'Sat Apr  1 22:15:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 17:16:36 2023 EDT' 
+		 Essex, NJ(034013)	 Bronx, NY(036005)	
+		 Nassau, NY(036059)	 Suffolk, NY(036103)	
+		 Hudson, NJ(034017)	 Union, NJ(034039)	
+		 Kings, NY(036047)	 Putnam, NY(036079)	
+		 Bergen, NJ(034003)	 Rockland, NY(036087)	
+		 Richmond, NY(036085)	 Fairfield, CT(009001)	
+		 Passaic, NJ(034031)	 New York, NY(036061)	
+		 Orange, NY(036071)	 Queens, NY(036081)	
+		 New York Harbor, Northwest Atlantic(073338)	 Long Island Sound West of New Haven CT/Port Jefferson,NY, Northwest Atlantic(073335)	
+		 Northwest North Atlantic Ocean(073345)	 Westchester, NY(036119)	
+
+2858:	TOA	TORNADO WATCH		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 17:30:00 2023 EDT' to 'Sat Apr  1 22:00:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 17:39:15 2023 EDT' 
+		 Somerset, NJ(034035)	 Middlesex, NJ(034023)	
+		 Morris, NJ(034027)	 Sussex, NJ(034037)	
+		 Monmouth, NJ(034025)	 Hunterdon, NJ(034019)	
+		 Warren, NJ(034041)	
+
+2859:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 17:53:00 2023 EDT' to 'Sat Apr  1 19:23:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 17:56:34 2023 EDT' 
+		 Morris, NJ(034027)	 Hunterdon, NJ(034019)	
+		 Warren, NJ(034041)	
+
+2860:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 18:31:00 2023 EDT' to 'Sat Apr  1 19:16:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 18:34:20 2023 EDT' 
+		 Somerset, NJ(034035)	 Middlesex, NJ(034023)	
+		 Morris, NJ(034027)	 Hunterdon, NJ(034019)	
+
+2861:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 18:37:00 2023 EDT' to 'Sat Apr  1 19:37:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 18:40:32 2023 EDT' 
+		 Middlesex, NJ(034023)	 Monmouth, NJ(034025)	
+
+2862:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 18:47:00 2023 EDT' to 'Sat Apr  1 19:47:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 18:49:35 2023 EDT' 
+		 New York Harbor, Northwest Atlantic(073338)	 Sandy Hook NJ to Fire Island Inlet,NY, Northwest Atlantic(073355)	
+
+2863:	TOR	TORNADO WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 19:07:00 2023 EDT' to 'Sat Apr  1 19:52:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 19:10:23 2023 EDT' 
+		 Monmouth, NJ(034025)	
+
+2864:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 19:11:00 2023 EDT' to 'Sat Apr  1 20:41:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 19:13:59 2023 EDT' 
+		 Middlesex, NJ(034023)	 Monmouth, NJ(034025)	
+
+2865:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 19:27:00 2023 EDT' to 'Sat Apr  1 21:27:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 19:29:34 2023 EDT' 
+		 Northwest North Atlantic Ocean(073451)	 Northwest North Atlantic Ocean(073450)	
+		 Northwest North Atlantic Ocean(073471)	 Northwest North Atlantic Ocean(073470)	
+
+2866:	TOR	TORNADO WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 19:31:00 2023 EDT' to 'Sat Apr  1 20:01:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 19:34:16 2023 EDT' 
+		 Monmouth, NJ(034025)	
+
+2867:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 19:44:00 2023 EDT' to 'Sat Apr  1 21:14:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 19:46:07 2023 EDT' 
+		 New York Harbor, Northwest Atlantic(073338)	 Sandy Hook NJ to Fire Island Inlet,NY, Northwest Atlantic(073355)	
+
+2868:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 19:47:00 2023 EDT' to 'Sat Apr  1 21:17:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 19:50:15 2023 EDT' 
+		 Northwest North Atlantic Ocean(073451)	 Northwest North Atlantic Ocean(073471)	
+
+2869:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 20:07:00 2023 EDT' to 'Sat Apr  1 20:52:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 20:09:48 2023 EDT' 
+		 Northwest North Atlantic Ocean(073375)	
+
+2870:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 20:24:00 2023 EDT' to 'Sat Apr  1 21:54:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 20:26:00 2023 EDT' 
+		 Sandy Hook NJ to Fire Island Inlet,NY, Northwest Atlantic(073355)	 Fire Island Inlet NY to Moriches Inlet,NY, Northwest Atlantic(073353)	
+
+2871:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr  1 20:33:00 2023 EDT' to 'Sat Apr  1 21:33:00 2023 EDT' 
+	Decoded : 'Sat Apr  1 20:35:25 2023 EDT' 
+		 Long Island Sound West of New Haven CT/Port Jefferson,NY, Northwest Atlantic(073335)	
+
+2857:	RMT	REQUIRED MONTHLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Wed Apr  5 01:17:00 2023 EDT' to 'Wed Apr  5 06:17:00 2023 EDT' 
+	Decoded : 'Wed Apr  5 02:23:39 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+Event Log:Monthly Test Alert received within event validation window. 
+
+2853:	RMT	REQUIRED MONTHLY TEST		'Left 1(L1)'(WOR AM  )	ORG=EAS 
+		'Wed Apr  5 01:17:00 2023 EDT' to 'Wed Apr  5 06:17:00 2023 EDT' 
+	Decoded : 'Wed Apr  5 02:34:19 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+Event Log:Monthly Test Alert received within event validation window. Duplicate Decoded EAS Alert of ID 2857 from EAS Station ID 'WOR AM  ' @ 'Wed Apr  5 02:34:19 2023 EDT'
+
+
+2872:	RWT	REQUIRED WEEKLY TEST		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Wed Apr  5 11:03:00 2023 EDT' to 'Wed Apr  5 11:18:00 2023 EDT' 
+	Decoded : 'Wed Apr  5 11:06:58 2023 EDT' 
+		 Essex, NJ(034013)	 Somerset, NJ(034035)	
+		 Middlesex, NJ(034023)	 Bronx, NY(036005)	
+		 Nassau, NY(036059)	 Suffolk, NY(036103)	
+		 Hudson, NJ(034017)	 Union, NJ(034039)	
+		 Kings, NY(036047)	 Morris, NJ(034027)	
+		 Putnam, NY(036079)	 Sussex, NJ(034037)	
+		 Bergen, NJ(034003)	 Monmouth, NJ(034025)	
+		 Rockland, NY(036087)	 Richmond, NY(036085)	
+		 Fairfield, CT(009001)	 Passaic, NJ(034031)	
+		 New York, NY(036061)	 Warren, NJ(034041)	
+		 Orange, NY(036071)	 Queens, NY(036081)	
+		 Hunterdon, NJ(034019)	 Westchester, NY(036119)	
+
+2875:	RWT	REQUIRED WEEKLY TEST		'Left 1(L1)'(WOR AM  )	ORG=EAS 
+		'Wed Apr  5 23:30:00 2023 EDT' to 'Thu Apr  6 00:30:00 2023 EDT' 
+	Decoded : 'Wed Apr  5 23:30:28 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2874:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Sat Apr  8 03:25:00 2023 EDT' to 'Sat Apr  8 04:25:00 2023 EDT' 
+	Decoded : 'Sat Apr  8 03:25:51 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2877:	RWT	REQUIRED WEEKLY TEST		'Left 1(L1)'(WOR AM  )	ORG=EAS 
+		'Mon Apr 10 05:41:00 2023 EDT' to 'Mon Apr 10 06:41:00 2023 EDT' 
+	Decoded : 'Mon Apr 10 05:41:36 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2878:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Tue Apr 11 20:57:00 2023 EDT' to 'Tue Apr 11 21:57:00 2023 EDT' 
+	Decoded : 'Tue Apr 11 20:58:38 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2876:	RWT	REQUIRED WEEKLY TEST		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Wed Apr 12 11:09:00 2023 EDT' to 'Wed Apr 12 11:24:00 2023 EDT' 
+	Decoded : 'Wed Apr 12 11:11:52 2023 EDT' 
+		 Essex, NJ(034013)	 Somerset, NJ(034035)	
+		 Middlesex, NJ(034023)	 Bronx, NY(036005)	
+		 Nassau, NY(036059)	 Suffolk, NY(036103)	
+		 Hudson, NJ(034017)	 Union, NJ(034039)	
+		 Kings, NY(036047)	 Morris, NJ(034027)	
+		 Putnam, NY(036079)	 Sussex, NJ(034037)	
+		 Bergen, NJ(034003)	 Monmouth, NJ(034025)	
+		 Rockland, NY(036087)	 Richmond, NY(036085)	
+		 Fairfield, CT(009001)	 Passaic, NJ(034031)	
+		 New York, NY(036061)	 Warren, NJ(034041)	
+		 Orange, NY(036071)	 Queens, NY(036081)	
+		 Hunterdon, NJ(034019)	 Westchester, NY(036119)	
+
+2881:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Sat Apr 15 03:25:00 2023 EDT' to 'Sat Apr 15 04:25:00 2023 EDT' 
+	Decoded : 'Sat Apr 15 03:25:51 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2882:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 15 13:34:00 2023 EDT' to 'Sat Apr 15 14:04:00 2023 EDT' 
+	Decoded : 'Sat Apr 15 13:36:07 2023 EDT' 
+		 Warren, NJ(034041)	
+
+2885:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 15 13:49:00 2023 EDT' to 'Sat Apr 15 14:19:00 2023 EDT' 
+	Decoded : 'Sat Apr 15 13:50:49 2023 EDT' 
+		 Sussex, NJ(034037)	
+
+2886:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 15 13:58:00 2023 EDT' to 'Sat Apr 15 14:43:00 2023 EDT' 
+	Decoded : 'Sat Apr 15 13:59:59 2023 EDT' 
+		 Warren, NJ(034041)	
+
+2887:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 15 16:49:00 2023 EDT' to 'Sat Apr 15 17:19:00 2023 EDT' 
+	Decoded : 'Sat Apr 15 16:52:03 2023 EDT' 
+		 Somerset, NJ(034035)	 Middlesex, NJ(034023)	
+
+2888:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 15 16:56:00 2023 EDT' to 'Sat Apr 15 17:41:00 2023 EDT' 
+	Decoded : 'Sat Apr 15 16:58:06 2023 EDT' 
+		 Hunterdon, NJ(034019)	
+
+2889:	FLW	FLOOD WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 15 18:32:00 2023 EDT' to 'Sat Apr 15 22:32:00 2023 EDT' 
+	Decoded : 'Sat Apr 15 18:52:10 2023 EDT' 
+		 Hunterdon, NJ(034019)	
+
+2890:	RWT	REQUIRED WEEKLY TEST		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Wed Apr 19 11:01:00 2023 EDT' to 'Wed Apr 19 11:16:00 2023 EDT' 
+	Decoded : 'Wed Apr 19 11:03:25 2023 EDT' 
+		 Essex, NJ(034013)	 Somerset, NJ(034035)	
+		 Middlesex, NJ(034023)	 Bronx, NY(036005)	
+		 Nassau, NY(036059)	 Suffolk, NY(036103)	
+		 Hudson, NJ(034017)	 Union, NJ(034039)	
+		 Kings, NY(036047)	 Morris, NJ(034027)	
+		 Putnam, NY(036079)	 Sussex, NJ(034037)	
+		 Bergen, NJ(034003)	 Monmouth, NJ(034025)	
+		 Rockland, NY(036087)	 Richmond, NY(036085)	
+		 Fairfield, CT(009001)	 Passaic, NJ(034031)	
+		 New York, NY(036061)	 Warren, NJ(034041)	
+		 Orange, NY(036071)	 Queens, NY(036081)	
+		 Hunterdon, NJ(034019)	 Westchester, NY(036119)	
+
+2879:	RWT	REQUIRED WEEKLY TEST		'Left 1(L1)'(WOR AM  )	ORG=EAS 
+		'Thu Apr 20 10:43:00 2023 EDT' to 'Thu Apr 20 11:43:00 2023 EDT' 
+	Decoded : 'Thu Apr 20 10:44:13 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2884:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Sat Apr 22 03:25:00 2023 EDT' to 'Sat Apr 22 04:25:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 03:25:49 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2892:	SVA	SEVERE THUNDERSTORM WATCH		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 15:05:00 2023 EDT' to 'Sat Apr 22 21:05:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 15:06:06 2023 EDT' 
+		 Somerset, NJ(034035)	 Hunterdon, NJ(034019)	
+		 Warren, NJ(034041)	
+
+2896:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 16:52:00 2023 EDT' to 'Sat Apr 22 17:37:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 16:54:54 2023 EDT' 
+		 Sussex, NJ(034037)	 Hunterdon, NJ(034019)	
+		 Warren, NJ(034041)	
+
+2897:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 18:11:00 2023 EDT' to 'Sat Apr 22 19:11:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 18:13:22 2023 EDT' 
+		 Sussex, NJ(034037)	 Warren, NJ(034041)	
+
+2898:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 18:32:00 2023 EDT' to 'Sat Apr 22 19:02:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 18:34:36 2023 EDT' 
+		 Hunterdon, NJ(034019)	
+
+2899:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 19:11:00 2023 EDT' to 'Sat Apr 22 20:11:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 19:13:26 2023 EDT' 
+		 Sussex, NJ(034037)	
+
+2900:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 19:14:00 2023 EDT' to 'Sat Apr 22 20:14:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 19:16:04 2023 EDT' 
+		 Orange, NY(036071)	
+
+2901:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 19:24:00 2023 EDT' to 'Sat Apr 22 20:24:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 19:26:29 2023 EDT' 
+		 Somerset, NJ(034035)	 Morris, NJ(034027)	
+		 Sussex, NJ(034037)	 Hunterdon, NJ(034019)	
+		 Warren, NJ(034041)	
+
+2902:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 20:07:00 2023 EDT' to 'Sat Apr 22 20:37:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 20:08:41 2023 EDT' 
+		 Morris, NJ(034027)	 Sussex, NJ(034037)	
+
+2904:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 20:16:00 2023 EDT' to 'Sat Apr 22 21:01:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 20:18:55 2023 EDT' 
+		 Middlesex, NJ(034023)	 Monmouth, NJ(034025)	
+
+2905:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 20:26:00 2023 EDT' to 'Sat Apr 22 21:26:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 20:28:13 2023 EDT' 
+		 Passaic, NJ(034031)	 Orange, NY(036071)	
+
+2906:	SVR	SEVERE THUNDERSTORM WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 20:29:00 2023 EDT' to 'Sat Apr 22 21:29:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 20:31:12 2023 EDT' 
+		 Morris, NJ(034027)	
+
+2907:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 20:39:00 2023 EDT' to 'Sat Apr 22 22:09:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 20:41:01 2023 EDT' 
+		 New York Harbor, Northwest Atlantic(073338)	
+
+2908:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 21:12:00 2023 EDT' to 'Sat Apr 22 22:12:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 21:14:29 2023 EDT' 
+		 Northwest North Atlantic Ocean(073345)	 Fire Island Inlet NY to Moriches Inlet,NY, Northwest Atlantic(073353)	
+
+2909:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 21:23:00 2023 EDT' to 'Sat Apr 22 22:53:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 21:25:29 2023 EDT' 
+		 Northwest North Atlantic Ocean(073451)	 Northwest North Atlantic Ocean(073450)	
+		 Northwest North Atlantic Ocean(073471)	 Northwest North Atlantic Ocean(073470)	
+
+2910:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 21:27:00 2023 EDT' to 'Sat Apr 22 22:27:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 21:29:21 2023 EDT' 
+		 New York Harbor, Northwest Atlantic(073338)	 Sandy Hook NJ to Fire Island Inlet,NY, Northwest Atlantic(073355)	
+
+2911:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sat Apr 22 22:01:00 2023 EDT' to 'Sat Apr 22 23:01:00 2023 EDT' 
+	Decoded : 'Sat Apr 22 22:02:54 2023 EDT' 
+		 Long Island Sound West of New Haven CT/Port Jefferson,NY, Northwest Atlantic(073335)	 Northwest North Atlantic Ocean(073345)	
+		 Fire Island Inlet NY to Moriches Inlet,NY, Northwest Atlantic(073353)	
+
+2894:	RWT	REQUIRED WEEKLY TEST		'Left 1(L1)'(WOR AM  )	ORG=EAS 
+		'Tue Apr 25 03:03:00 2023 EDT' to 'Tue Apr 25 04:03:00 2023 EDT' 
+	Decoded : 'Tue Apr 25 03:04:33 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2912:	RWT	REQUIRED WEEKLY TEST		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Wed Apr 26 11:04:00 2023 EDT' to 'Wed Apr 26 11:19:00 2023 EDT' 
+	Decoded : 'Wed Apr 26 11:07:36 2023 EDT' 
+		 Essex, NJ(034013)	 Somerset, NJ(034035)	
+		 Middlesex, NJ(034023)	 Bronx, NY(036005)	
+		 Nassau, NY(036059)	 Suffolk, NY(036103)	
+		 Hudson, NJ(034017)	 Union, NJ(034039)	
+		 Kings, NY(036047)	 Morris, NJ(034027)	
+		 Putnam, NY(036079)	 Sussex, NJ(034037)	
+		 Bergen, NJ(034003)	 Monmouth, NJ(034025)	
+		 Rockland, NY(036087)	 Richmond, NY(036085)	
+		 Fairfield, CT(009001)	 Passaic, NJ(034031)	
+		 New York, NY(036061)	 Warren, NJ(034041)	
+		 Orange, NY(036071)	 Queens, NY(036081)	
+		 Hunterdon, NJ(034019)	 Westchester, NY(036119)	
+
+2895:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Wed Apr 26 18:57:00 2023 EDT' to 'Wed Apr 26 19:57:00 2023 EDT' 
+	Decoded : 'Wed Apr 26 18:58:30 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2917:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Sat Apr 29 03:25:00 2023 EDT' to 'Sat Apr 29 04:25:00 2023 EDT' 
+	Decoded : 'Sat Apr 29 03:25:46 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2920:	FLA	FLOOD WATCH		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sun Apr 30 09:04:00 2023 EDT' to 'Sun Apr 30 15:04:00 2023 EDT' 
+	Decoded : 'Sun Apr 30 09:14:29 2023 EDT' 
+		 Orange, NY(036071)	 Rockland, NY(036087)	
+
+2930:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Mon May  1 00:17:00 2023 EDT' to 'Mon May  1 01:47:00 2023 EDT' 
+	Decoded : 'Mon May  1 00:19:56 2023 EDT' 
+		 Northwest North Atlantic Ocean(073451)	 Northwest North Atlantic Ocean(073450)	
+		 Northwest North Atlantic Ocean(073471)	 Northwest North Atlantic Ocean(073470)	
+
+2931:	SMW	SPECIAL MARINE WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Mon May  1 01:41:00 2023 EDT' to 'Mon May  1 03:11:00 2023 EDT' 
+	Decoded : 'Mon May  1 01:45:22 2023 EDT' 
+		 Northwest North Atlantic Ocean(073451)	 Northwest North Atlantic Ocean(073450)	
+		 Northwest North Atlantic Ocean(073471)	 Northwest North Atlantic Ocean(073470)	
+
+2932:	FLW	FLOOD WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Sun Apr 30 23:11:00 2023 EDT' to 'Mon May  1 05:11:00 2023 EDT' 
+	Decoded : 'Mon May  1 07:12:26 2023 EDT' 
+		 Morris, NJ(034027)	 Passaic, NJ(034031)	
+Event Log:Error: Event expired upon arrival. 
+
+2933:	FLW	FLOOD WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Mon May  1 00:28:00 2023 EDT' to 'Mon May  1 06:28:00 2023 EDT' 
+	Decoded : 'Mon May  1 07:13:41 2023 EDT' 
+		 Morris, NJ(034027)	
+Event Log:Error: Event expired upon arrival. 
+
+2934:	FLW	FLOOD WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Mon May  1 03:47:00 2023 EDT' to 'Mon May  1 09:47:00 2023 EDT' 
+	Decoded : 'Mon May  1 07:15:26 2023 EDT' 
+		 Essex, NJ(034013)	 Morris, NJ(034027)	
+		 Passaic, NJ(034031)	
+
+2935:	FLW	FLOOD WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Mon May  1 03:50:00 2023 EDT' to 'Mon May  1 09:50:00 2023 EDT' 
+	Decoded : 'Mon May  1 07:17:08 2023 EDT' 
+		 Somerset, NJ(034035)	
+
+2936:	FLW	FLOOD WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Mon May  1 07:46:00 2023 EDT' to 'Mon May  1 11:46:00 2023 EDT' 
+	Decoded : 'Mon May  1 08:15:50 2023 EDT' 
+		 Monmouth, NJ(034025)	
+
+2918:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Mon May  1 10:25:00 2023 EDT' to 'Mon May  1 11:25:00 2023 EDT' 
+	Decoded : 'Mon May  1 10:26:02 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2937:	FLW	FLOOD WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Mon May  1 10:48:00 2023 EDT' to 'Mon May  1 16:48:00 2023 EDT' 
+	Decoded : 'Mon May  1 10:50:59 2023 EDT' 
+		 Somerset, NJ(034035)	
+
+2939:	FLW	FLOOD WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Mon May  1 11:01:00 2023 EDT' to 'Mon May  1 17:01:00 2023 EDT' 
+	Decoded : 'Mon May  1 11:05:01 2023 EDT' 
+		 Bergen, NJ(034003)	 Rockland, NY(036087)	
+		 Passaic, NJ(034031)	 Orange, NY(036071)	
+
+2941:	FLW	FLOOD WARNING		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Mon May  1 12:18:00 2023 EDT' to 'Mon May  1 18:18:00 2023 EDT' 
+	Decoded : 'Mon May  1 12:21:10 2023 EDT' 
+		 Essex, NJ(034013)	 Passaic, NJ(034031)	
+
+2915:	RWT	REQUIRED WEEKLY TEST		'Left 1(L1)'(WOR AM  )	ORG=EAS 
+		'Wed May  3 03:04:00 2023 EDT' to 'Wed May  3 04:04:00 2023 EDT' 
+	Decoded : 'Wed May  3 03:04:52 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+2942:	RWT	REQUIRED WEEKLY TEST		'Left 2(L2)'(KOKX/NWS)	ORG=WXR 
+		'Wed May  3 11:08:00 2023 EDT' to 'Wed May  3 11:23:00 2023 EDT' 
+	Decoded : 'Wed May  3 11:10:22 2023 EDT' 
+		 Essex, NJ(034013)	 Somerset, NJ(034035)	
+		 Middlesex, NJ(034023)	 Bronx, NY(036005)	
+		 Nassau, NY(036059)	 Suffolk, NY(036103)	
+		 Hudson, NJ(034017)	 Union, NJ(034039)	
+		 Kings, NY(036047)	 Morris, NJ(034027)	
+		 Putnam, NY(036079)	 Sussex, NJ(034037)	
+		 Bergen, NJ(034003)	 Monmouth, NJ(034025)	
+		 Rockland, NY(036087)	 Richmond, NY(036085)	
+		 Fairfield, CT(009001)	 Passaic, NJ(034031)	
+		 New York, NY(036061)	 Warren, NJ(034041)	
+		 Orange, NY(036071)	 Queens, NY(036081)	
+		 Hunterdon, NJ(034019)	 Westchester, NY(036119)	
+
+2938:	RWT	REQUIRED WEEKLY TEST		'Right 2(R2)'(WABC AM )	ORG=EAS 
+		'Sat May  6 03:25:00 2023 EDT' to 'Sat May  6 04:25:00 2023 EDT' 
+	Decoded : 'Sat May  6 03:25:46 2023 EDT' 
+		 Bronx, NY(036005)	 Kings, NY(036047)	
+		 New York, NY(036061)	 Queens, NY(036081)	
+		 Richmond, NY(036085)	
+
+
+81 events for this time period.
+
+----------------------------------------------------------------------
+Server: 'WNYC AM EAS' @ 172.16.132.121
+DASDEC-1EN '/dasdec_eas_net_decoded_events/' Alert Report at 'Mon May  8 08:29:37 2023 EDT'
+From 'Fri Mar 10 00:00:00 2023 EST' to 'Tue May  9 00:00:00 2023 EDT'
+----------------------------------------------------------------------
+
+0 events for this time period.
+
+----------------------------------------------------------------------
+Server: 'WNYC AM EAS' @ 172.16.132.121
+DASDEC-1EN '/dasdec_cap_eas_decoded_events/' Alert Report at 'Mon May  8 08:29:37 2023 EDT'
+From 'Fri Mar 10 00:00:00 2023 EST' to 'Tue May  9 00:00:00 2023 EDT'
+----------------------------------------------------------------------
+2839:	RWT	REQUIRED WEEKLY TEST		'CAP2'(IPAWSCAP)	ORG=CIV 
+		'Mon Mar 13 11:01:00 2023 EDT' to 'Mon Mar 13 12:01:00 2023 EDT' 
+	Decoded : 'Mon Mar 13 11:01:16 2023 EDT' 
+		 Connecticut(009000)	 District Of Columbia/Washington DC(011000)	
+		 Delaware(010000)	 Florida(012000)	
+		 Georgia(013000)	 Indiana(018000)	
+		 Kentucky(021000)	 Massachusetts(025000)	
+		 Maryland(024000)	 Maine(023000)	
+		 Michigan(026000)	 North Carolina(037000)	
+		 New Hampshire(033000)	 New Jersey(034000)	
+		 New York(036000)	 Ohio(039000)	
+		 Pennsylvania(042000)	 Rhode Island(044000)	
+		 South Carolina(045000)	 Virginia(051000)	
+		 Vermont(050000)	 West Virginia(054000)	
+Event Log:Digital Signature -> Invalid, Rejected;  Event auto-expired upon arrival. 
+
+2847:	RWT	REQUIRED WEEKLY TEST		'CAP2'(IPAWSCAP)	ORG=CIV 
+		'Wed Mar 22 13:00:00 2023 EDT' to 'Wed Mar 22 14:00:00 2023 EDT' 
+	Decoded : 'Wed Mar 22 13:00:18 2023 EDT' 
+		 Connecticut(009000)	 District Of Columbia/Washington DC(011000)	
+		 Delaware(010000)	 Florida(012000)	
+		 Georgia(013000)	 Indiana(018000)	
+		 Kentucky(021000)	 Massachusetts(025000)	
+		 Maryland(024000)	 Maine(023000)	
+		 Michigan(026000)	 North Carolina(037000)	
+		 New Hampshire(033000)	 New Jersey(034000)	
+		 New York(036000)	 Ohio(039000)	
+		 Pennsylvania(042000)	 Rhode Island(044000)	
+		 South Carolina(045000)	 Virginia(051000)	
+		 Vermont(050000)	 West Virginia(054000)	
+Event Log:Digital Signature -> Invalid, Rejected;  Event auto-expired upon arrival. 
+
+2851:	RWT	REQUIRED WEEKLY TEST		'CAP2'(IPAWSCAP)	ORG=CIV 
+		'Mon Mar 27 11:01:00 2023 EDT' to 'Mon Mar 27 12:01:00 2023 EDT' 
+	Decoded : 'Mon Mar 27 11:01:50 2023 EDT' 
+		 Connecticut(009000)	 District Of Columbia/Washington DC(011000)	
+		 Delaware(010000)	 Florida(012000)	
+		 Georgia(013000)	 Indiana(018000)	
+		 Kentucky(021000)	 Massachusetts(025000)	
+		 Maryland(024000)	 Maine(023000)	
+		 Michigan(026000)	 North Carolina(037000)	
+		 New Hampshire(033000)	 New Jersey(034000)	
+		 New York(036000)	 Ohio(039000)	
+		 Pennsylvania(042000)	 Rhode Island(044000)	
+		 South Carolina(045000)	 Virginia(051000)	
+		 Vermont(050000)	 West Virginia(054000)	
+Event Log:Digital Signature -> Invalid, Rejected;  Event auto-expired upon arrival. 
+
+2873:	RWT	REQUIRED WEEKLY TEST		'CAP2'(IPAWSCAP)	ORG=CIV 
+		'Mon Apr  3 11:01:00 2023 EDT' to 'Mon Apr  3 12:01:00 2023 EDT' 
+	Decoded : 'Mon Apr  3 11:01:29 2023 EDT' 
+		 Connecticut(009000)	 District Of Columbia/Washington DC(011000)	
+		 Delaware(010000)	 Florida(012000)	
+		 Georgia(013000)	 Indiana(018000)	
+		 Kentucky(021000)	 Massachusetts(025000)	
+		 Maryland(024000)	 Maine(023000)	
+		 Michigan(026000)	 North Carolina(037000)	
+		 New Hampshire(033000)	 New Jersey(034000)	
+		 New York(036000)	 Ohio(039000)	
+		 Pennsylvania(042000)	 Rhode Island(044000)	
+		 South Carolina(045000)	 Virginia(051000)	
+		 Vermont(050000)	 West Virginia(054000)	
+Event Log:Digital Signature -> Invalid, Rejected;  Event auto-expired upon arrival. 
+
+2880:	RWT	REQUIRED WEEKLY TEST		'CAP2'(IPAWSCAP)	ORG=CIV 
+		'Mon Apr 10 11:01:00 2023 EDT' to 'Mon Apr 10 12:01:00 2023 EDT' 
+	Decoded : 'Mon Apr 10 11:01:41 2023 EDT' 
+		 Connecticut(009000)	 District Of Columbia/Washington DC(011000)	
+		 Delaware(010000)	 Florida(012000)	
+		 Georgia(013000)	 Indiana(018000)	
+		 Kentucky(021000)	 Massachusetts(025000)	
+		 Maryland(024000)	 Maine(023000)	
+		 Michigan(026000)	 North Carolina(037000)	
+		 New Hampshire(033000)	 New Jersey(034000)	
+		 New York(036000)	 Ohio(039000)	
+		 Pennsylvania(042000)	 Rhode Island(044000)	
+		 South Carolina(045000)	 Virginia(051000)	
+		 Vermont(050000)	 West Virginia(054000)	
+Event Log:Digital Signature -> Invalid, Rejected;  Event auto-expired upon arrival. 
+
+2891:	RWT	REQUIRED WEEKLY TEST		'CAP2'(IPAWSCAP)	ORG=CIV 
+		'Mon Apr 17 11:01:00 2023 EDT' to 'Mon Apr 17 12:01:00 2023 EDT' 
+	Decoded : 'Mon Apr 17 11:02:32 2023 EDT' 
+		 Connecticut(009000)	 District Of Columbia/Washington DC(011000)	
+		 Delaware(010000)	 Florida(012000)	
+		 Georgia(013000)	 Indiana(018000)	
+		 Kentucky(021000)	 Massachusetts(025000)	
+		 Maryland(024000)	 Maine(023000)	
+		 Michigan(026000)	 North Carolina(037000)	
+		 New Hampshire(033000)	 New Jersey(034000)	
+		 New York(036000)	 Ohio(039000)	
+		 Pennsylvania(042000)	 Rhode Island(044000)	
+		 South Carolina(045000)	 Virginia(051000)	
+		 Vermont(050000)	 West Virginia(054000)	
+Event Log:Digital Signature -> Invalid, Rejected;  Event auto-expired upon arrival. 
+
+2913:	RWT	REQUIRED WEEKLY TEST		'CAP2'(IPAWSCAP)	ORG=CIV 
+		'Mon Apr 24 11:01:00 2023 EDT' to 'Mon Apr 24 12:01:00 2023 EDT' 
+	Decoded : 'Mon Apr 24 11:01:20 2023 EDT' 
+		 Connecticut(009000)	 District Of Columbia/Washington DC(011000)	
+		 Delaware(010000)	 Florida(012000)	
+		 Georgia(013000)	 Indiana(018000)	
+		 Kentucky(021000)	 Massachusetts(025000)	
+		 Maryland(024000)	 Maine(023000)	
+		 Michigan(026000)	 North Carolina(037000)	
+		 New Hampshire(033000)	 New Jersey(034000)	
+		 New York(036000)	 Ohio(039000)	
+		 Pennsylvania(042000)	 Rhode Island(044000)	
+		 South Carolina(045000)	 Virginia(051000)	
+		 Vermont(050000)	 West Virginia(054000)	
+Event Log:Digital Signature -> Invalid, Rejected;  Event auto-expired upon arrival. 
+
+2940:	RWT	REQUIRED WEEKLY TEST		'CAP2'(IPAWSCAP)	ORG=CIV 
+		'Mon May  1 11:01:00 2023 EDT' to 'Mon May  1 12:01:00 2023 EDT' 
+	Decoded : 'Mon May  1 11:01:12 2023 EDT' 
+		 Connecticut(009000)	 District Of Columbia/Washington DC(011000)	
+		 Delaware(010000)	 Florida(012000)	
+		 Georgia(013000)	 Indiana(018000)	
+		 Kentucky(021000)	 Massachusetts(025000)	
+		 Maryland(024000)	 Maine(023000)	
+		 Michigan(026000)	 North Carolina(037000)	
+		 New Hampshire(033000)	 New Jersey(034000)	
+		 New York(036000)	 Ohio(039000)	
+		 Pennsylvania(042000)	 Rhode Island(044000)	
+		 South Carolina(045000)	 Virginia(051000)	
+		 Vermont(050000)	 West Virginia(054000)	
+Event Log:Digital Signature -> Invalid, Rejected;  Event auto-expired upon arrival. 
+
+
+8 events for this time period.
+
+++++++++++++++++++++++++++++++++++++++++++++++
+100 total events found for this time period.
+++++++++++++++++++++++++++++++++++++++++++++++
