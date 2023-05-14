@@ -3,7 +3,7 @@ Create routes for Admin page to edit config
 """
 
 # -----3RD PARTY IMPORTS -----
-from flask import abort, Blueprint, current_app, flash, render_template, request, redirect, url_for
+from flask import abort, Blueprint, current_app, flash, jsonify, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 from marshmallow import ValidationError
 from werkzeug.security import generate_password_hash
@@ -66,7 +66,7 @@ def add_new_user_post():
         db.session.commit()
         flash_message = f'User: {new_user.name} added successfully'
     except ValidationError as err:
-        flash_message = err
+        flash_message = str(err)
     except Exception as e:
         current_app.logger.warning(e)
         flash_message = e
@@ -229,7 +229,7 @@ def update_site_post(site_id: int):
     except ValidationError as err:
         db.session.rollback()
         current_app.logger.info(err)
-        flash_message = err.messages, 'error'
+        flash_message = str(err.messages)
     flash(flash_message)
     return redirect(url_for('admin.update_site', site_id=site_id))
 

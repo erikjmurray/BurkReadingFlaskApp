@@ -12,9 +12,9 @@ from models import *
 env_file_path = os.path.join(os.getcwd(), 'instance\\.env')
 
 
-def create_app(app_name) -> Flask:
+def create_app() -> Flask:
     """ Creates Flask app with settings """
-    app = Flask(app_name)
+    app = Flask(__name__)
 
     # Setup files
     # setup_loggers(app)
@@ -131,6 +131,6 @@ def initialize_addons(app: Flask) -> None:
     return
 
 
-if __name__ == "__main__":
-    app = create_app('BurkFlaskApp')
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app = create_app('BurkFlaskApp')
+#     app.run(debug=True)

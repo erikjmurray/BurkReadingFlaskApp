@@ -142,7 +142,7 @@ def post_messages(results, reading):
 
 @views.route('/site/<int:site_id>/readings')
 @login_required
-async def site(site_id: int):
+def site(site_id: int):
     site = Site.query.get_or_404(site_id)
     site_schema = SiteSchema()
     site_data = site_schema.dump(site)
