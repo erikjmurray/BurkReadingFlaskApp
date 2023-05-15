@@ -2,13 +2,16 @@
 # ----- 3RD PARTY IMPORTS -----
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_required
+
 # ----- BUILT IN IMPORTS -----
 from datetime import datetime
 from typing import List, Tuple
+
 # ----- PROJECT IMPORTS -----
 from extensions import db
 from models import EAS, Site, User
 from models.schemas import SiteSchema, UserSchema
+from utils import input_dates_to_datetime
 
 # Initialize Blueprint
 eas = Blueprint('eas', __name__)
@@ -75,7 +78,6 @@ def input_to_datetime(timestamp: str) -> datetime:
 @eas.route('/eas/log/<start_date>/<end_date>')
 def eas_log(start_date: str, end_date: str):
     """ Gets log of EAS tests for Date Range """
-    from routes.tasks import input_dates_to_datetime
     date_range = (input_dates_to_datetime(start_date), input_dates_to_datetime(end_date))
     tests_for_dates = query_eas_by_date_range(date_range)
 

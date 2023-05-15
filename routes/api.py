@@ -17,7 +17,7 @@ api = Blueprint('api', __name__)
 
 # ----- BURK API CALL -----
 @api.route('/burk/<int:site_id>/')
-async def burk_api_call(site_id: int) -> List[dict]:
+def burk_api_call(site_id: int) -> List[dict]:
     """
     Call API for meter and status data from Burk
     Sort and add data to channels based on extensions setup
@@ -27,7 +27,7 @@ async def burk_api_call(site_id: int) -> List[dict]:
 
     # Get data from Burk unit
     arcplus = ArcPlus(ip=site.ip_addr, api_key=api_key)
-    meters, statuses = await arcplus.get_meters_and_status()
+    meters, statuses = arcplus.get_meters_and_status()
 
     if not meters and not statuses:
         return abort(400, f'Could not connect to {site.site_name}')

@@ -126,19 +126,16 @@ def read_from_file(filename) -> str:
     return content
 
 
-def parse_dasdec_log():
-    eas_log_dir = os.path.join('..', 'eas_logs')
+def parse_dasdec_logs() -> List[AllTests]:
+    """
+    Grabs all files in EAS LOGS folder and parses data into lists of tests
+    """
+    eas_log_dir = os.path.join(os.getcwd(), 'eas_logs')
     files = os.listdir(eas_log_dir)
+
+    all_eas_data = []
     for file in files:
-        print()
-        print(file)
         content = read_from_file(os.path.join(eas_log_dir, file))
         all_tests = DasdecLogParser(content).parse_content()
-        for test in all_tests.originated_tests:
-            print('-----------')
-            print(test)
-    print('Content parsed')
-
-
-if __name__ == "__main__":
-    parse_dasdec_log()
+        all_eas_data.append(all_tests)
+    return all_eas_data

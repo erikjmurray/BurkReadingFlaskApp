@@ -1,13 +1,24 @@
 """
 Web app to digitally sign and save Burk readings to database
-"""
-# ----- IMPORTS -----
-import os
-from dotenv import load_dotenv, set_key
-from flask import Flask, redirect, render_template
 
+Serve app on local host using waitress commandline
+waitress-serve --host 127.0.0.1 --call app:create_app
+
+Or if in development:
+flask run
+
+"""
+# ----- 3RD PARTY IMPORTS -----
+from dotenv import load_dotenv, set_key
+from flask import Flask
+
+# ----- BUILT IN IMPORTS -----
+import os
+
+# ----- PROJECT IMPORTS -----
 from extensions import db, login_manager, ma
 from models import *
+
 
 env_file_path = os.path.join(os.getcwd(), 'instance\\.env')
 
@@ -110,8 +121,8 @@ def register_blueprints(app: Flask) -> None:
     app.register_blueprint(admin, url_prefix='/admin')      # register routes laid out in routes.admin with /admin
     app.register_blueprint(api, url_prefix='/api')          # register routes laid out in routes.api with /api
     app.register_blueprint(auth, url_prefix='/')            # register routes laid out in routes.auth
-    app.register_blueprint(eas, url_prefix='/')            # register routes laid out in routes.auth
-    app.register_blueprint(tasks, url_prefix='/tasks')      # register routes laid out in routes.tasks with /tasks
+    app.register_blueprint(eas, url_prefix='/')             # register routes laid out in routes.auth
+    app.register_blueprint(tasks, url_prefix='/')           # register routes laid out in routes.tasks
     app.register_blueprint(errors, url_prefix='/')          # details error handling
     return
 
@@ -129,8 +140,3 @@ def initialize_addons(app: Flask) -> None:
         return user
 
     return
-
-
-# if __name__ == "__main__":
-#     app = create_app('BurkFlaskApp')
-#     app.run(debug=True)
