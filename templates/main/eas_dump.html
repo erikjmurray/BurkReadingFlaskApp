@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>EAS Log</title>
+{% endblock %}
+
+{% from 'macros/test_table.html' import test_table %}
+
+{% block body %}
+<div class="container" id="header">
+  <h1>EAS Dump</h1>
+</div>
+
+<div class="readings">
+    {% for group in eas_data %}
+    <div class="container">
+        <h1>{{ group.dasdec_name }}</h1>
+    </div>
+    {% if group.originated_tests %}
+        {{ test_table(group.originated_tests, 'Originated') }}
+    {% endif %}
+    {% if group.forwarded_tests %}
+        {{ test_table(group.forwarded_tests, 'Forwarded') }}
+    {% endif %}
+    {% if group.decoded_tests %}
+        {{ test_table(group.decoded_tests, 'Decoded') }}
+    {% endif %}
+    {% endfor %}
+</div>
+
+{% endblock %}

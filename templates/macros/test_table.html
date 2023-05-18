@@ -1,0 +1,41 @@
+
+{% macro test_table(tests, name) %}
+    <table>
+    <thead>
+        <tr>
+            <th colspan="8" style="background-color: #ddd; color: black;">{{ name }} Tests</th>
+        </tr>
+    </thead>
+    <tbody style="">
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>IPAWS</th>
+            <th>Organization</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>{{name}} Time</th>
+            <th>Locations</th>
+        </tr>
+        {% for test in tests %}
+        <tr>
+            <td>{{ test.id }}</td>
+            <td>{{ test.test_type }}</td>
+            <td>{{ test.ipaws }}</td>
+            <td>{{ test.organization }}</td>
+            <td>{{ test.start_time }}</td>
+            <td>{{ test.end_time }}</td>
+            <td>{{ test.delivered_timestamp }}</td>
+            <td>
+                <ul>
+                {% for location in test.locations %}
+                    <li>{{ location }}</li>
+                {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </div>
+    </table>
+ {% endmacro %}

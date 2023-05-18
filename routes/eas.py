@@ -11,7 +11,8 @@ from typing import List, Tuple
 from extensions import db
 from models import EAS, Site, User
 from models.schemas import SiteSchema, UserSchema
-from utils import input_dates_to_datetime
+from utils import input_dates_to_datetime, iso_input_to_datetime
+from utils.tasks import parse_dasdec_logs
 
 # Initialize Blueprint
 eas = Blueprint('eas', __name__)
@@ -45,8 +46,8 @@ def eas_post():
             originating=originating,
             test_type=form_data.get('test_type'),
             rx_from=form_data.get('eas_from') if not originating else None,
-            rx_timestamp=input_to_datetime(form_data.get('eas_time_rx')) if not originating else None,
-            tx_timestamp=input_to_datetime(form_data.get('eas_time_tx'))
+            rx_timestamp=iso_input_to_datetime(form_data.get('eas_time_rx')) if not originating else None,
+            tx_timestamp=iso_input_to_datetime(form_data.get('eas_time_tx'))
         )
 
         sites = Site.query.all()
@@ -70,11 +71,6 @@ def eas_post():
     return redirect(url_for('eas.eas_form'))
 
 
-def input_to_datetime(timestamp: str) -> datetime:
-    """ Converts HTML Input to Python datetime object """
-    return datetime.fromisoformat(timestamp.replace('T', ' '))
-
-
 @eas.route('/eas/log/<start_date>/<end_date>')
 def eas_log(start_date: str, end_date: str):
     """ Gets log of EAS tests for Date Range """
@@ -82,6 +78,16 @@ def eas_log(start_date: str, end_date: str):
     tests_for_dates = query_eas_by_date_range(date_range)
 
     return render_template('main/eas_log.html', eas_tests=tests_for_dates)
+
+
+@eas.route('eas/parse_dasdec_logs')
+def display_parsed_dasdec_data() -> str:
+    """ Route to initiate PDF report of site readings for a date range """
+
+    eas_data = parse_dasdec_logs()
+
+    return render_template('main/eas_dump.html', eas_data=eas_data)
+
 
 
 def query_eas_by_date_range(dates: Tuple[datetime, datetime]) -> List[EAS]:

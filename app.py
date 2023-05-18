@@ -2,25 +2,31 @@
 Web app to digitally sign and save Burk readings to database
 
 Serve app on local host using waitress commandline
-waitress-serve --host 127.0.0.1 --call app:create_app
+    waitress-serve --host 127.0.0.1 --call app:create_app
+NOTE: waitress doesn't like the javascript calling API endpoints consider other options
 
 Or if in development:
-flask run
+    flask run --debug
+Debug is optional, restarts server anytime changes are made to files
+NOTE: If Python not added to PATH use python -m flask run
 
 """
+
 # ----- 3RD PARTY IMPORTS -----
 from dotenv import load_dotenv, set_key
 from flask import Flask
+from flask.logging import default_handler
 
 # ----- BUILT IN IMPORTS -----
 import os
+import logging
+from logging.handlers import RotatingFileHandler
 
 # ----- PROJECT IMPORTS -----
 from extensions import db, login_manager, ma
 from models import *
 
-
-env_file_path = os.path.join(os.getcwd(), 'instance\\.env')
+dotenv_path = os.path.join(os.getcwd(), 'instance\\.env')
 
 
 def create_app() -> Flask:
@@ -42,11 +48,7 @@ def create_app() -> Flask:
 
 def setup_loggers(app: Flask) -> None:
     """ Sets up logging """
-    import logging
-    from logging.handlers import RotatingFileHandler
-
     # Remove default handler
-    from flask.logging import default_handler
     app.logger.removeHandler(default_handler)
 
     # Create a logger that only writes custom logs
@@ -74,7 +76,7 @@ def setup_loggers(app: Flask) -> None:
 def load_settings(app: Flask) -> None:
     """ Load app settings to app """
     # Load environment setup values
-    load_dotenv(env_file_path)
+    load_dotenv(dotenv_path)
     app.config.from_prefixed_env()
 
     if not app.config.get('SECRET_KEY'):
@@ -101,16 +103,15 @@ def add_encryption_key(app: Flask) -> None:
     Uses Fernet cryptography to generate a new key.
     """
     from cryptography.fernet import Fernet
-    # Generate a new encryption key using Fernet cryptography
     key = Fernet.generate_key()
-    app.config['ENCRYPTION_KEY'] = key.decode()
+    app.config['ENCRYPTION_KEY'] = key.decode()     # to string for .env
     update_env_file('FLASK_ENCRYPTION_KEY', app.config['ENCRYPTION_KEY'])
     return
 
 
 def update_env_file(key_name: str, value: str) -> None:
     """ Set key to value in .env """
-    set_key(env_file_path, key_name, value)
+    set_key(dotenv_path, key_name, value)
     return
 
 
@@ -134,9 +135,15 @@ def initialize_addons(app: Flask) -> None:
     ma.init_app(app)
 
     @login_manager.user_loader
-    def load_user(user_id: int):
+    def load_user(user_id: int) -> User:
         # In this example, the user ID is the user's email address
-        user = User.query.get(user_id)
-        return user
+        current_user = User.query.filter_by(id=user_id)
+        return current_user
 
     return
+
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run(debug=True)
+    
