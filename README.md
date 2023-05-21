@@ -1,4 +1,4 @@
-# Burk Transmitter Reading Web App
+# Transmitter Reading Web App
 
 ## Table of Contents
 
