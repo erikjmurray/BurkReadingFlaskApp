@@ -70,6 +70,9 @@ FLASK_YOUR_SETTING = 'setting'                      # will be added to the app.c
 - The app automatically adds anything prefixed with FLASK_ to the global namespace of the app. You can therefore add any additional settings to the application using the prefix FLASK_ then the name of your variable for example FLASK_YOUR_SETTING. These variable can be referenced in any route using the: `current_app.config['YOUR_SETTING']` dict call
 - These settings will only load when the app is started. If any changes are made to the .env while the app is running they need to also be added to the app.config to be referenced in the app without restarting.
 
+.... INSERT MORE DOCUMENTATION HERE ....
 
 ## License
+
 This project is licensed under the terms of the [MIT license](LICENSE).
+
