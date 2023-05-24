@@ -78,6 +78,7 @@ FLASK_YOUR_SETTING = 'setting'                      # will be added to the app.c
 - Make sure the "Enable API Tokens" option is checked
 - Select "Add Token"
 - For security reasons, it is best to leave the Permission as Observer. If any bad actors got access to this key, they would not be able to issue commands to the ArcPlus.
+
 .... INSERT MORE DOCUMENTATION HERE ....
 
 ## License
