@@ -70,6 +70,14 @@ FLASK_YOUR_SETTING = 'setting'                      # will be added to the app.c
 - The app automatically adds anything prefixed with FLASK_ to the global namespace of the app. You can therefore add any additional settings to the application using the prefix FLASK_ then the name of your variable for example FLASK_YOUR_SETTING. These variable can be referenced in any route using the: `current_app.config['YOUR_SETTING']` dict call
 - These settings will only load when the app is started. If any changes are made to the .env while the app is running they need to also be added to the app.config to be referenced in the app without restarting.
 
+### Burk Config
+
+- Requires ArcPlus version 5.1.1.1 or later
+- Login to the unit with AutoLoad.
+- Navigate to Edit > Settings > API Tokens
+- Make sure the "Enable API Tokens" option is checked
+- Select "Add Token"
+- For security reasons, it is best to leave the Permission as Observer. If any bad actors got access to this key, they would not be able to issue commands to the ArcPlus.
 .... INSERT MORE DOCUMENTATION HERE ....
 
 ## License
