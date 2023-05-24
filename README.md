@@ -5,8 +5,7 @@
 - [Description](#description)
 - [Installation](#installation)
 - [Setup](#setup)
-  - [Burk Configuration](#burk-config)
-- [Configuration](#configuration)
+- [Burk Configuration](#burk-configuration)
 - [License](#license)
 
 ## Description
@@ -71,14 +70,35 @@ FLASK_YOUR_SETTING = 'setting'                      # will be added to the app.c
 - The app automatically adds anything prefixed with FLASK_ to the global namespace of the app. You can therefore add any additional settings to the application using the prefix FLASK_ then the name of your variable for example FLASK_YOUR_SETTING. These variable can be referenced in any route using the: `current_app.config['YOUR_SETTING']` dict call
 - These settings will only load when the app is started. If any changes are made to the .env while the app is running they need to also be added to the app.config to be referenced in the app without restarting.
 
-### Burk Config
+## Burk Configuration
 
+### API Token Generation
 - Requires ArcPlus version 5.1.1.1 or later
 - Login to the unit with AutoLoad.
 - Navigate to Edit > Settings > API Tokens
 - Make sure the "Enable API Tokens" option is checked
 - Select "Add Token"
-- For security reasons, it is best to leave the Permission as Observer. If any bad actors got access to this key, they would not be able to issue commands to the ArcPlus.
+For security reasons, it is best to leave the Permission as Observer. If any bad actors got access to this key, they would not be able to issue commands to the ArcPlus.
+
+### On Air Channels
+
+While you could add several channels to the system for Primary and Secondary channels (TX1 PA Volt / TX2 PA Volts), I recommend setting up a channel in the Burk that uses OR logic to have a single output. 
+
+To achieve this, we can define the following configurations:
+
+- Assign TX1 PA Volts to meter channel 1.
+- Assign TX2 PA Volts to meter channel 2.
+- Assign TX1 to Antenna as status channel 1.
+- Assign TX2 to Antenna as status channel 2.
+
+Now create meter channel called (ON AIR TX PA VOLTS) that takes a virtual input and define it as such:
+
+> S1 * M1 + S2 * M2
+
+Considering that the on and off states evaluate to 1 and 0 respectively, this meter channel will only output the PA Voltage value of the transmitter pointed at the Antenna.
+
+Note: To ensure proper functionality of this logic, the on states of the TX to Antenna statuses should not be allowed to be active at the same time.
+
 
 .... INSERT MORE DOCUMENTATION HERE ....
 
