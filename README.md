@@ -5,6 +5,7 @@
 - [Description](#description)
 - [Installation](#installation)
 - [Setup](#setup)
+  - [Burk Configuration](#burk-config)
 - [Configuration](#configuration)
 - [License](#license)
 
