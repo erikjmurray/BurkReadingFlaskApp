@@ -5,14 +5,13 @@ from flask_login import login_required
 
 # ----- BUILT IN IMPORTS -----
 from datetime import datetime
-from typing import List, Tuple
 
 # ----- PROJECT IMPORTS -----
 from extensions import db
 from models import EAS, Site, User
 from models.schemas import SiteSchema, UserSchema
-from utils import input_dates_to_datetime, iso_input_to_datetime
-from utils.tasks import parse_dasdec_logs
+from utils.database_queries import query_eas_tests_by_date_range
+from utils.datetime_manipulation import input_dates_to_datetime, iso_input_to_datetime
 
 # Initialize Blueprint
 eas = Blueprint('eas', __name__)
@@ -75,22 +74,8 @@ def eas_post():
 def eas_log(start_date: str, end_date: str):
     """ Gets log of EAS tests for Date Range """
     date_range = (input_dates_to_datetime(start_date), input_dates_to_datetime(end_date))
-    tests_for_dates = query_eas_by_date_range(date_range)
+    tests_for_dates = query_eas_tests_by_date_range(date_range)
 
     return render_template('main/eas_log.html', eas_tests=tests_for_dates)
 
 
-@eas.route('eas/parse_dasdec_logs')
-def display_parsed_dasdec_data() -> str:
-    """ Route to initiate PDF report of site readings for a date range """
-
-    eas_data = parse_dasdec_logs()
-
-    return render_template('main/eas_dump.html', eas_data=eas_data)
-
-
-
-def query_eas_by_date_range(dates: Tuple[datetime, datetime]) -> List[EAS]:
-    """ Gets EAS entries that correspond with specific date range """
-    eas_tests = EAS.query.filter(EAS.tx_timestamp >= dates[0], EAS.tx_timestamp <= dates[1]).all()
-    return eas_tests

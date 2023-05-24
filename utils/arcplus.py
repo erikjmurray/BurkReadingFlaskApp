@@ -5,8 +5,7 @@ Can use to add extensions info to database by Pickling this object
 """
 
 import json
-import httpx
-# import asyncio
+import requests
 from dataclasses import field, dataclass
 
 
@@ -20,21 +19,23 @@ class ArcPlus:
         """ Create params after instantiation """
         self.url = f"http://{self.ip}/api.cgi"
 
-    # -----SYNCHRONOUS API CALLS-----
+    # ----- API CALLS-----
     def get_data(self, action):
         """Make request to Burk for JSON data of specific type"""
         params = {
             "action": action,
             "token": self.api_key
         }
+
         try:
-            with httpx.Client() as client:
-                resp = client.get(self.url, params=params)
-                data = json.loads(resp.text)
+            response = requests.get(self.url, params=params)
+            if response.status_code == 200:
+                data = json.loads(response.text)
                 return data[action]
         except Exception as err:
-            print(err)
+            print(f'Error connecting {self.ip}')
             return None
+
 
     def get_meters(self) -> list:
         """Get meter data"""
@@ -49,8 +50,3 @@ class ArcPlus:
         if not data:
             return []
         return data
-
-    def get_meters_and_status(self) -> tuple:
-        meters = self.get_meters()
-        statuses = self.get_status()
-        return meters, statuses

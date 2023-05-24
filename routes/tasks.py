@@ -2,12 +2,12 @@
 Executes tasks such as PDF generation and EAS Log Parsing
 """
 # ----- 3RD PARTY IMPORTS -----
-from flask import Blueprint, make_response, Response
+from flask import Blueprint, make_response, render_template, Response
 
 # ----- PROJECT IMPORTS -----
 from models import Site
-from utils import input_dates_to_datetime
-from utils.tasks import create_pdf
+from utils.datetime_manipulation import input_dates_to_datetime
+from utils.tasks import create_pdf, parse_dasdec_logs
 
 
 # create Blueprint object
@@ -33,3 +33,12 @@ def generate_pdf(site_id: int,
     response.headers.set('Content-Disposition', 'attachment', filename=filename)
 
     return response
+
+
+@tasks.route('/parse_dasdec_logs')
+def display_parsed_dasdec_data() -> str:
+    """ Route to initiate PDF report of site readings for a date range """
+
+    eas_data = parse_dasdec_logs()
+
+    return render_template('main/eas_dump.html', eas_data=eas_data)

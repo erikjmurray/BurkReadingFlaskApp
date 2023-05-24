@@ -1,0 +1,64 @@
+{% macro existing_status_channel(id, channel, colors) %}
+    {% set options = channel.status_options %}
+    {% set opt_count = options|length %}
+        <dt id='{{id}}_content' class="config_content top-border" style="display: none">
+            <label for='{{id}}_title' class="title-margin">Title</label>
+            <input type="text" id='{{id}}_title' name='{{id}}_title' value="{{channel.title}}" required>
+            <input type="hidden" id="{{id}}_opt_count" name="{{id}}_opt_count" value="{{opt_count}}">
+            <div id="{{id}}_options">
+                {% for option in options %}
+                {% set i = loop.index %}
+                <div class="option_box" id="{{id}}_option_{{i}}">
+                    <h4 style="text-decoration: underline; margin:0;">Option {{i}}</h4>
+
+                    <label>Burk Channel Number</label>
+                    <input id="{{id}}_burk_channel_{{i}}" name="{{id}}_burk_channel_{{i}}"
+                           type="number" value="{{option.burk_channel}}">
+
+                    <label>Option Name</label>
+                    <input id="{{id}}_selected_value_{{i}}" name="{{id}}_selected_value_{{i}}"
+                           type="text" value="{{option.selected_value}}">
+
+                    <label>
+                    Selected State
+                    </label>
+                    <div class="radio_group option_radio_group">
+                        <label style="margin-right:25px;">
+                        <input type="radio" name="{{id}}_selected_state_{{i}}" value=true
+                        {% if option.selected_state %} checked="checked" {% endif %} required>
+                            On
+                        </label>
+
+                        <label>
+                        <input type="radio" name="{{id}}_selected_state_{{i}}" value=false
+                        {% if not option.selected_state %} checked="checked" {% endif %}>
+                            Off
+                        </label>
+                    </div>
+
+                    <label>
+                    Background Color When Selected
+                    </label>
+                    <select id="{{id}}_selected_color_{{i}}" name="{{id}}_selected_color_{{i}}"
+                            style="background-color: {{option.selected_color}};"
+                            onchange="change_bg_color('{{id}}_selected_color_{{i}}')" required>
+                    <option></option>
+                    {% for color in colors %}
+                    <option style="background-color: {{color.hex}}" value="{{ color.hex }}"
+                    {% if option.selected_color == color.hex %} selected {% endif %}>
+                        {{ color.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <button class="func_button" onclick="add_delete_option_tag('{{id}}', {{i}}, '{{option.id}}'); return false;">
+                    DELETE OPTION
+                </button>
+            </div>
+            {% endfor %}
+            </div>
+            <button class="func_button" onclick="add_next_option('{{id}}'); return false;">Add Option</button>
+            <button class="func_button" onclick="add_delete_channel_tag('{{channel.id}}'); return false">
+                DELETE CHANNEL
+            </button>
+        </dt>
+{% endmacro %}

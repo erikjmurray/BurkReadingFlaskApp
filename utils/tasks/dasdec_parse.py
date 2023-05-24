@@ -5,8 +5,8 @@ from typing import List, Match, Optional
 
 
 @dataclass
-class Test:
-    id: str
+class EasTest:
+    id: int
     test_type: str
     full_test_type: str
     ipaws: str
@@ -16,15 +16,14 @@ class Test:
     delivered_timestamp: Optional[str] = None
     locations: Optional[List[str]] = None
 
-
+@dataclass
 class AllTests:
-    def __init__(self, dasdec_name):
-        self.dasdec_name = dasdec_name
-        self.originated_tests = []
-        self.forwarded_tests = []
-        self.decoded_tests = []
-        self.eas_net_decoded_tests = []
-        self.cap_eas_decoded_tests = []
+    dasdec_name: str = ""
+    originated_tests: List[EasTest] = field(default_factory=list)
+    forwarded_tests: List[EasTest] = field(default_factory=list)
+    decoded_tests: List[EasTest] = field(default_factory=list)
+    eas_net_decoded_tests: List[EasTest] = field(default_factory=list)
+    cap_eas_decoded_tests: List[EasTest] = field(default_factory=list)
 
 
 class DasdecLogParser:
@@ -81,9 +80,9 @@ class DasdecLogParser:
     def _match_test(self, line: str) -> Optional[Match]:
         return self.test_pattern.search(line)
 
-    def _create_new_test(self, test_match: Match) -> Test:
-        return Test(
-            id=test_match.group(1),
+    def _create_new_test(self, test_match: Match) -> EasTest:
+        return EasTest(
+            id=int(test_match.group(1)),
             test_type=test_match.group(2),
             full_test_type=test_match.group(3),
             ipaws=test_match.group(4),
@@ -148,7 +147,7 @@ def parse_dasdec_logs() -> List[AllTests]:
         # sort and return only pertinent tests
         # orig, fwd, decoded(received)
         # note logs only include expired events
-        test_func(all_tests)
+        # test_func(all_tests)
         all_eas_data.append(all_tests)
     return all_eas_data
 

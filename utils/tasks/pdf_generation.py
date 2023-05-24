@@ -11,13 +11,15 @@ import pandas as pd
 from matplotlib.figure import Figure
 
 # ----- BUILT IN IMPORTS ----
-from datetime import datetime, timedelta
+from datetime import datetime
 from io import BytesIO
 from typing import Tuple, List, Optional
 
 # ----- PROJECT IMPORTS -----
-from models import EAS, Channel, Reading, Site
+from models import EAS, Channel, Site
 from utils import get_valid_readings
+from utils.datetime_manipulation import create_list_of_individual_dates
+from utils.database_queries import query_readings_by_date, query_readings_by_date_range, query_eas_tests_by_date_range
 
 
 def create_pdf(site: Site,
@@ -165,46 +167,6 @@ def define_styles() -> dict:
     for item in styles_to_add:
         styles.add(item)
     return styles
-
-
-def create_list_of_individual_dates(start_date: datetime,
-                                    end_date: datetime) -> List[datetime]:
-    """ Get a list of datetime objects in a given range """
-    dates = []
-    while start_date <= end_date:
-        dates.append(start_date)
-        start_date += timedelta(days=1)
-    return dates
-
-
-# ----- SQL Queries -----
-def query_readings_by_date(date: datetime) -> List[Reading]:
-    """ Queries SQL that match a specific date """
-    # if timestamp between 00:00:00:00.. and 23:59:59:99.. return data
-    start_datetime = datetime.combine(date, datetime.min.time())
-    end_datetime = datetime.combine(date, datetime.max.time())
-    readings = Reading.query.filter(Reading.timestamp >= start_datetime, Reading.timestamp <= end_datetime).all()
-
-    return readings
-
-
-def query_readings_by_date_range(dates: Tuple[datetime, datetime]) -> List[Reading]:
-    """ Queries SQL for a range of dates worth of readings """
-    readings = Reading.query.filter(Reading.timestamp >= dates[0], Reading.timestamp <= dates[1]).all()
-    return readings
-
-
-def query_eas_tests_by_date_range(site: Site,
-                                  dates: Tuple[datetime, datetime]) -> List[EAS]:
-    """ Queries SQL for EAS Tests transmitted on the site for a specific range of dates """
-    eas_tests = EAS.query.join(EAS.sites).filter(
-        Site.id == site.id,
-        EAS.tx_timestamp >= dates[0],
-        EAS.tx_timestamp <= dates[1]
-    ).order_by(
-        EAS.tx_timestamp.asc()
-    ).all()
-    return eas_tests
 
 
 # ----- PANDAS DATAFRAME CREATION -----
@@ -383,7 +345,7 @@ def build_report_for_date(report_data: dict,
 def build_eas_report(site: Site,
                      date_range: Tuple[datetime, datetime]) -> List:
     """ Create a page in the report detailing the EAS test sent and received """
-    eas_tests = query_eas_tests_by_date_range(site, date_range)
+    eas_tests = query_eas_tests_by_date_range(date_range, site)
     eas_df = create_eas_dataframe([eas_test.to_dict() for eas_test in eas_tests])
     print(eas_df.to_string())
     return []

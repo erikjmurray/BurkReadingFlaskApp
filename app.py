@@ -137,7 +137,7 @@ def initialize_addons(app: Flask) -> None:
     @login_manager.user_loader
     def load_user(user_id: int) -> User:
         # In this example, the user ID is the user's email address
-        current_user = User.query.filter_by(id=user_id)
+        current_user = User.query.filter_by(id=user_id).first()
         return current_user
 
     return
