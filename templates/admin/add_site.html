@@ -58,7 +58,9 @@
         <dl>
             <dt>
                 <div id="add_channel">
-                    <button class="func_button" onclick="add_channel_selector_html(); return false;">Add Channel</button>
+                    <button class="func_button" id="add_ch_btn">
+                        Add Channel
+                    </button>
 <!--                Button replaced with channel type selector and submit    -->
                 </div>
             </dt>
@@ -80,6 +82,9 @@
     window.onload = function() {
         channel_count.value = 0;
     }
+
+    add_ch_btn = document.getElementById("add_ch_btn")
+    add_ch_btn.addEventListener("click", add_channel_selector_html)
 </script>
 
 {% endblock %}
