@@ -1,36 +1,16 @@
-import os
+""" Dasdec Log Parser Object """
+# --- BUILT-IN IMPORTS ---
 import re
-from dataclasses import dataclass, field
-from typing import List, Match, Optional
-
-
-@dataclass
-class EasTest:
-    id: int
-    test_type: str
-    full_test_type: str
-    ipaws: str
-    organization: str
-    start_time: Optional[str] = None
-    end_time: Optional[str] = None
-    delivered_timestamp: Optional[str] = None
-    locations: Optional[List[str]] = None
-
-@dataclass
-class AllTests:
-    dasdec_name: str = ""
-    originated_tests: List[EasTest] = field(default_factory=list)
-    forwarded_tests: List[EasTest] = field(default_factory=list)
-    decoded_tests: List[EasTest] = field(default_factory=list)
-    eas_net_decoded_tests: List[EasTest] = field(default_factory=list)
-    cap_eas_decoded_tests: List[EasTest] = field(default_factory=list)
-
+from typing import Match, Optional
+# --- PROJECT IMPORTS ---
+from utils.eas_parse.AllTests import AllTests
+from utils.eas_parse.EasTest import EasTest
 
 class DasdecLogParser:
-    def __init__(self, content: str, dasdec_name: str):
+    def __init__(self, content: str):
         self.content = content
         self.header_flag = False
-        self.all_tests = AllTests(dasdec_name=dasdec_name)
+        self.all_tests = AllTests()
         self.current_test = None
         self.current_list = []
 
@@ -40,10 +20,12 @@ class DasdecLogParser:
         self.datetime_pattern = re.compile(r'(\b\w{3} \w{3} (?:\d{2}| \d{1}) \d{2}:\d{2}:\d{2} \d{4} \w{3}\b)')
         self.location_pattern = re.compile(r'\b.*?\(\d+\)')
 
+
     def parse_content(self) -> AllTests:
+        """ Sorts log data into usable classes """
         for line in self.content.split('\n'):
-            header_flag = self._check_header(line)
-            if header_flag:
+            self._check_header(line)
+            if self.header_flag:
                 event = self._parse_origination(line)
                 if event:
                     self._append_current_test()
@@ -58,31 +40,41 @@ class DasdecLogParser:
                 self._parse_test_data(line)
         self._append_current_test()
         return self.all_tests
+    
 
     def _check_header(self, line: str) -> bool:
+        """ Flags line as header material """
         header_match = self.header_pattern.search(line)
         if header_match:
             self.header_flag = not self.header_flag
         return self.header_flag
+    
 
     def _parse_origination(self, line: str) -> Optional[str]:
+        """ Attempts to match origination pattern """
         origination_match = self.origination_pattern.search(line)
         if origination_match:
             return origination_match.group(1)
         return None
+    
 
     def _append_current_test(self) -> None:
+        """ Append current test to working list and reset test """
         if self.current_test:
             self.current_list.append(self.current_test)
             self.current_test = None
         return
+    
 
     def _match_test(self, line: str) -> Optional[Match]:
+        """ """
         return self.test_pattern.search(line)
+    
 
     def _create_new_test(self, test_match: Match) -> EasTest:
+        """ Initialize new test object """
         return EasTest(
-            id=int(test_match.group(1)),
+            id=test_match.group(1),
             test_type=test_match.group(2),
             full_test_type=test_match.group(3),
             ipaws=test_match.group(4),
@@ -90,6 +82,7 @@ class DasdecLogParser:
         )
 
     def _parse_test_data(self, line: str) -> None:
+        """ Sorts Datetime and Location data into proper fields """
         datetime_match = self.datetime_pattern.findall(line)
         location_match = self.location_pattern.findall(line)
 
@@ -98,8 +91,10 @@ class DasdecLogParser:
                 self.current_test.start_time = datetime_match[0]
                 self.current_test.end_time = datetime_match[1]
             else:
-                if any(keyword in line for keyword in ['Decoded', 'Originated', 'Forwarded']):
-                    self.current_test.delivered_timestamp = datetime_match[0]
+                if 'Decoded' in line:
+                    self.current_test.decoded_timestamp = datetime_match[0]
+                elif 'Originated' in line:
+                    self.current_test.originated_timestamp = datetime_match[0]
         elif location_match:
             if not self.current_test.locations:
                 self.current_test.locations = []
@@ -114,57 +109,4 @@ class DasdecLogParser:
         #         or 'Expired originated/forwarded alerts:' in line:
         #         return
         #     print('Unmatched line:', line)
-
-
-def read_from_file(filename: str) -> str:
-    """ Given filename load data """
-    with open(filename, 'r') as f:
-        content = f.read()
-    return content
-
-
-def get_dasdec_name_from_file_name(file: str) -> str:
-    pattern = r'^\d{8}_\d{4}_([^_]+)_'
-    match = re.match(pattern, file)
-
-    if match:
-        return match.group(1)
-
-
-def parse_dasdec_logs() -> List[AllTests]:
-    """
-    Grabs all files in EAS LOGS folder and parses data into lists of tests
-    """
-    eas_log_dir = os.path.join(os.getcwd(), 'eas_logs')
-    files = os.listdir(eas_log_dir)
-
-    all_eas_data = []
-    for file in files:
-        content = read_from_file(os.path.join(eas_log_dir, file))
-        dasdec_name = get_dasdec_name_from_file_name(file)
-        all_tests = DasdecLogParser(content, dasdec_name).parse_content()
-        # id of decoded test is the same as forwarded test.
-        # sort and return only pertinent tests
-        # orig, fwd, decoded(received)
-        # note logs only include expired events
-        # test_func(all_tests)
-        all_eas_data.append(all_tests)
-    return all_eas_data
-
-
-def test_func(all_tests: AllTests):
-    forwarded_ids = [test.id for test in  all_tests.forwarded_tests]
-    decoded_ids = [test.id for test in all_tests.decoded_tests]
-    cap_ids = [test.id for test in all_tests.cap_eas_decoded_tests]
-    net_ids = [test.id for test in all_tests.eas_net_decoded_tests]
-
-    for test in forwarded_ids:
-        if test in decoded_ids:
-            print(f'Test {test} forwarded from Decoded')
-        elif test in cap_ids:
-            print(f'Test {test} forwarded from CAP')
-        elif test in net_ids:
-            print(f'Test {test} forwarded from NET')
-        else:
-            print(f'Where did test {test} come from?')
-
+        
