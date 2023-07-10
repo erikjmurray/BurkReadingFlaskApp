@@ -210,13 +210,20 @@ function remove_channel_section(html_tag) {
     }
 }
 
-function add_delete_option_tag(html_tag, opt_num) {
+function add_delete_option_tag(html_tag, opt_num, option_id) {
     const section_to_delete = document.getElementById(`${html_tag}_option_${opt_num}`);
     const confirmation = confirm('Would you like to delete this option? Note: All previously saved readings will maintain their current values')
 
     if (confirmation) {
-        // // TODO: Replace section with hidden input of status option id as delete
-   }
+        // create a new input element
+        const input_to_add = document.createElement('input');
+        input_to_add.type = 'hidden';
+        input_to_add.id = `delete_option_${option_id}_tag`;
+        input_to_add.name = `delete_option_${option_id}_tag`;
+        input_to_add.value = 'true';
+
+        // replace the fieldset with the new input element
+        section_to_delete.parentNode.replaceChild(input_to_add, section_to_delete);   }
 }
 
 
@@ -230,8 +237,8 @@ function add_delete_channel_tag(channel_id) {
         // create a new input element
         const input_to_add = document.createElement('input');
         input_to_add.type = 'hidden';
-        input_to_add.id = `delete_${channel_id}_tag`;
-        input_to_add.name = `delete_${channel_id}_tag`;
+        input_to_add.id = `delete_channel_${channel_id}_tag`;
+        input_to_add.name = `delete_channel_${channel_id}_tag`;
         input_to_add.value = 'true';
 
         // replace the fieldset with the new input element

@@ -1,6 +1,6 @@
 """ Used to create new channels in database from results """
 import re
-from typing import List, Tuple
+from typing import List, Dict
 
 from models import Channel, MeterConfig, ReadingValue, StatusOption
 from extensions import db
@@ -11,46 +11,60 @@ def handle_channel_update(results: dict, site_id: int) -> None:
     Given form data and a target site
     Create or update channels associated with site
     """
-    existing_channels, new_channels, channels_to_delete = sort_results_channel_data(results)
+    channel_data = sort_results_channel_data(results)
 
-    for channel_id in channels_to_delete:
-        delete_channel(channel_id)
-    for channel_id in existing_channels:
-        channel_data = existing_channels[channel_id]
-        update_existing_channel(channel_data, channel_id)
-    create_new_channels(new_channels, site_id)
+    # for channel_id in channel_data['channels_to_delete']:
+    #     delete_channel(channel_id)
+    for option_id in channel_data['options_to_delete']:
+        delete_option(option_id)
+    # for channel_id in channel_data['existing_channels']:
+    #     channel_data = channel_data['existing_channels'][channel_id]
+    #     update_existing_channel(channel_data, channel_id)
+    # create_new_channels(channel_data['new_channels'], site_id)
     return
 
 
-def sort_results_channel_data(results: dict) -> Tuple[dict, dict, list]:
+def sort_results_channel_data(results: dict) -> Dict:
     """ Given channel data, sort new and existing channels into associated dictionaries """
     existing_channels = {}
     new_channels = {}
     channels_to_delete = []
+    options_to_delete = []
 
     for key, value in results.items():
         # use regex to match entry in results to existing/new channel tag
-        match = re.match(r"(existing|new|delete)_(\d{1,3})_(.*)", key)
+        match = re.match(r"(existing|new|delete)_?(option|channel)?_(\d{1,3})_(.*)", key)
         if not match:
             continue
         dict_tag = match.group(1)
-        channel_tag = int(match.group(2))
-        data_tag = match.group(3)
+        id_tag = int(match.group(3))
+        data_tag = match.group(4)
         if dict_tag == 'existing':
-            if channel_tag not in existing_channels:
-                existing_channels[channel_tag] = {}
-            existing_channels[channel_tag][data_tag] = value
+            if id_tag not in existing_channels:
+                existing_channels[id_tag] = {}
+            existing_channels[id_tag][data_tag] = value
         elif dict_tag == 'new':
-            if channel_tag not in new_channels:
-                new_channels[channel_tag] = {}
-            new_channels[channel_tag][data_tag] = value
+            if id_tag not in new_channels:
+                new_channels[id_tag] = {}
+            new_channels[id_tag][data_tag] = value
         elif dict_tag == 'delete':
-            channels_to_delete.append(channel_tag)
-    return existing_channels, new_channels, channels_to_delete
+            if match.group(2) == 'channel':
+                channels_to_delete.append(id_tag)
+            elif match.group(2) == 'option':
+                options_to_delete.append(id_tag)
+
+
+    channel_data = dict(
+        existing_channels=existing_channels,
+        new_channels=new_channels,
+        channels_to_delete=channels_to_delete,
+        options_to_delete=options_to_delete
+    )
+    return channel_data
 
 
 def delete_channel(channel_id: int) -> None:
-    """ Given list of channel ids, remove channels from database """
+    """ Given a channel id, remove channel and associated config from database """
     channel_to_delete = Channel.query.get(int(channel_id))
 
     # delete meter configs associated with channel
@@ -69,6 +83,20 @@ def delete_channel(channel_id: int) -> None:
 
     # delete channel
     db.session.delete(channel_to_delete)
+    db.session.commit()
+    return
+
+
+def delete_option(option_id: int) -> None:
+    """ Given an option ID, remove that particular option from the database """
+    option_to_delete = StatusOption.query.get(int(option_id))
+
+    # Remove option reference from channel
+    associated_channel = Channel.query.get(option_to_delete.channel_id)
+    associated_channel.status_options.remove(option_to_delete)
+
+    # commit changes
+    db.session.delete(option_to_delete)
     db.session.commit()
     return
 

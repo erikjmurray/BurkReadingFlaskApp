@@ -2,13 +2,16 @@
 # ----- 3RD PARTY IMPORTS -----
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_required
+
 # ----- BUILT IN IMPORTS -----
 from datetime import datetime
-from typing import List, Tuple
+
 # ----- PROJECT IMPORTS -----
 from extensions import db
 from models import EAS, Site, User
 from models.schemas import SiteSchema, UserSchema
+from utils.database_queries import query_eas_tests_by_date_range
+from utils.datetime_manipulation import input_dates_to_datetime, iso_input_to_datetime
 
 # Initialize Blueprint
 eas = Blueprint('eas', __name__)
@@ -42,8 +45,8 @@ def eas_post():
             originating=originating,
             test_type=form_data.get('test_type'),
             rx_from=form_data.get('eas_from') if not originating else None,
-            rx_timestamp=input_to_datetime(form_data.get('eas_time_rx')) if not originating else None,
-            tx_timestamp=input_to_datetime(form_data.get('eas_time_tx'))
+            rx_timestamp=iso_input_to_datetime(form_data.get('eas_time_rx')) if not originating else None,
+            tx_timestamp=iso_input_to_datetime(form_data.get('eas_time_tx'))
         )
 
         sites = Site.query.all()
@@ -67,22 +70,12 @@ def eas_post():
     return redirect(url_for('eas.eas_form'))
 
 
-def input_to_datetime(timestamp: str) -> datetime:
-    """ Converts HTML Input to Python datetime object """
-    return datetime.fromisoformat(timestamp.replace('T', ' '))
-
-
 @eas.route('/eas/log/<start_date>/<end_date>')
 def eas_log(start_date: str, end_date: str):
     """ Gets log of EAS tests for Date Range """
-    from routes.tasks import input_dates_to_datetime
     date_range = (input_dates_to_datetime(start_date), input_dates_to_datetime(end_date))
-    tests_for_dates = query_eas_by_date_range(date_range)
+    tests_for_dates = query_eas_tests_by_date_range(date_range)
 
     return render_template('main/eas_log.html', eas_tests=tests_for_dates)
 
 
-def query_eas_by_date_range(dates: Tuple[datetime, datetime]) -> List[EAS]:
-    """ Gets EAS entries that correspond with specific date range """
-    eas_tests = EAS.query.filter(EAS.tx_timestamp >= dates[0], EAS.tx_timestamp <= dates[1]).all()
-    return eas_tests

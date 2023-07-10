@@ -1,0 +1,49 @@
+
+{% macro test_table(tests, name) %}
+    <table>
+    <thead>
+        <tr>
+            <th colspan="8" style="background-color: #ddd; color: black;">{{ name }} Tests</th>
+        </tr>
+    </thead>
+    <tbody style="">
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>IPAWS</th>
+            <th>Organization</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>{{name}} Time</th>
+            <th>Locations</th>
+        </tr>
+        {% for test in tests %}
+        {% if test.locations|length == 1 %}
+            {% set row_height = 1 %}
+        {% else %}
+            {% set row_height = test.locations|length + 1 %}
+        {% endif %}
+        <input type="hidden" value="{{row_height}}">
+        <tr>
+            <td rowspan="{{row_height}}">{{ test.id }}</td>
+            <td rowspan="{{row_height}}">{{ test.test_type }}</td>
+            <td rowspan="{{row_height}}">{{ test.ipaws }}</td>
+            <td rowspan="{{row_height}}">{{ test.organization }}</td>
+            <td rowspan="{{row_height}}">{{ test.start_time }}</td>
+            <td rowspan="{{row_height}}">{{ test.end_time }}</td>
+            <td rowspan="{{row_height}}">{{ test.delivered_timestamp }}</td>
+            {% if row_height == 1 %}
+                <td>{{ test.locations[0] }}</td>
+            {% else %}
+                {% for location in test.locations %}
+                <tr>
+                    <td>{{ location }}</td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+    </div>
+    </table>
+ {% endmacro %}

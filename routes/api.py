@@ -17,7 +17,7 @@ api = Blueprint('api', __name__)
 
 # ----- BURK API CALL -----
 @api.route('/burk/<int:site_id>/')
-async def burk_api_call(site_id: int) -> List[dict]:
+def burk_api_call(site_id: int) -> List[dict]:
     """
     Call API for meter and status data from Burk
     Sort and add data to channels based on extensions setup
@@ -27,7 +27,8 @@ async def burk_api_call(site_id: int) -> List[dict]:
 
     # Get data from Burk unit
     arcplus = ArcPlus(ip=site.ip_addr, api_key=api_key)
-    meters, statuses = await arcplus.get_meters_and_status()
+    meters = arcplus.get_meters()
+    statuses = arcplus.get_status()
 
     if not meters and not statuses:
         return abort(400, f'Could not connect to {site.site_name}')
@@ -174,7 +175,6 @@ def generate_option_content(html_id, opt_num):
 # @api.route('/channel/<int:channel_id>/readings')
 # def get_readings_for_channel(channel_id):
 #     """ Get list of all reading values for a specific channel id """
-#     # TODO: Only load a specific amount of reading values
 #     from models import Reading
 #     channel = Channel.query.get(channel_id)
 #     values = [chan_value.to_dict() for chan_value in channel.reading_values]

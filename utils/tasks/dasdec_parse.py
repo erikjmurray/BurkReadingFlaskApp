@@ -5,33 +5,32 @@ from typing import List, Match, Optional
 
 
 @dataclass
-class Test:
-    id: str
+class EasTest:
+    id: int
     test_type: str
     full_test_type: str
     ipaws: str
     organization: str
     start_time: Optional[str] = None
     end_time: Optional[str] = None
-    decoded_timestamp: Optional[str] = None
-    originated_timestamp: Optional[str] = None
+    delivered_timestamp: Optional[str] = None
     locations: Optional[List[str]] = None
-
 
 @dataclass
 class AllTests:
-    originated_tests: List[Test] = field(default_factory=list)
-    forwarded_tests: List[Test] = field(default_factory=list)
-    decoded_tests: List[Test] = field(default_factory=list)
-    eas_net_decoded_tests: List[Test] = field(default_factory=list)
-    cap_eas_decoded_tests: List[Test] = field(default_factory=list)
+    dasdec_name: str = ""
+    originated_tests: List[EasTest] = field(default_factory=list)
+    forwarded_tests: List[EasTest] = field(default_factory=list)
+    decoded_tests: List[EasTest] = field(default_factory=list)
+    eas_net_decoded_tests: List[EasTest] = field(default_factory=list)
+    cap_eas_decoded_tests: List[EasTest] = field(default_factory=list)
 
 
 class DasdecLogParser:
-    def __init__(self, content: str):
+    def __init__(self, content: str, dasdec_name: str):
         self.content = content
         self.header_flag = False
-        self.all_tests = AllTests()
+        self.all_tests = AllTests(dasdec_name=dasdec_name)
         self.current_test = None
         self.current_list = []
 
@@ -81,9 +80,9 @@ class DasdecLogParser:
     def _match_test(self, line: str) -> Optional[Match]:
         return self.test_pattern.search(line)
 
-    def _create_new_test(self, test_match: Match) -> Test:
-        return Test(
-            id=test_match.group(1),
+    def _create_new_test(self, test_match: Match) -> EasTest:
+        return EasTest(
+            id=int(test_match.group(1)),
             test_type=test_match.group(2),
             full_test_type=test_match.group(3),
             ipaws=test_match.group(4),
@@ -99,10 +98,8 @@ class DasdecLogParser:
                 self.current_test.start_time = datetime_match[0]
                 self.current_test.end_time = datetime_match[1]
             else:
-                if 'Decoded' in line:
-                    self.current_test.decoded_timestamp = datetime_match[0]
-                elif 'Originated' in line:
-                    self.current_test.originated_timestamp = datetime_match[0]
+                if any(keyword in line for keyword in ['Decoded', 'Originated', 'Forwarded']):
+                    self.current_test.delivered_timestamp = datetime_match[0]
         elif location_match:
             if not self.current_test.locations:
                 self.current_test.locations = []
@@ -119,26 +116,55 @@ class DasdecLogParser:
         #     print('Unmatched line:', line)
 
 
-def read_from_file(filename) -> str:
+def read_from_file(filename: str) -> str:
     """ Given filename load data """
     with open(filename, 'r') as f:
         content = f.read()
     return content
 
 
-def parse_dasdec_log():
-    eas_log_dir = os.path.join('..', 'eas_logs')
+def get_dasdec_name_from_file_name(file: str) -> str:
+    pattern = r'^\d{8}_\d{4}_([^_]+)_'
+    match = re.match(pattern, file)
+
+    if match:
+        return match.group(1)
+
+
+def parse_dasdec_logs() -> List[AllTests]:
+    """
+    Grabs all files in EAS LOGS folder and parses data into lists of tests
+    """
+    eas_log_dir = os.path.join(os.getcwd(), 'eas_logs')
     files = os.listdir(eas_log_dir)
+
+    all_eas_data = []
     for file in files:
-        print()
-        print(file)
         content = read_from_file(os.path.join(eas_log_dir, file))
-        all_tests = DasdecLogParser(content).parse_content()
-        for test in all_tests.originated_tests:
-            print('-----------')
-            print(test)
-    print('Content parsed')
+        dasdec_name = get_dasdec_name_from_file_name(file)
+        all_tests = DasdecLogParser(content, dasdec_name).parse_content()
+        # id of decoded test is the same as forwarded test.
+        # sort and return only pertinent tests
+        # orig, fwd, decoded(received)
+        # note logs only include expired events
+        # test_func(all_tests)
+        all_eas_data.append(all_tests)
+    return all_eas_data
 
 
-if __name__ == "__main__":
-    parse_dasdec_log()
+def test_func(all_tests: AllTests):
+    forwarded_ids = [test.id for test in  all_tests.forwarded_tests]
+    decoded_ids = [test.id for test in all_tests.decoded_tests]
+    cap_ids = [test.id for test in all_tests.cap_eas_decoded_tests]
+    net_ids = [test.id for test in all_tests.eas_net_decoded_tests]
+
+    for test in forwarded_ids:
+        if test in decoded_ids:
+            print(f'Test {test} forwarded from Decoded')
+        elif test in cap_ids:
+            print(f'Test {test} forwarded from CAP')
+        elif test in net_ids:
+            print(f'Test {test} forwarded from NET')
+        else:
+            print(f'Where did test {test} come from?')
+

@@ -1,0 +1,72 @@
+{% macro existing_meter_channel(id, channel, colors, units) %}
+{% set meter_config = channel.meter_config[0] %}
+    <dt id='{{id}}_content' class="config_content top-border" style="display: none;">
+        <label for='{{id}}_title' class="title-margin">Title</label>
+        <input type="text" id='{{id}}_title' name='{{id}}_title' value="{{channel.title}}" required>
+
+        <label for="{{id}}_burk_channel">Burk Channel Number</label><br>
+        <input type="number" id="{{id}}_burk_channel" name="{{id}}_burk_channel"
+               value="{{meter_config.burk_channel}}" required>
+
+        <label for="{{id}}_nominal_output">Nominal Output</label><br>
+        <input id="{{id}}_nominal_output" name="{{id}}_nominal_output"
+               type="number" step="any" required
+               value="{{meter_config.nominal_output}}">
+
+        <h4 style="margin:0;">Limits</h4>
+        <div class="option_box">
+            <label for="{{id}}_upper_limit">Upper Limit</label>
+            <input id="{{id}}_upper_limit" name="{{id}}_upper_limit"
+               type="number" step="any" value="{{meter_config.upper_limit}}">
+
+            <label>
+                Color above upper limit
+            <select style="background-color: {{meter_config.upper_lim_color}}"
+                id="{{id}}_upper_lim_color" name="{{id}}_upper_lim_color"
+                onchange="change_bg_color('{{id}}_upper_lim_color')" required>
+                <option></option>
+                {% for color in colors %}
+                <option style="background-color: {{color.hex}}" value="{{ color.hex }}"
+                {% if meter_config.upper_lim_color == color.hex %} selected {% endif %}>
+                    {{ color.name }}
+                </option>
+                {% endfor %}
+            </select>
+            </label>
+
+            <label for="{{id}}_lower_limit">Lower Limit</label>
+            <input id="{{id}}_lower_limit" name="{{id}}_lower_limit"
+               type="number" step="any" value="{{meter_config.lower_limit}}">
+
+            <label>
+                Color below lower limit
+            <select style="background-color: {{meter_config.lower_lim_color}}"
+                id="{{id}}_lower_lim_color" name="{{id}}_lower_lim_color"
+                onchange="change_bg_color('{{id}}_lower_lim_color')" required>
+                <option></option>
+                {% for color in colors %}
+                <option style="background-color: {{color.hex}}" value="{{ color.hex }}"
+                    {% if meter_config.lower_lim_color == color.hex %} selected {% endif %}>
+                    {{color.name}}
+                </option>
+                {% endfor %}
+            </select>
+            </label>
+      </div>
+      <div class="config_content">
+        <label style="" for="{{id}}_units">Units: </label>
+        <select style="" id="{{id}}_units" name="{{id}}_units">
+            <option></option>
+            {% for unit_type in units %}
+            <option value="{{unit_type}}"
+            {% if meter_config.units == unit_type %} selected {%endif%}>
+                {{unit_type}}
+            </option>
+            {% endfor %}
+        </select>
+      </div>
+      <button class="func_button" onclick="add_delete_channel_tag('{{channel.id}}'); return false">
+            DELETE CHANNEL
+      </button>
+    </dt>
+{% endmacro %}
