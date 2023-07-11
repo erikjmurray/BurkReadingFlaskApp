@@ -17,7 +17,7 @@ class Site(db.Model):
     api_key = db.Column(BLOB, nullable=False)
     site_order = db.Column(db.Integer, unique=True, nullable=False)
     dasdec_id = db.Column(db.Integer, db.ForeignKey('dasdecs.id'), nullable=True)   # NOTE: Nullable
-    channels = db.relationship('Channel', backref='site', lazy=True)
+    channels = db.relationship('Channel', backref='sites', lazy=True)
 
     def __init__(self, site_name, ip_addr, api_key):
         self.site_name = site_name

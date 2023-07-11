@@ -1,0 +1,37 @@
+* CLEAN UP
+    > scraper functions
+    > Drop EAS Table and re-add with new setup
+    > Manually add dasdec_id to sites table (make sure it is nullable)
+    > Validate eas_site_association table
+        - while DASDEC entry will have associated EAS Tests, Site will also associate to EAS Test
+
+* EAS Test Logging
+    > Allow user to scrape specific DASDECs
+    > EAS Test site association auto gen by sites param of DASDEC entry
+    > Manually add EAS if DASDEC not responding
+        - Need to manually associate to site in this instance
+    > Given scraped tests choose specific tests to post to database
+    > NOTE: Decoded and Forwarded times will appear on two separate tests.
+        - Figure out solution to combination
+    > Query Dasdec EAS Test by generated_id to make sure duplicate tests aren't added.
+        - Unavailable on manual log
+    > Consider current vs. expired tests and if that actually matters
+    > Convert time strings to Datetime objects for database storage. SEE utils.datetime_manipulation for pseudo-code
+
+* ADMIN
+    > Give admin ability to CRUD DASDEC data. For now, manually add data via SQL
+    > Use encryption for DASDEC password.
+    > More or less a copy paste of add_site.html
+
+* Long Term Goals
+    > Use more robust Database. MySQL / PostGres
+    > Move admin backend to dedicated CMS
+        - User doesn't need access
+    > Decouple site model from Burk ip and api_key, create separate Burk model
+    > Create FastAPI for calls to channel data
+        - Faster than Flask, self documenting
+        - Decouples server rendering from API functionality
+    > Use NoSQL / document database for readings storage.
+        - Benefits > scalability, front-end posts separated from config data,
+                   > allows for deletion of CMS data w/o destroying data
+        - Drawback > yet another database to maintain, less strictly typed.

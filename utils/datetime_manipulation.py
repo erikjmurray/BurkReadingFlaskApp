@@ -23,3 +23,11 @@ def create_list_of_individual_dates(start_date: datetime,
         dates.append(start_date)
         start_date += timedelta(days=1)
     return dates
+
+# TODO: Verify function with real data
+def dasdec_input_to_datetime(timestamp: str) -> datetime:
+    """ Converts string input from DASDEC timestamp to Datetime object """
+    format_string = "%a %b %d %H:%M:%S %Y %Z"
+    datetime_obj = datetime.strptime(timestamp, format_string)
+    return datetime_obj
+

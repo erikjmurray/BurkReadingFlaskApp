@@ -18,11 +18,10 @@ class DasdecPageParser:
         target_tables = self._get_eas_tables(content)
 
         for table_index, table in enumerate(target_tables):
-            rows = self._parse_html(str(table), Tag(name='tr'))
-            
             if table_index % 2 == 0:
                 self._change_list()
             else:
+                rows = self._parse_html(str(table), Tag(name='tr'))
                 self._gather_data(rows)
             
         return self.eas_data
@@ -143,7 +142,7 @@ class DasdecPageParser:
         if len(data) < len(self.headers):
             return
 
-        timestamp_format = r'(\w{3} \w{3} \d{2} \d{2}:\d{2}:\d{2} \d{4} \w{3})'
+        timestamp_format = r'(\w{3} \w{3} *\d{1,2} \d{2}:\d{2}:\d{2} \d{4} \w{3})'
         for i, header in enumerate(self.headers):
             matches = re.findall(timestamp_format, data[i])
 
@@ -177,7 +176,6 @@ class DasdecPageParser:
         """ Add EAS Message to EAS Data """
         message = data[0]
         message = message.replace('Decoded as: ', '')
-##        message = message.replace('\n', ' ')
         # Removes audio alert links
         if 'Audio Portion' in message:
             message = message.split('Audio Portion')[0]
