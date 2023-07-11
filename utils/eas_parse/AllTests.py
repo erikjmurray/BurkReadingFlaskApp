@@ -1,5 +1,5 @@
 """ Stores a list of sorted EAS Tests """
-from EasTest import EasTest
+from utils.eas_parse.EasTest import EasTest
 from dataclasses import dataclass, field
 from typing import List
 
