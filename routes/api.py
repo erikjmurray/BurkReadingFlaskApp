@@ -7,7 +7,7 @@ from flask import abort, Blueprint, current_app, jsonify, render_template, Respo
 from typing import List
 # ----- PROJECT IMPORTS -----
 from utils import ArcPlus
-from utils.encryption import decrypt_api_key
+from utils.encryption import decrypt_passphrase
 from models import Site, Channel
 from models.schemas import SiteSchema, ChannelSchema, MeterConfigSchema, StatusOptionSchema
 
@@ -23,7 +23,7 @@ def burk_api_call(site_id: int) -> List[dict]:
     Sort and add data to channels based on extensions setup
     """
     site = Site.query.get_or_404(site_id)
-    api_key = decrypt_api_key(site.api_key)
+    api_key = decrypt_passphrase(site.api_key)
 
     # Get data from Burk unit
     arcplus = ArcPlus(ip=site.ip_addr, api_key=api_key)

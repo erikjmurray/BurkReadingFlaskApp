@@ -93,13 +93,28 @@ def eas_log(start_date: str, end_date: str):
 def display_parsed_dasdec_data() -> str:
     """ Route to initiate PDF report of site readings for a date range """
     dasdec_ids = request.form.getlist('dasdec_ids')   # TODO: Create form for DASDEC selection
+    dasdec_ids = [int(_id) for _id in dasdec_ids]
 
     # query dasdecs for new tests
     dasdecs = query_dasdecs_by_id(dasdec_ids)
-    results = run_async_scraper(dasdecs)
 
+    # TODO: DASDEC schema to dict with decrypted password
+    from utils.encryption import decrypt_passphrase
+
+    test_list = []
+    for dasdec in dasdecs:
+        test_dict = dict(
+            name=dasdec.name,
+            username=dasdec.username,
+            ip_addr=dasdec.ip_addr,
+            password=decrypt_passphrase(dasdec.password)
+        )
+        test_list.append(test_dict)
+
+    results = run_async_scraper(test_list)
     eas_data = parse_eas_data(results)
 
-    return render_template('main/eas_dump.html', eas_data=eas_data)
+    return eas_data
+    # return render_template('main/eas_dump.html', eas_data=eas_data)
 
 

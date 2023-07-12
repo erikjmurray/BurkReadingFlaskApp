@@ -7,9 +7,10 @@ from flask import abort, Blueprint, current_app, flash, jsonify, render_template
 from flask_login import login_required, current_user
 from marshmallow import ValidationError
 from werkzeug.security import generate_password_hash
+
 # ----- PROJECT IMPORTS -----
 from extensions import db
-from models import User, Site
+from models import User, Site, Dasdec
 from models.schemas import SiteSchema, UserSchema, UserCreationSchema
 
 
@@ -33,7 +34,11 @@ def admin_home() -> str:
         users = User.query.order_by(User.last_name).all()
         user_data = user_schema.dump(users)
 
-        return render_template('admin/admin_home.html', sites=site_data, operators=user_data)
+        # dasdec_schema = DasdecSchema(many=True)
+        dasdecs = Dasdec.query.all()
+        # dasdec_data = dasdec_schema.dump(dasdecs)
+
+        return render_template('admin/admin_home.html', sites=site_data, operators=user_data, dasdecs=dasdecs)
 
 
 # ----- USER CONFIG -----
@@ -160,8 +165,8 @@ def add_new_site_post():
         site_name = results.get('site_name').replace(' ', '_')
 
         # Encrypt API KEY
-        from utils.encryption import encrypt_api_key
-        encrypted_api_key = encrypt_api_key(results['api_key'])
+        from utils.encryption import encrypt_passphrase
+        encrypted_api_key = encrypt_passphrase(results['api_key'])
 
         # Add site to database
         site = Site(
@@ -195,11 +200,11 @@ def update_site(site_id: int):
     if not current_user.is_admin:
         abort(403)
     else:
-        from utils.encryption import decrypt_api_key
+        from utils.encryption import decrypt_passphrase
         site = Site.query.get_or_404(site_id)
         site_schema = SiteSchema()
         site_data = site_schema.dump(site)
-        site_data['api_key'] = decrypt_api_key(site.api_key)
+        site_data['api_key'] = decrypt_passphrase(site.api_key)
 
         return render_template('admin/update_site.html', site=site_data)
 
@@ -221,8 +226,8 @@ def update_site_post(site_id: int):
         site.site_name = site_name
         site.ip_addr = results.get('ip_addr')
 
-        from utils.encryption import encrypt_api_key
-        site.api_key = encrypt_api_key(results.get('api_key'))
+        from utils.encryption import encrypt_passphrase
+        site.api_key = encrypt_passphrase(results.get('api_key'))
 
         db.session.commit()
         flash_message = 'Site updated', 'success'
@@ -282,3 +287,103 @@ def delete_site(site_id: int):
 
         flash(f'{site_name} removed and associated channel data deleted')
         return redirect(url_for('admin.admin_home'))
+
+# ----- DASDEC CONFIG -----
+@admin.route('/add_dasdec')
+@login_required
+def add_new_dasdec() -> str:
+    """ Render page for adding a new DASDEC """
+    if not current_user.is_admin:
+        abort(403)
+    else:
+        sites = Site.query.order_by(Site.site_order.asc()).all()
+        return render_template('admin/add_dasdec.html', sites=sites)
+
+
+@admin.route('/add_dasdec', methods=['POST'])
+@login_required
+def add_new_dasdec_post():
+    """ On POST, attempt to add DASDEC to config """
+    # Get form data from post
+    results = request.form
+    try:
+        # TODO: Create DASDEC Creation Schema
+        dasdec_name = results.get('dasdec_name').replace(' ', '_')
+
+        # Encrypt Password
+        from utils.encryption import encrypt_passphrase
+        encrypted_password = encrypt_passphrase(results['password'])
+
+        # Add DASDEC to database
+        dasdec = Dasdec(
+            name=dasdec_name,
+            ip_addr=results.get('ip_addr'),
+            username=results.get('username'),
+            password=encrypted_password
+        )
+
+        db.session.add(dasdec)
+        db.session.commit()
+
+        target_dasdec = Dasdec.query.filter_by(name=dasdec_name).first()
+
+        # TODO: Associate sites with target dasdec
+
+        flash_message = f"DASDEC: {dasdec_name} added successfully!"
+    except Exception as e:
+        current_app.logger.info(e)
+        flash_message = str(e)
+    flash(flash_message)
+    return redirect(url_for('admin.admin_home'))
+
+
+@admin.route('dasdec/<int:dasdec_id>/update_dasdec')
+@login_required
+def update_dasdec(dasdec_id: int):
+    """ Load DASDEC data if DASDEC in config """
+    if not current_user.is_admin:
+        abort(403)
+    else:
+        from utils.encryption import decrypt_passphrase
+        dasdec = Dasdec.query.get_or_404(dasdec_id)
+        # dasdec_schema = DasdecSchema()
+        # dasdec_data = dasdec_schema.dump(dasdec)
+        # dasdec_data['password'] = decrypt_passphrase(dasdec.password)
+        data = dict(
+            name=dasdec.name,
+            username=dasdec.username,
+            ip_addr=dasdec.ip_addr,
+            password=decrypt_passphrase(dasdec.password),
+        )
+
+        return render_template('admin/update_dasdec.html', dasdec=data)
+
+
+@admin.route('dasdec/<int:dasdec_id>/update_dasdec', methods=['POST'])
+@login_required
+def update_dasdec_post(dasdec_id: int):
+    """ Updates config of site if  """
+    # Gather form results and current config data
+    dasdec = Dasdec.query.get_or_404(dasdec_id)
+    results = request.form
+
+    try:
+        dasdec_name = results.get('dasdec').replace(' ', '_')
+        obj_w_dasdec_name = Dasdec.query.filter_by(name=dasdec_name).first()
+        if obj_w_dasdec_name and obj_w_dasdec_name != dasdec:
+            raise ValidationError('Conflict in the database. DASDEC of that name already exists.')
+
+        dasdec.name = dasdec_name
+        dasdec.ip_addr = results.get('ip_addr')
+
+        from utils.encryption import encrypt_passphrase
+        dasdec.password = encrypt_passphrase(results.get('password'))
+
+        db.session.commit()
+        flash_message = 'DASDEC updated', 'success'
+    except ValidationError as err:
+        db.session.rollback()
+        current_app.logger.info(err)
+        flash_message = str(err.messages)
+    flash(flash_message)
+    return redirect(url_for('admin.update_dasdec', dasdec_id=dasdec_id))

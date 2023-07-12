@@ -1,10 +1,3 @@
-* CLEAN UP
-    > scraper functions
-    > Drop EAS Table and re-add with new setup
-    > Manually add dasdec_id to sites table (make sure it is nullable)
-    > Validate eas_site_association table
-        - while DASDEC entry will have associated EAS Tests, Site will also associate to EAS Test
-
 * EAS Test Logging
     > Allow user to scrape specific DASDECs
     > EAS Test site association auto gen by sites param of DASDEC entry
@@ -20,8 +13,6 @@
 
 * ADMIN
     > Give admin ability to CRUD DASDEC data. For now, manually add data via SQL
-    > Use encryption for DASDEC password.
-    > More or less a copy paste of add_site.html
 
 * Long Term Goals
     > Create functionality for ordering config data by x_order column

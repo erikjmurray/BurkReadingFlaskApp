@@ -4,20 +4,20 @@ from flask import current_app
 from cryptography.fernet import Fernet
 
 
-def encrypt_api_key(api_key: str) -> bytes:
+def encrypt_passphrase(passphrase: str) -> bytes:
     """ Obfuscate API KEY before storing in database """
     fernet_obj = create_fernet_object()
 
-    key_bytes = api_key.encode('utf-8')     # str to bytes
+    key_bytes = passphrase.encode('utf-8')     # str to bytes
     encrypted_key = fernet_obj.encrypt(key_bytes)
     return encrypted_key
 
 
-def decrypt_api_key(api_key: bytes) -> str:
+def decrypt_passphrase(passphrase: bytes) -> str:
     """ Decrypt API KEY using cipher from .env """
     fernet_obj = create_fernet_object()
 
-    decrypted_bytes = fernet_obj.decrypt(api_key)
+    decrypted_bytes = fernet_obj.decrypt(passphrase)
     decrypted_key = decrypted_bytes.decode('utf-8')
 
     return decrypted_key

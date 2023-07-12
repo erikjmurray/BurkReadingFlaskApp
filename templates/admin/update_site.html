@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<title>Edit Site - {{ site.site_name.replace('_', ' ') }}</title>
+<title>Edit Site - {{ site.display_name }}</title>
 {% endblock %}
 
 {% block body %}
 <div class="container" id="header">
     <h1>Edit Site</h1>
-    <h2 style="">{{ site.site_name.replace('_', ' ') }}</h2>
+    <h2 style="">{{ site.display_name }}</h2>
     {% for message in get_flashed_messages() %}
         <br><p style="font-weight:bolder;">{{ message }}</p>
     {% endfor %}
@@ -24,7 +24,7 @@
                 <label class="config_header" for="site_name">Site Name: </label>
             </dt>
             <dt class="config_field">
-                <input type="text" id="site_name" name="site_name" value="{{ site.site_name.replace('_', ' ') }}" required>
+                <input type="text" id="site_name" name="site_name" value="{{ site.display_name }}" required>
                 <div class="error-message" id="site_name_errors"></div>
             </dt>
           </dl>

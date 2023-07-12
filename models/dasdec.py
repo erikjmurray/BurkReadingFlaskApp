@@ -12,6 +12,7 @@ class Dasdec(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
     ip_addr = db.Column(db.String(42), nullable=False)
+    username = db.Column(db.String(100), nullable=False)
     password = db.Column(BLOB, nullable=False)
     sites = db.relationship('Site', backref='dasdecs', lazy=True)
     eas_tests = db.relationship('EAS', backref='dasdecs', lazy=True)

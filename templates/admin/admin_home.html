@@ -56,5 +56,27 @@
             </tr>
         </table>
     </section>
+
+    <section id="dasdecs" class="config">
+        <table>
+            <tr>
+                <th colspan="5">DASDEC Config</th>
+            </tr>
+
+            {% for dasdec in dasdecs %}
+            <tr>
+                <td>{{dasdec.name}}</td>
+                <td><a href="/admin/dasdec/{{dasdec.id}}/update_dasdec">Edit DASDEC</a></td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="5" style="padding:0;">
+                    <a href="/admin/add_dasdec">
+                        <button style="padding:0; margin: 0; width: 100%;">Add New DASDEC</button>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </section>
 </div>
 {% endblock %}

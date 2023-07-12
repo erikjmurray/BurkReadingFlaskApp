@@ -39,12 +39,13 @@ def query_eas_tests_by_date_range(dates: Tuple[datetime, datetime], site: Option
     return eas_tests
 
 
-def query_dasdecs_by_id(dasdec_ids: list) -> List[dict]:
+def query_dasdecs_by_id(dasdec_ids: list) -> List[Dasdec]:
+    """  """
     dasdecs = []
     for _id in dasdec_ids:
         try:
             dasdec = Dasdec.query.get(_id)
-            dasdecs.append(dasdec.to_dict())        # TODO: Create to_dict method
+            dasdecs.append(dasdec)
         except:
             continue
     return dasdecs

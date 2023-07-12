@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Add DASDEC Page</title>
+{% endblock %}
+
+{% block body %}
+<div class="container" id="header">
+    <h1>Add DASDEC</h1>
+<!--Adds post to database success/fail message on form submit-->
+    {% for message in get_flashed_messages() %}
+        <br><p style="font-weight:bolder;">{{message}}</p>
+    {% endfor %}
+</div>
+
+<div class="container config_form">
+  <form action="#" class="" method="POST">
+    <fieldset>
+      <dl>
+        <dt class="">
+            <label class="config_header" for="dasdec_name">DASDEC Name: </label>
+        </dt>
+        <dt class="config_field">
+            <input type="text" id="dasdec_name" name="dasdec_name" placeholder="WXYZ" value="" required>
+            <div class="error-message" id="dasdec_name_errors"></div>
+        </dt>
+
+      </dl>
+    </fieldset>
+
+    <fieldset>
+      <dl>
+        <dt class="">
+            <label class="config_header" for="ip_addr">IP: </label>
+        </dt>
+        <dt class="config_field">
+            <input style="" type="text" id="ip_addr" name="ip_addr" placeholder="192.168.1.1" required>
+            <div class="error-message" id="ip_addr_errors"></div>
+        </dt>
+
+      </dl>
+    </fieldset>
+
+    <fieldset>
+      <dl>
+        <dt class="">
+            <label class="config_header" for="username">Username: </label>
+        </dt>
+        <dt class="config_field">
+            <input style="" type="text" id="username" name="username" required/>
+        </dt>
+      </dl>
+    </fieldset>
+
+    <fieldset>
+      <dl>
+        <dt class="">
+            <label class="config_header" for="password">Password: </label>
+        </dt>
+        <dt class="config_field">
+            <input style="" type="password" id="password" name="password" required/>
+        </dt>
+      </dl>
+    </fieldset>
+
+    <fieldset>
+        <dt>
+            <label class="config_header">Sites: </label>
+        </dt>
+        <dt>
+          {% for site in sites %}
+          <label>
+            <input type="checkbox" id="{{site.site_name}}" name="sites" value="site.id"/>
+              {{ site.display_name }}
+          </label>
+          {% endfor %}
+        </dt>
+    </fieldset>
+
+    <button style="width:100%; border:0px; margin-bottom:0px" type="submit" value="Submit">ADD DASDEC</button>
+  </form>
+
+</div>
+
+<script src="{{ url_for('static', filename='javascript/site_form_verification.js') }}"></script>
+
+{% endblock %}
