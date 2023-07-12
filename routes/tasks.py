@@ -7,7 +7,7 @@ from flask import Blueprint, make_response, render_template, Response
 # ----- PROJECT IMPORTS -----
 from models import Site
 from utils.datetime_manipulation import input_dates_to_datetime
-from utils.tasks import create_pdf, parse_dasdec_logs
+from utils.tasks import create_pdf
 
 
 # create Blueprint object
@@ -34,11 +34,3 @@ def generate_pdf(site_id: int,
 
     return response
 
-
-@tasks.route('/parse_dasdec_logs')
-def display_parsed_dasdec_data() -> str:
-    """ Route to initiate PDF report of site readings for a date range """
-
-    eas_data = parse_dasdec_logs()
-
-    return render_template('main/eas_dump.html', eas_data=eas_data)

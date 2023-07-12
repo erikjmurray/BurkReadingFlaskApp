@@ -167,7 +167,7 @@ def site_eas_tests(site_id: int):
     eas_tests = EAS.query.join(EAS.sites).filter(
         Site.id == site_id
     ).order_by(
-        EAS.tx_timestamp.desc()
+        EAS.started.desc()
     ).limit(12).all()
 
     return render_template('main/site_eas_log.html', site=site_data, eas_tests=eas_tests)

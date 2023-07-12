@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List, Optional, Tuple
 
 # ----- PROJECT IMPORTS -----
-from models import EAS, Reading, Site
+from models import Dasdec, EAS, Reading, Site
 
 
 # ----- SQL Queries -----
@@ -29,11 +29,22 @@ def query_eas_tests_by_date_range(dates: Tuple[datetime, datetime], site: Option
     if site:
         eas_tests = EAS.query.join(EAS.sites).filter(
             Site.id == site.id,
-            EAS.tx_timestamp >= dates[0],
-            EAS.tx_timestamp <= dates[1]
+            EAS.started >= dates[0],
+            EAS.ended <= dates[1]
         ).order_by(
-            EAS.tx_timestamp.asc()
+            EAS.started.asc()
         ).all()
     else:
-        eas_tests = EAS.query.filter(EAS.tx_timestamp >= dates[0], EAS.tx_timestamp <= dates[1]).all()
+        eas_tests = EAS.query.filter(EAS.started >= dates[0], EAS.ended <= dates[1]).all()
     return eas_tests
+
+
+def query_dasdecs_by_id(dasdec_ids: list) -> List[dict]:
+    dasdecs = []
+    for _id in dasdec_ids:
+        try:
+            dasdec = Dasdec.query.get(_id)
+            dasdecs.append(dasdec.to_dict())        # TODO: Create to_dict method
+        except:
+            continue
+    return dasdecs

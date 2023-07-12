@@ -15,12 +15,19 @@
         View EAS Logs
       </button>
     </div>
+<!--    TODO: Create form for DASDEC id submission (which units to scrape) -->
     <div class="container">
-        <a href="/parse_dasdec_logs">
-            <button class="header_button">
+        <form action="/eas/parse/" method="post" class="eas_form">
+            {% for dasdec in dasdecs %}
+            <label>
+                <input type="checkbox" name="dasdec_ids" value="{{ dasdec.id }}">
+                    {{ dasdec.name }}
+            </label><br>
+            {% endfor %}
+            <button type="submit" class="header_button">
                 Parse DASDEC Logs
             </button>
-        </a>
+        </form>
     </div>
 </div>
 

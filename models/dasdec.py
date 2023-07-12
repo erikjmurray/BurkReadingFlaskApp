@@ -13,7 +13,6 @@ class Dasdec(db.Model):
     name = db.Column(db.String(20), nullable=False)
     ip_addr = db.Column(db.String(42), nullable=False)
     password = db.Column(BLOB, nullable=False)
-    # operational_area = db.Column(db.String(2), nullable=False)
     sites = db.relationship('Site', backref='dasdecs', lazy=True)
     eas_tests = db.relationship('EAS', backref='dasdecs', lazy=True)
 
@@ -29,13 +28,18 @@ class EAS(db.Model):
     __tablename__ = 'eas_tests'
     id = db.Column(db.Integer, primary_key=True)
     generated_id = db.Column(db.Integer, nullable=False)
-    test_type = db.Column(db.String, nullable=False)
+
+    test_type = db.Column(db.String(12), nullable=False)    # RWT / RMT
+    rx_from = db.Column(db.String(8), nullable=True)        # Where test came from
+    originating = db.Column(db.Boolean, nullable=False)     # Test came from our station
+    forwarded = db.Column(db.Boolean, nullable=False)       # Test received from another site
+
     started = db.Column(db.DateTime, nullable=False)
     ended = db.Column(db.DateTime, nullable=False)
-    decoded = db.Column(db.DateTime, nullable=True)     # Nullable
-    forwarded = db.Column(db.DateTime, nullable=True)   # Nullable
-    originated = db.Column(db.DateTime, nullable=True)  # Nullable
+    decoded_at = db.Column(db.DateTime, nullable=True)      # Null when originating
+    sent_at = db.Column(db.DateTime, nullable=False)        # regardless of fwd or origin
     message = db.Column(db.Text, nullable=False)
+
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     dasdec_id = db.Column(db.Integer, db.ForeignKey('dasdecs.id'), nullable=True)   # In event, DASDEC unavailable NULL
     sites = db.relationship('Site', secondary=eas_site_association, backref='eas_tests', lazy=True)

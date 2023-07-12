@@ -24,6 +24,7 @@
     > More or less a copy paste of add_site.html
 
 * Long Term Goals
+    > Create functionality for ordering config data by x_order column
     > Use more robust Database. MySQL / PostGres
     > Move admin backend to dedicated CMS
         - User doesn't need access

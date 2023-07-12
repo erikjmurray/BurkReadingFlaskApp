@@ -8,9 +8,10 @@ from datetime import datetime
 
 # ----- PROJECT IMPORTS -----
 from extensions import db
-from models import EAS, Site, User
+from models import Dasdec, EAS, Site, User
 from models.schemas import SiteSchema, UserSchema
-from utils.database_queries import query_eas_tests_by_date_range
+from utils.tasks import parse_eas_data, run_async_scraper
+from utils.database_queries import query_eas_tests_by_date_range, query_dasdecs_by_id
 from utils.datetime_manipulation import input_dates_to_datetime, iso_input_to_datetime
 
 # Initialize Blueprint
@@ -28,9 +29,18 @@ def eas_form():
     operators = User.query.filter_by(is_operator=True).order_by(User.last_name).all()
     operator_data = user_schema.dump(operators)
 
+    # TODO: Create dasdec schema
+    # dasdec_schema = DasdecSchema(many=True)
+    dasdecs = Dasdec.query.all()
+    # dasdec_data = dasdec_schema.dump(dasdecs)
+
     # Current time used as a default value for receive or transmitted.
     current_time = datetime.now().strftime('%Y-%m-%dT%H:%M')
-    return render_template('main/eas_form.html', sites=site_data, current_time=current_time, operators=operator_data)
+    return render_template('main/eas_form.html',
+                           sites=site_data,
+                           current_time=current_time,
+                           operators=operator_data,
+                           dasdecs=dasdecs)
 
 
 @eas.route('/eas', methods=['POST'])
@@ -77,5 +87,19 @@ def eas_log(start_date: str, end_date: str):
     tests_for_dates = query_eas_tests_by_date_range(date_range)
 
     return render_template('main/eas_log.html', eas_tests=tests_for_dates)
+
+
+@eas.route('/eas/parse/', methods=['POST'])
+def display_parsed_dasdec_data() -> str:
+    """ Route to initiate PDF report of site readings for a date range """
+    dasdec_ids = request.form.getlist('dasdec_ids')   # TODO: Create form for DASDEC selection
+
+    # query dasdecs for new tests
+    dasdecs = query_dasdecs_by_id(dasdec_ids)
+    results = run_async_scraper(dasdecs)
+
+    eas_data = parse_eas_data(results)
+
+    return render_template('main/eas_dump.html', eas_data=eas_data)
 
 

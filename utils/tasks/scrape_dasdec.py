@@ -8,7 +8,6 @@ import asyncio
 
 # ----- PROJECT IMPORTS -----
 from utils.eas_parse.DasdecScraper import DasdecScraper
-from utils.tasks.parse_dasdec_html import parse
 
 
 # async def scrape(dasdec: dict) -> Tuple[int, str]:

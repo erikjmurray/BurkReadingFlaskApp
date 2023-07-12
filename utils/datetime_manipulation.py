@@ -24,10 +24,13 @@ def create_list_of_individual_dates(start_date: datetime,
         start_date += timedelta(days=1)
     return dates
 
-# TODO: Verify function with real data
+
 def dasdec_input_to_datetime(timestamp: str) -> datetime:
     """ Converts string input from DASDEC timestamp to Datetime object """
-    format_string = "%a %b %d %H:%M:%S %Y %Z"
-    datetime_obj = datetime.strptime(timestamp, format_string)
+    format_string = "%a %b %d %H:%M:%S %Y"   # %Z does not actually handle timezone designation
+    try:
+        datetime_obj = datetime.strptime(timestamp, format_string)
+    except:
+        # strips TZ from end of string if present
+        datetime_obj = datetime.strptime(timestamp[:-4], format_string)
     return datetime_obj
-
